@@ -6,14 +6,17 @@ from flask_restful import Api
 from AoL.Auth.Auth import Auth
 from AoL.Auth.User import User
 from AoL.Discipline.Discipline import Discipline, DisciplineList
+from AoL.Discipline.DisciplineHistory import  DisciplineHistory, DisciplineHistoryList
 from json import loads
 
 app = Flask(__name__)
 app.config.from_pyfile('flaskapp.cfg')
 api = Api(app)
-apiv1 = '/api/v1/'
-api.add_resource(DisciplineList, apiv1+'discipline')
-api.add_resource(Discipline, apiv1+'discipline/<int:discipline_id>')
+api_v1 = '/api/v1/'
+api.add_resource(DisciplineList, api_v1 + 'discipline')
+api.add_resource(Discipline, api_v1 + 'discipline/<int:discipline_id>')
+api.add_resource(DisciplineHistoryList, api_v1 + 'discipline/history')
+api.add_resource(DisciplineHistory, api_v1 + 'discipline/history/<int:discipline_history_id>')
 
 
 @app.before_request
@@ -23,9 +26,11 @@ def open_db():
         password=app.config.get('DB_PASSWORD'),
         database=app.config.get('DB_NAME')
     )
-    _url = request.endpoint
-    if not (_url in ['index']):
-        if _url != 'login':
+    _url_path = str(request.url_rule)
+    _url_endpoint = str(request.endpoint)
+    _url = _url_path.replace(_url_endpoint, '')
+    if api_v1 in _url:
+        if _url_endpoint != 'login':
             _token = request.headers.get('X-Authorization')
             _auth = Auth()
             _rs = _auth.is_login(token=_token)
@@ -40,7 +45,7 @@ def index():
     return render_template('index.html')
 
 
-@app.route(apiv1+'login', methods=['POST'])
+@app.route(api_v1 + 'login', methods=['POST'])
 def login():
     _data = request.json
     _auth = Auth()

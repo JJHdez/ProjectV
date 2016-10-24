@@ -4,20 +4,6 @@ import psycopg2 as psql
 import psycopg2.extras
 
 
-# class PsqlAoL:
-#
-#     def __init__(self):
-#         pass
-#
-#     @staticmethod
-#     def connect(user='odoo', password='0d004dm1n', database='aol', host='localhost', port=5432):
-#         url = 'postgresql://{}:{}@{}:{}/{}'
-#         url = url.format(user, password, host, port, database)
-#         con = sqlalchemy.create_engine(url, client_encoding='utf8')
-#         meta = sqlalchemy.MetaData(bind=con, reflect=True)
-#         return con, meta
-
-
 class PsqlAoL:
 
     __host = 'localhost'
@@ -78,7 +64,7 @@ class PsqlAoL:
     def one(self):
         return self.__cursor.fetchone()
 
-    def many(self, size=0):
+    def fetch(self, size=0):
         _many = None
         if size > 0:
             _many = self.__cursor.fetchmany(size)
