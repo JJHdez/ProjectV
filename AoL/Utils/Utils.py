@@ -12,8 +12,8 @@ def tuple2list(fields, tuple):
             _row = row[i]
             if type(row[i]) == datetime:
                 _row = row[i].strftime("%Y-%m-%d %H:%M:%S")
-            if type(row[i]) == NoneType:
-                _row = 'null'
+            # if type(row[i]) == NoneType:
+            #     _row = 'null'
             if type(row[i]) == unicode:
                 _row = str(row[i])
             _dic.update({val: _row})

@@ -1,12 +1,13 @@
-import os
-from datetime import datetime
+# -*- coding: utf-8 -*-
+# © 2016. by Zero 1/0.
 from flask import Flask, request, render_template,  send_from_directory, g
 from AoL.Utils.Db import PsqlAoL
 from flask_restful import Api
 from AoL.Auth.Auth import Auth
 from AoL.Auth.User import User
 from AoL.Discipline.Discipline import Discipline, DisciplineList
-from AoL.Discipline.DisciplineHistory import  DisciplineHistory, DisciplineHistoryList
+from AoL.Discipline.DisciplineHistory import DisciplineHistory, DisciplineHistoryList
+from AoL.Discipline.Wish import Wish, WishList
 from json import loads
 
 app = Flask(__name__)
@@ -17,6 +18,8 @@ api.add_resource(DisciplineList, api_v1 + 'discipline')
 api.add_resource(Discipline, api_v1 + 'discipline/<int:discipline_id>')
 api.add_resource(DisciplineHistoryList, api_v1 + 'discipline/history')
 api.add_resource(DisciplineHistory, api_v1 + 'discipline/history/<int:discipline_history_id>')
+api.add_resource(WishList, api_v1 + 'wish')
+api.add_resource(Wish, api_v1 + 'wish/<int:wish_id>')
 
 
 @app.before_request
