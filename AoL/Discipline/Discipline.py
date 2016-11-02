@@ -64,12 +64,12 @@ class DisciplineList(Resource, DisciplineR):
         _data = request.json
         _insert = []
         _post = _insert
-        for data in _data:
-            qri = "insert into discipline (user_id, name) values(%s,'%s') returning id;" \
-                  % (g.user.id, data.get('name'))
-            g.db_conn.execute(qri)
-            if g.db_conn.count() > 0:
-                _insert.append({"id": g.db_conn.one()[0]})
+        # for data in _data:
+        qri = "insert into discipline (user_id, name) values(%s,'%s') returning id;" \
+              % (g.user.id, _data.get('name'))
+        g.db_conn.execute(qri)
+        if g.db_conn.count() > 0:
+            _insert.append({"id": g.db_conn.one()[0]})
         _post = jsonify(_insert)
         return _post
 
