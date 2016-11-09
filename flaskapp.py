@@ -30,7 +30,8 @@ def open_db():
         user=app.config.get('DB_USER'),
         password=app.config.get('DB_PASSWORD'),
         database=app.config.get('DB_NAME'),
-        port=app.config.get('DB_PORT')
+        port=app.config.get('DB_PORT'),
+        host=app.config.get('DB_HOST')
     )
     _url_path = str(request.url_rule)
     _url_endpoint = str(request.endpoint)
