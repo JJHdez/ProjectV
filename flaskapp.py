@@ -5,19 +5,21 @@ from AoL.Utils.Db import PsqlAoL
 from flask_restful import Api
 from AoL.Auth.Auth import Auth
 from AoL.Auth.User import User
-from AoL.Discipline.Discipline import Discipline, DisciplineList
-from AoL.Discipline.DisciplineHistory import DisciplineHistory, DisciplineHistoryList
-from AoL.Discipline.Wish import Wish, WishList
+from AoL.Habit.Habit import Habit, HabitList
+from AoL.Habit.HabitHistory import HistoryHabit, HistoryHabitList
+from AoL.Habit.Wish import Wish, WishList
 from json import loads
 
 app = Flask(__name__)
 app.config.from_pyfile('flaskapp.cfg')
 api = Api(app)
 api_v1 = '/api/v1/'
-api.add_resource(DisciplineList, api_v1 + 'discipline')
-api.add_resource(Discipline, api_v1 + 'discipline/<int:discipline_id>')
-api.add_resource(DisciplineHistoryList, api_v1 + 'discipline/history')
-api.add_resource(DisciplineHistory, api_v1 + 'discipline/history/<int:discipline_history_id>')
+# Habit
+api.add_resource(HabitList, api_v1 + 'habit')
+api.add_resource(Habit, api_v1 + 'habit/<int:habit_id>')
+api.add_resource(HistoryHabitList, api_v1 + 'habit/history')
+api.add_resource(HistoryHabit, api_v1 + 'habit/history/<int:history_habit_id>')
+
 api.add_resource(WishList, api_v1 + 'wish')
 api.add_resource(Wish, api_v1 + 'wish/<int:wish_id>')
 
@@ -27,8 +29,8 @@ def open_db():
     g.db_conn = PsqlAoL(
         user=app.config.get('DB_USER'),
         password=app.config.get('DB_PASSWORD'),
-        database=app.config.get('DB_NAME'),
-        host=app.config.get('DB_HOST')
+        database=app.config.get('DB_NAME')
+
     )
     _url_path = str(request.url_rule)
     _url_endpoint = str(request.endpoint)
