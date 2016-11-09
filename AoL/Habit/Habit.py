@@ -6,21 +6,23 @@ from AoL.Utils.Utils import tuple2list
 from AoL.Utils.ExceptionAoL import ExceptionRest
 
 
-class DisciplineR:
+class HabitR:
     _fields = ['id', 'created_date', 'user_id', 'finished_date', 'closed_date', 'name']
+    _table = 'habits'
 
     def __init__(self):
         pass
 
 
-class DisciplineList(Resource, DisciplineR):
+class HabitList(Resource, HabitR):
 
     def get(self):
         _get = jsonify()
         try:
             _view = request.args.get("view")
             if not _view:
-                data = g.db_conn.execute("select * from discipline where user_id='%s' order by id asc;" % (g.user.id,))
+                data = g.db_conn.execute("select * from %s where user_id='%s' order by id asc;"
+                                         % (self._table, g.user.id,))
                 if g.db_conn.count() > 0:
                     _get = jsonify(tuple2list(self._fields, data))
                     _get.status_code = 200
@@ -42,16 +44,17 @@ class DisciplineList(Resource, DisciplineR):
           d.id,
           d.name,
           '' state,
-          (SELECT count(id) FROM discipline_history tdh1 WHERE tdh1.discipline_id =d.id and tdh1.user_id =d.user_id and tdh1.state='success') success,
-          (SELECT count(id) FROM discipline_history tdh1 WHERE tdh1.discipline_id =d.id and tdh1.user_id =d.user_id and tdh1.state='fail') fail
-        FROM discipline d LEFT JOIN discipline_history dh
-        ON d.id =dh.discipline_id AND d.user_id = dh.user_id
+          (SELECT count(id) FROM history_habits tdh1 WHERE tdh1.habit_id =d.id and tdh1.user_id =d.user_id and tdh1.state='success') success,
+          (SELECT count(id) FROM history_habits tdh1 WHERE tdh1.habit_id =d.id and tdh1.user_id =d.user_id and tdh1.state='fail') fail
+        FROM habits d LEFT JOIN history_habits dh
+        ON d.id =dh.habit_id AND d.user_id = dh.user_id
         AND dh.created_date::timestamp::DATE='%s'
         WHERE
           d.closed_date IS NULL
           and d.user_id = %s
           and dh.id is NULL
         ;""" % (_date, g.user.id)
+        # print _qrs
         _current_task = []
         _data = g.db_conn.execute(_qrs)
         if g.db_conn.count() > 0:
@@ -64,9 +67,8 @@ class DisciplineList(Resource, DisciplineR):
         _data = request.json
         _insert = []
         _post = _insert
-        # for data in _data:
-        qri = "insert into discipline (user_id, name) values(%s,'%s') returning id;" \
-              % (g.user.id, _data.get('name'))
+        qri = "insert into %s (user_id, name) values(%s,'%s') returning id;" \
+              % (self._table, g.user.id, _data.get('name'))
         g.db_conn.execute(qri)
         if g.db_conn.count() > 0:
             _insert.append({"id": g.db_conn.one()[0]})
@@ -74,11 +76,11 @@ class DisciplineList(Resource, DisciplineR):
         return _post
 
 
-class Discipline(Resource, DisciplineR):
+class Habit(Resource, HabitR):
 
-    def get(self, discipline_id):
-        data = g.db_conn.execute('select * from discipline where user_id =%s and id = %s;'
-                                 % (g.user.id, str(discipline_id)))
+    def get(self, habit_id):
+        data = g.db_conn.execute('select * from %s where user_id =%s and id = %s;'
+                                 % (self._table, g.user.id, str(habit_id)))
         _get = tuple2list(self._fields, data)
         r = jsonify(_get)
         if len(_get) <= 0:
@@ -87,8 +89,8 @@ class Discipline(Resource, DisciplineR):
             r.status_code = 200
         return r
 
-    def delete(self, discipline_id):
-        qrd = "delete from discipline where user_id=%s and id=%s" % (g.user.id, discipline_id)
+    def delete(self, habit_id):
+        qrd = "delete from %s where user_id=%s and id=%s" % (self._table, g.user.id, habit_id)
         _data = g.db_conn.execute(qrd)
         _delete = jsonify()
         if g.db_conn.count() > 0:
@@ -97,11 +99,12 @@ class Discipline(Resource, DisciplineR):
             _delete.status_code = 404
         return _delete
 
-    def put(self, discipline_id):
+    def put(self, habit_id):
         _data = request.json
         _put = jsonify()
-        qru = "update discipline set name ='%s' where user_id=%s and id = %s" % \
-              (_data.get('name'), g.user.id, discipline_id)
+        # print _data
+        qru = "update %s set name ='%s' where user_id=%s and id = %s" % \
+              (self._table, _data.get('name'), g.user.id, habit_id)
         g.db_conn.execute(qru)
         if g.db_conn.count() > 0:
             _put.status_code = 200

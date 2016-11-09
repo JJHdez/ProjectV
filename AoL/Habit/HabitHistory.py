@@ -6,15 +6,15 @@ from AoL.Utils.Utils import tuple2list
 from AoL.Utils.ExceptionAoL import ExceptionRest
 
 
-class DisciplineHistoryR:
-    _table = 'discipline_history'
-    _fields = ['id', 'created_date', 'user_id', 'discipline_id', 'state']
+class HistoryHabitR:
+    _table = 'history_habits'
+    _fields = ['id', 'created_date', 'user_id', 'habit_id', 'state']
 
     def __init__(self):
         pass
 
 
-class DisciplineHistoryList(Resource, DisciplineHistoryR):
+class HistoryHabitList(Resource, HistoryHabitR):
 
     def get(self):
         _get = jsonify()
@@ -35,8 +35,8 @@ class DisciplineHistoryList(Resource, DisciplineHistoryR):
         try:
             _data = request.json
             _insert = []
-            qri = "insert into %s (user_id, discipline_id, state) values(%s, %s, '%s') returning id;" \
-                  % (self._table, g.user.id, _data.get('discipline_id'), _data.get('state'))
+            qri = "insert into %s (user_id, habit_id, state) values(%s, %s, '%s') returning id;" \
+                  % (self._table, g.user.id, _data.get('habit_id'), _data.get('state'))
             g.db_conn.execute(qri)
             if g.db_conn.count() > 0:
                 _insert.append({"id": g.db_conn.one()[0]})
@@ -49,13 +49,13 @@ class DisciplineHistoryList(Resource, DisciplineHistoryR):
         return _post
 
 
-class DisciplineHistory(Resource, DisciplineHistoryR):
+class HistoryHabit(Resource, HistoryHabitR):
 
-    def get(self, discipline_history_id):
+    def get(self, history_habit_id):
         _get = jsonify()
         try:
             g.db_conn.execute('select * from %s where user_id =%s and id = %s;'
-                                     % (self._table, g.user.id, str(discipline_history_id)))
+                                     % (self._table, g.user.id, str(history_habit_id)))
             if g.db_conn.count() > 0:
                 _get = jsonify(tuple2list(self._fields, g.db_conn.fetch()))
                 _get.status_code = 200
@@ -65,10 +65,10 @@ class DisciplineHistory(Resource, DisciplineHistoryR):
             _get.status_code = e.status_code
         return _get
 
-    def delete(self, discipline_history_id):
+    def delete(self, history_habit_id):
         _delete = jsonify()
         try:
-            qrd = "delete from %s where user_id=%s and id=%s" % (self._table, g.user.id, discipline_history_id)
+            qrd = "delete from %s where user_id=%s and id=%s" % (self._table, g.user.id, history_habit_id)
             g.db_conn.execute(qrd)
             if g.db_conn.count() > 0:
                 _delete.status_code = 204
@@ -78,13 +78,13 @@ class DisciplineHistory(Resource, DisciplineHistoryR):
             _delete.status_code = e.status_code
         return _delete
 
-    def put(self, discipline_history_id):
+    def put(self, history_habit_id):
         _put = jsonify()
         try:
             raise ExceptionRest(status_code=401)
             _data = request.json
             qru = "update %s set state ='%s' where user_id=%s and id = %s" % \
-                  (self._table, _data.get('state'), g.user.id, discipline_history_id)
+                  (self._table, _data.get('state'), g.user.id, history_habit_id)
             g.db_conn.execute(qru)
             if g.db_conn.count() > 0:
                 _put.status_code = 201
