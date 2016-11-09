@@ -29,8 +29,8 @@ def open_db():
     g.db_conn = PsqlAoL(
         user=app.config.get('DB_USER'),
         password=app.config.get('DB_PASSWORD'),
-        database=app.config.get('DB_NAME')
-
+        database=app.config.get('DB_NAME'),
+        port=app.config.get('DB_PORT')
     )
     _url_path = str(request.url_rule)
     _url_endpoint = str(request.endpoint)
