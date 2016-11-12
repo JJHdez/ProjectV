@@ -3,7 +3,7 @@
 from flask_restful import Resource
 from flask import request, g, jsonify
 from AoL.Utils.Utils import tuple2list
-from AoL.Utils.ExceptionAoL import ExceptionRest
+from AoL.Utils.Exception import ExceptionRest
 
 
 class HistoryHabitR:

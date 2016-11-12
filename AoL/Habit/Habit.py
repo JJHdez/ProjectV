@@ -1,9 +1,9 @@
-# -*- coding: utf-8 -*-
+ # -*- coding: utf-8 -*-
 # © 2016. by Zero 1/0.
 from flask_restful import Resource
 from flask import request, abort, g, jsonify
 from AoL.Utils.Utils import tuple2list
-from AoL.Utils.ExceptionAoL import ExceptionRest
+from AoL.Utils.Exception import ExceptionRest
 
 
 class HabitR:
@@ -103,7 +103,7 @@ class Habit(Resource, HabitR):
         _data = request.json
         _put = jsonify()
         # print _data
-        qru = "update %s set name ='%s' where user_id=%s and id = %s" % \
+        qru = "update  %s set name ='%s' where user_id=%s and id = %s" % \
               (self._table, _data.get('name'), g.user.id, habit_id)
         g.db_conn.execute(qru)
         if g.db_conn.count() > 0:
