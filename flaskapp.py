@@ -1,25 +1,31 @@
 # -*- coding: utf-8 -*-
-# © 2016. by Zero 1/0.
+# ZERO 1/0 © 2016
 from flask import Flask, request, render_template,  send_from_directory, g
 from AoL.Utils.Db import PsqlAoL
 from flask_restful import Api
 from AoL.Auth.Auth import Auth
-from AoL.Auth.User import User
 from AoL.Habit.Habit import Habit, HabitList
 from AoL.Habit.HabitHistory import HistoryHabit, HistoryHabitList
+# from AoL.Project.Project import Project, ProjectList
+# from AoL.Project.ProjectTask import ProjectTask, ProjectTaskList
 from AoL.Habit.Wish import Wish, WishList
-from json import loads
 
 app = Flask(__name__)
 app.config.from_pyfile('flaskapp.cfg')
 api = Api(app)
+
 api_v1 = '/api/v1/'
 # Habit
 api.add_resource(HabitList, api_v1 + 'habit')
 api.add_resource(Habit, api_v1 + 'habit/<int:habit_id>')
 api.add_resource(HistoryHabitList, api_v1 + 'habit/history')
 api.add_resource(HistoryHabit, api_v1 + 'habit/history/<int:history_habit_id>')
-
+# Project
+# api.add_resource(ProjectList, api_v1 + 'project')
+# api.add_resource(Project, api_v1 + 'project/<int:project_id>')
+# api.add_resource(ProjectTaskList, api_v1 + 'project/task')
+# api.add_resource(ProjectTask, api_v1 + 'project/task/<int:id>')
+# wish
 api.add_resource(WishList, api_v1 + 'wish')
 api.add_resource(Wish, api_v1 + 'wish/<int:wish_id>')
 
@@ -33,6 +39,8 @@ def open_db():
         port=app.config.get('DB_PORT'),
         host=app.config.get('DB_HOST')
     )
+    if g.db_conn:
+        g.db_conn.execute("set timezone to 'UTC';")
     _url_path = str(request.url_rule)
     _url_endpoint = str(request.endpoint)
     _url = _url_path.replace(_url_endpoint, '')
@@ -41,10 +49,10 @@ def open_db():
             _token = request.headers.get('X-Authorization')
             _auth = Auth()
             _rs = _auth.is_login(token=_token)
-            if _rs.status_code != 200:
-                return _rs
+            if 'error' in _rs:
+                return _rs['error']
             else:
-                g.user = User(id=loads(_rs.response[0])[u'user_id'])
+                g.user = _rs['user']
 
 
 @app.route('/')

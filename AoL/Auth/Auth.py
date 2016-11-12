@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # © 2016. by Zero 1/0.
 from flask import g, jsonify
-# from AoL.Utils.Db import PsqlAoL
+from AoL.Auth.User import User
 
 
 class Auth:
@@ -43,20 +43,29 @@ class Auth:
         pass
 
     def is_login(self, token):
-        _errors = []
-        _is_login = {}
+        _response = {}
         if not token:
-            _errors.append({'headers': 'X-Authorization is required'})
-            _is_login =jsonify(_errors)
-            _is_login.status_code = 400
-        if len(_errors) == 0:
+            _is_login = jsonify({'headers': 'X-Authorization is required'})
+            _is_login.status_code = 401
+            _response.update({'error': _is_login})
+        if 'error' not in _response:
             _qry = "SELECT is_login ('%s')" %(token, )
             g.db_conn.execute(_qry)
             if g.db_conn.count() > 0:
                 _data_query = g.db_conn.one()[0]
-                _status_code = _data_query[u'status_code']
-                del _data_query[u'status_code']
-                _is_login = jsonify(_data_query)
-                _is_login.status_code = _status_code
-        return _is_login
+                if _data_query[u'status_code'] == 200:
+                    _user = _data_query[u'user']
+                    user = User(id=_user['id'],
+                                name=_user['name'],
+                                email=_user['email'],
+                                last_name=_user['last_name'],
+                                cover=_user['cover'],
+                                timezone=_user['timezone']
+                                )
+                    _response.update({'user': user})
+                else:
+                    _error = jsonify()
+                    _error.status_code = _data_query[u'status_code']
+                    _response.update({'error': _error})
+        return _response
 
