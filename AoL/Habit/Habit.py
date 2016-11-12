@@ -48,7 +48,7 @@ class HabitList(Resource, HabitR):
           (SELECT count(id) FROM history_habits tdh1 WHERE tdh1.habit_id =d.id and tdh1.user_id =d.user_id and tdh1.state='fail') fail
         FROM habits d LEFT JOIN history_habits dh
         ON d.id =dh.habit_id AND d.user_id = dh.user_id
-        AND dh.created_date::timestamp::DATE='%s'
+        AND CAST(dh.created_date AT TIME ZONE 'UTC' AT TIME ZONE 'America/Mexico_City' AS DATE)='%s'
         WHERE
           d.closed_date IS NULL
           and d.user_id = %s
