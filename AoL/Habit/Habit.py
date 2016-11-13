@@ -39,22 +39,39 @@ class HabitList(Resource, HabitR):
         return _get
 
     def current_task (self, _date):
-        # print _date
-        _qrs = """SELECT
+        _timezone_user = " AT TIME ZONE '"+g.user.timezone+"' " if g.user.timezone else ""
+        _qrs = """
+          SELECT
           d.id,
           d.name,
           '' state,
-          (SELECT count(id) FROM history_habits tdh1 WHERE tdh1.habit_id =d.id and tdh1.user_id =d.user_id and tdh1.state='success') success,
-          (SELECT count(id) FROM history_habits tdh1 WHERE tdh1.habit_id =d.id and tdh1.user_id =d.user_id and tdh1.state='fail') fail
+          (
+            SELECT count(id) FROM history_habits tdh1 WHERE
+            tdh1.habit_id =d.id and tdh1.user_id =d.user_id and tdh1.state='success'
+          ) success
+          ,
+          CASE WHEN
+
+            (
+              (CAST(current_timestamp AS DATE ) - CAST(d.created_date AS DATE )) -
+              (SELECT count(id) FROM history_habits tdh1 WHERE tdh1.habit_id =d.id and tdh1.user_id =d.user_id and tdh1.state='success')
+            ) >= 0
+            THEN
+              (
+                (CAST(current_timestamp AS DATE ) - CAST(d.created_date AS DATE )) -
+                (SELECT count(id) FROM history_habits tdh1 WHERE tdh1.habit_id =d.id and tdh1.user_id =d.user_id and tdh1.state='success')
+              )
+            ELSE
+              0
+            END fail
         FROM habits d LEFT JOIN history_habits dh
-        ON d.id =dh.habit_id AND d.user_id = dh.user_id
-        AND CAST(dh.created_date AT TIME ZONE 'UTC' AT TIME ZONE 'America/Mexico_City' AS DATE)='%s'
-        WHERE
+            ON d.id =dh.habit_id AND d.user_id = dh.user_id
+            and CAST(dh.created_date AT TIME ZONE 'UTC' %s AS DATE) = '%s'
+        where
           d.closed_date IS NULL
           and d.user_id = %s
-          and dh.id is NULL
-        ;""" % (_date, g.user.id)
-        # print _qrs
+          and dh.id is NULL;
+        ;""" % (_timezone_user, _date, g.user.id)
         _current_task = []
         _data = g.db_conn.execute(_qrs)
         if g.db_conn.count() > 0:
