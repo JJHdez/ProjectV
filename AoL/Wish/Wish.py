@@ -14,6 +14,7 @@ class WishR:
         'name': {'required': True, 'typeof': 'str', 'length': {'min': 3}},
         'priority': {'typeof': 'int'},
         'due_date_at': {'typeof': 'date'},
+        'completed_at': {'typeof': 'date'},
     }
 
     def __init__(self):
@@ -25,7 +26,7 @@ class WishList(Resource, WishR):
         try:
             _qrg = """
                 SELECT array_to_json(array_agg(row_to_json(t) )) as collection
-                FROM ( SELECT * FROM %s WHERE create_id=%s )t;
+                FROM ( SELECT id, name, priority, due_date_at, completed_at FROM %s WHERE deleted_at is null and create_id=%s )t;
                 """ % (self._table, g.user.id,)
             g.db_conn.execute(_qrg)
             if g.db_conn.count() > 0:
@@ -70,7 +71,8 @@ class Wish(Resource, WishR):
         try:
             _qrg = """
                     SELECT array_to_json(array_agg(row_to_json(t) )) as collection
-                    FROM ( SELECT * FROM %s WHERE create_id=%s and id = %s)t;
+                    FROM ( SELECT id, name,  priority ,due_date_at,completed_at
+                    FROM %s WHERE deleted_at is null and create_id=%s and id = %s)t;
                 """ % (self._table, g.user.id, id,)
             g.db_conn.execute(_qrg)
             if g.db_conn.count() > 0:
@@ -89,7 +91,7 @@ class Wish(Resource, WishR):
     def put(self, id):
         _request = request.json
         try:
-            _errors = validate_rest(fields=self._fields, request=_request)
+            _errors = validate_rest(fields=self._fields, request=_request, method='put')
             if not _errors:
                 _val = type_of_update_rest(self._fields, _request)
                 _qrp = "UPDATE %s SET %s WHERE id=%s;" % (self._table, _val, id,)

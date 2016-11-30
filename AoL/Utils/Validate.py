@@ -87,11 +87,14 @@ def validate_rest(*args, **kwargs):
     if 'fields' in kwargs and 'request' in kwargs:
         _fields = kwargs['fields']
         _request = kwargs['request']
+        _method = kwargs['method'] if 'method' in kwargs else ''
         _errors = {}
         for _field in _fields:
             _properties = _fields[_field]
             _errors.update({_field: ''})
             for _property in _properties:
+                if _property == 'required' and _method in ['put']:
+                    continue
                 _constraints = _properties[_property]
                 _result = call2str(object="Validate", method=_property,
                                     constraints=_constraints, field=_field, request=_request)
