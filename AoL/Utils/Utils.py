@@ -2,6 +2,7 @@
 # © 2016. by Zero 1/0.
 from types import NoneType, IntType
 from datetime import datetime
+from flask import jsonify
 
 
 def tuple2list(fields, tuple):
@@ -51,3 +52,76 @@ def str2datetime(data):
     :return: datetime
     '''
     return None
+
+
+def processing_rest_exception(e):
+    if hasattr(e, 'status_code'):
+        _tmp_rpc = {}
+        if e.errors:
+            _tmp_rpc.update({'errors': e.errors})
+        if e.message:
+            _tmp_rpc.update({'message': e.message})
+        if e.status_code:
+            _tmp_rpc.update({'status_code': e.status_code})
+        _response = jsonify(_tmp_rpc)
+        _response.status_code = 200
+    else:
+        _response = jsonify({'message': e.message})
+        _response.status_code = 500
+    return _response
+
+
+def processing_rest_success(data=None, message=None, errors=None, info=None, warning=None, status_code=200):
+    _tmp_data = {}
+    if data:
+        _tmp_data.update({'data': data})
+    if message:
+        _tmp_data.update({'message': message})
+    if errors:
+        pass
+    if info:
+        _tmp_data.update({'info': info})
+    if warning:
+        _tmp_data.update({'warning': warning})
+    if status_code:
+        _tmp_data.update({'status_code': status_code})
+    _response = jsonify(_tmp_data)
+    _response.status_code = status_code if status_code != 200 else 200
+    return _response
+
+
+def _typeof(val, type_of):
+    type_vars = {
+        'str': {'str', 'date', 'datetime'},
+        'int': {'int', 'float'}
+    }
+    _return = '\'%s\'' % val
+    for type_var in type_vars:
+        if type_of in type_vars[type_var]:
+            if type_of == 'str':
+                _return = '\'%s\'' % val
+            elif type_of == 'int':
+                _return = '%s' % val
+    return _return
+
+
+def type_of_insert_rest(fields, request):
+    _col = ''
+    _val = ''
+    for field in fields:
+        if field in request:
+            _col = _col + field + ','
+            _type_of = fields[field]['typeof'] if 'typeof' in fields[field] else ''
+            _val = _val + _typeof(request[field], _type_of) + ','
+    return _col[:-1], _val[:-1]
+
+
+def type_of_update_rest(fields, request):
+    _vals = ''
+    for field in fields:
+        if field in request:
+            _type_of = fields[field]['typeof'] if 'typeof' in fields[field] else ''
+            _val =_typeof(request[field], _type_of) + "AT TIME ZONE 'UTC'" if _type_of == 'datetime' \
+                else _typeof(request[field], _type_of)
+            _vals = _vals + field + '=' + _val + ','
+    return _vals[:-1]

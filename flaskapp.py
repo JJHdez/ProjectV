@@ -1,14 +1,16 @@
 # -*- coding: utf-8 -*-
 # ZERO 1/0 © 2016
-from flask import Flask, request, render_template,  send_from_directory, g
+from flask import Flask, request, render_template, send_from_directory, g
 from AoL.Utils.Db import PsqlAoL
 from flask_restful import Api
 from AoL.Auth.Auth import Auth
 from AoL.Habit.Habit import Habit, HabitList
 from AoL.Habit.HabitHistory import HistoryHabit, HistoryHabitList
-# from AoL.Project.Project import Project, ProjectList
-# from AoL.Project.ProjectTask import ProjectTask, ProjectTaskList
-from AoL.Habit.Wish import Wish, WishList
+from AoL.Project.Project import Project, ProjectList
+from AoL.Project.ProjectTask import ProjectTask, ProjectTaskList
+from AoL.Project.ProjectParticipated import ProjectParticipated, ProjectParticipatedList
+from AoL.Project.ProjectIssue import ProjectIssue, ProjectIssueList
+from AoL.Wish.Wish import Wish, WishList
 
 app = Flask(__name__)
 app.config.from_pyfile('flaskapp.cfg')
@@ -21,13 +23,17 @@ api.add_resource(Habit, api_v1 + 'habit/<int:habit_id>')
 api.add_resource(HistoryHabitList, api_v1 + 'habit/history')
 api.add_resource(HistoryHabit, api_v1 + 'habit/history/<int:history_habit_id>')
 # Project
-# api.add_resource(ProjectList, api_v1 + 'project')
-# api.add_resource(Project, api_v1 + 'project/<int:project_id>')
-# api.add_resource(ProjectTaskList, api_v1 + 'project/task')
-# api.add_resource(ProjectTask, api_v1 + 'project/task/<int:id>')
+api.add_resource(ProjectList, api_v1 + 'project')
+api.add_resource(Project, api_v1 + 'project/<int:id>')
+api.add_resource(ProjectTaskList, api_v1 + 'project/task')
+api.add_resource(ProjectTask, api_v1 + 'project/task/<int:id>')
+api.add_resource(ProjectParticipatedList, api_v1 + 'project/task/participated')
+api.add_resource(ProjectParticipated, api_v1 + 'project/task/participated/<int:id>')
+api.add_resource(ProjectIssueList, api_v1 + 'project/task/issue')
+api.add_resource(ProjectIssue, api_v1 + 'project/task/issue/<int:id>')
 # wish
 api.add_resource(WishList, api_v1 + 'wish')
-api.add_resource(Wish, api_v1 + 'wish/<int:wish_id>')
+api.add_resource(Wish, api_v1 + 'wish/<int:id>')
 
 
 @app.before_request
