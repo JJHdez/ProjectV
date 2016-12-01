@@ -23,8 +23,19 @@ class ProjectTaskR:
         u'project_id': {
             'required': True,
             'typeof': 'int'
-        }
-
+        },
+        u'parent_id': {
+            'typeof': 'int'
+        },
+        u'start_date_at': {
+            'typeof': 'date'
+        },
+        u'due_date_at': {
+            'typeof': 'date'
+        },
+        u'completed_at': {
+            'typeof': 'date'
+        },
     }
 
     def __init__(self):
@@ -36,8 +47,8 @@ class ProjectTaskList(Resource, ProjectTaskR):
         try:
             _qrg = """
                 SELECT array_to_json(array_agg(row_to_json(t) )) as collection
-                FROM ( SELECT id, created_date , name, description, start_date,
-                        due_date FROM %s WHERE deleted_date IS NULL and create_id=%s )t;
+                FROM ( SELECT id,project_id, parent_id, name, description, start_date_at, due_date_at, completed_at
+                 FROM %s WHERE deleted_at IS NULL and create_id=%s )t;
                 """ % (self._table, g.user.id,)
             g.db_conn.execute(_qrg)
             if g.db_conn.count() > 0:
@@ -82,8 +93,8 @@ class ProjectTask(Resource, ProjectTaskR):
         try:
             _qrg = """
                     SELECT array_to_json(array_agg(row_to_json(t) )) as collection
-                    FROM ( SELECT id, created_date , name, description, start_date,
-                        due_date FROM %s WHERE deleted_date IS NULL and create_id=%s and id = %s)t;
+                    FROM ( SELECT id,project_id, parent_id, name, description, start_date_at, due_date_at, completed_at
+                    FROM %s WHERE deleted_at IS NULL and create_id=%s and id = %s)t;
                 """ % (self._table, g.user.id, id,)
             g.db_conn.execute(_qrg)
             if g.db_conn.count() > 0:
@@ -102,7 +113,7 @@ class ProjectTask(Resource, ProjectTaskR):
     def put(self, id):
         _request = request.json
         try:
-            _errors = validate_rest(fields=self._fields, request=_request)
+            _errors = validate_rest(fields=self._fields, request=_request, method="put")
             if not _errors:
                 _val = type_of_update_rest(self._fields, _request)
                 _qrp = "UPDATE %s SET %s WHERE id=%s;" % (self._table, _val, id,)
@@ -121,7 +132,7 @@ class ProjectTask(Resource, ProjectTaskR):
 
     def delete(self, id):
         try:
-            _qrd = "UPDATE %s SET deleted_date=current_timestamp AT TIME ZONE 'UTC' WHERE id=%s;" % (self._table, id,)
+            _qrd = "UPDATE %s SET deleted_at=current_timestamp WHERE id=%s;" % (self._table, id,)
             g.db_conn.execute(_qrd)
             if g.db_conn.count() > 0:
                 _delete = processing_rest_success(status_code=201, message="El registro fue eliminado correctamente")

@@ -8,16 +8,16 @@ from AoL.Utils.Utils import processing_rest_exception, processing_rest_success, 
 from AoL.Utils.Validate import validate_rest
 
 
-class ProjectParticipatedR:
-    _table = 'project_participated'
+class ProjectIssueR:
+    _table = 'project_task_issues'
     _fields = {
         u'project_task_id': {
             'required': True,
-            'typeof': 'int'
+            'typeof': 'str',
         },
         u'assigned_user_id': {
             'required': True,
-            'typeof': 'int',
+            'typeof': 'str',
         },
         u'name': {
             'required': True,
@@ -25,6 +25,15 @@ class ProjectParticipatedR:
         },
         u'description': {
             'typeof': 'str',
+        },
+        u'kind': {
+            'typeof': 'str',
+        },
+        u'priority': {
+            'typeof': 'str',
+        },
+        u'completed_at': {
+            'typeof': 'datetime',
         }
 
     }
@@ -33,12 +42,13 @@ class ProjectParticipatedR:
         pass
 
 
-class ProjectParticipatedList(Resource, ProjectParticipatedR):
+class ProjectIssueList(Resource, ProjectIssueR):
     def get(self):
         try:
             _qrg = """
                 SELECT array_to_json(array_agg(row_to_json(t) )) as collection
-                FROM ( SELECT * FROM %s WHERE deleted_date is NULL and create_id=%s )t;
+                FROM ( SELECT id, project_task_id, assigned_user_id, name, description,kind, priority, completed_at
+                 FROM %s WHERE deleted_at is NULL and create_id=%s )t;
                 """ % (self._table, g.user.id,)
             g.db_conn.execute(_qrg)
             if g.db_conn.count() > 0:
@@ -66,7 +76,7 @@ class ProjectParticipatedList(Resource, ProjectParticipatedR):
                 """ % (self._table, _col, g.user.id, _val)
                 g.db_conn.execute(_qrp)
                 if g.db_conn.count() > 0:
-                    _data = {self._table: g.db_conn.one()[0]}
+                    _data = {self._table: g.db_conn.one()}
                     _post = processing_rest_success(data=_data, message='Fue creado correctamente',
                                                     status_code=201)
                 else:
@@ -78,12 +88,13 @@ class ProjectParticipatedList(Resource, ProjectParticipatedR):
         return _post
 
 
-class ProjectParticipated(Resource, ProjectParticipatedR):
+class ProjectIssue(Resource, ProjectIssueR):
     def get(self, id):
         try:
             _qrg = """
                     SELECT array_to_json(array_agg(row_to_json(t) )) as collection
-                    FROM ( SELECT * FROM %s WHERE deleted_date is NULL and create_id=%s and id = %s)t;
+                    FROM ( SELECT id, project_task_id, assigned_user_id, name, description,kind, priority, completed_at
+                     FROM %s WHERE deleted_at is NULL and create_id=%s and id = %s)t;
                 """ % (self._table, g.user.id, id,)
             g.db_conn.execute(_qrg)
             if g.db_conn.count() > 0:
@@ -102,7 +113,7 @@ class ProjectParticipated(Resource, ProjectParticipatedR):
     def put(self, id):
         _request = request.json
         try:
-            _errors = validate_rest(fields=self._fields, request=_request)
+            _errors = validate_rest(fields=self._fields, request=_request, method="put")
             if not _errors:
                 _val = type_of_update_rest(self._fields, _request)
                 _qrp = "UPDATE %s SET %s WHERE id=%s;" % (self._table, _val, id,)
@@ -120,7 +131,7 @@ class ProjectParticipated(Resource, ProjectParticipatedR):
 
     def delete(self, id):
         try:
-            _qrd = "UPDATE %s SET deleted_date=current_timestamp WHERE id=%s;" % (self._table, id,)
+            _qrd = "UPDATE %s SET deleted_at=current_timestamp WHERE id=%s;" % (self._table, id,)
             g.db_conn.execute(_qrd)
             if g.db_conn.count() > 0:
                 _delete = processing_rest_success(status_code=201, message="El registro fue eliminado correctamente")

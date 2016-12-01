@@ -8,8 +8,8 @@ from AoL.Habit.Habit import Habit, HabitList
 from AoL.Habit.HabitHistory import HistoryHabit, HistoryHabitList
 from AoL.Project.Project import Project, ProjectList
 from AoL.Project.ProjectTask import ProjectTask, ProjectTaskList
-from AoL.Project.ProjectParticipated import ProjectParticipated, ProjectParticipatedList
-from AoL.Project.ProjectIssue import ProjectIssue, ProjectIssueList
+from AoL.Project.ProjectTaskParticipated import ProjectParticipated, ProjectParticipatedList
+from AoL.Project.ProjectTaskIssue import ProjectIssue, ProjectIssueList
 from AoL.Wish.Wish import Wish, WishList
 
 app = Flask(__name__)
