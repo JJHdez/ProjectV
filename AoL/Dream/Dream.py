@@ -25,8 +25,8 @@ class DreamList(Resource, DreamR):
         try:
             _qrg = """
                 SELECT array_to_json(array_agg(row_to_json(t) )) as collection
-                FROM ( SELECT id, name, due_date_at, completed_at
-                 FROM %s WHERE deleted_at is null and create_id=%s )t;
+                FROM ( SELECT id, created_at, name, due_date_at, completed_at
+                 FROM %s WHERE deleted_at is null and completed_at is null and create_id=%s )t;
                 """ % (self._table, g.user.id,)
             g.db_conn.execute(_qrg)
             if g.db_conn.count() > 0:
@@ -71,8 +71,8 @@ class Dream(Resource, DreamR):
         try:
             _qrg = """
                     SELECT array_to_json(array_agg(row_to_json(t) )) as collection
-                    FROM ( SELECT id, name, due_date_at, completed_at FROM %s
-                    WHERE deleted_at is null and  create_id=%s and id = %s)t;
+                    FROM ( SELECT id, created_at, name, due_date_at, completed_at FROM %s
+                    WHERE deleted_at is null and completed_at is null and  create_id=%s and id = %s)t;
                 """ % (self._table, g.user.id, id,)
             g.db_conn.execute(_qrg)
             if g.db_conn.count() > 0:
