@@ -26,7 +26,8 @@ class WishList(Resource, WishR):
         try:
             _qrg = """
                 SELECT array_to_json(array_agg(row_to_json(t) )) as collection
-                FROM ( SELECT id, name, priority, due_date_at, completed_at FROM %s WHERE deleted_at is null and create_id=%s )t;
+                FROM ( SELECT id, name, priority, due_date_at, completed_at FROM %s WHERE deleted_at is null
+                and completed_at is NULL and create_id=%s )t;
                 """ % (self._table, g.user.id,)
             g.db_conn.execute(_qrg)
             if g.db_conn.count() > 0:
@@ -72,7 +73,7 @@ class Wish(Resource, WishR):
             _qrg = """
                     SELECT array_to_json(array_agg(row_to_json(t) )) as collection
                     FROM ( SELECT id, name,  priority ,due_date_at,completed_at
-                    FROM %s WHERE deleted_at is null and create_id=%s and id = %s)t;
+                    FROM %s WHERE deleted_at is null and completed_at is NULL and create_id=%s and id = %s)t;
                 """ % (self._table, g.user.id, id,)
             g.db_conn.execute(_qrg)
             if g.db_conn.count() > 0:
