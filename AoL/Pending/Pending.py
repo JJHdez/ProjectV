@@ -25,7 +25,8 @@ class PendingList(Resource, PendingR):
         try:
             _qrg = """
                 SELECT array_to_json(array_agg(row_to_json(t) )) as collection
-                FROM ( SELECT id, name, description, completed_at  FROM %s WHERE deleted_at IS NULL AND create_id=%s )t;
+                FROM ( SELECT id, name, description, completed_at  FROM %s WHERE deleted_at IS NULL AND completed_at
+                 is NULL AND create_id=%s )t;
                 """ % (self._table, g.user.id,)
             g.db_conn.execute(_qrg)
             if g.db_conn.count() > 0:
@@ -70,7 +71,8 @@ class Pending(Resource, PendingR):
         try:
             _qrg = """
                     SELECT array_to_json(array_agg(row_to_json(t) )) as collection
-                    FROM ( SELECT id, name, description, completed_at  FROM %s WHERE deleted_at IS NULL AND create_id=%s and id = %s)t;
+                    FROM ( SELECT id, name, description, completed_at  FROM %s WHERE deleted_at IS NULL AND
+                    completed_at is NULL and create_id=%s and id = %s)t;
                 """ % (self._table, g.user.id, id,)
             g.db_conn.execute(_qrg)
             if g.db_conn.count() > 0:
