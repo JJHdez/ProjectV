@@ -11,6 +11,8 @@ from AoL.Project.ProjectTask import ProjectTask, ProjectTaskList
 from AoL.Project.ProjectTaskParticipated import ProjectParticipated, ProjectParticipatedList
 from AoL.Project.ProjectTaskIssue import ProjectIssue, ProjectIssueList
 from AoL.Wish.Wish import Wish, WishList
+from AoL.Dream.Dream import Dream, DreamList
+from AoL.Pending.Pending import Pending, PendingList
 
 app = Flask(__name__)
 app.config.from_pyfile('flaskapp.cfg')
@@ -34,6 +36,12 @@ api.add_resource(ProjectIssue, api_v1 + 'project/task/issue/<int:id>')
 # wish
 api.add_resource(WishList, api_v1 + 'wish')
 api.add_resource(Wish, api_v1 + 'wish/<int:id>')
+# dream
+api.add_resource(DreamList, api_v1 + 'dream')
+api.add_resource(Dream, api_v1 + 'dream/<int:id>')
+# Pending
+api.add_resource(PendingList, api_v1 + 'pending')
+api.add_resource(Pending, api_v1 + 'pending/<int:id>')
 
 
 @app.before_request
