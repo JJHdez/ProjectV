@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # ZERO 1/0 © 2016
 from flask_restful import Resource
-from flask import request, g, jsonify
+from flask import request, g
 from AoL.Utils.Exception import ExceptionRest
 from AoL.Utils.Utils import processing_rest_exception, processing_rest_success,\
     type_of_insert_rest, type_of_update_rest
@@ -41,15 +41,30 @@ class ProjectTaskR:
     def __init__(self):
         pass
 
+    _query_get = """
+        SELECT array_to_json(array_agg(row_to_json(t) )) as collection FROM (
+            SELECT id,project_id, parent_id, name, description, start_date_at, due_date_at, completed_at
+            FROM project_tasks %s
+            )t;
+    """
+
 
 class ProjectTaskList(Resource, ProjectTaskR):
     def get(self):
         try:
-            _qrg = """
-                SELECT array_to_json(array_agg(row_to_json(t) )) as collection
-                FROM ( SELECT id,project_id, parent_id, name, description, start_date_at, due_date_at, completed_at
-                 FROM %s WHERE deleted_at IS NULL and create_id=%s )t;
-                """ % (self._table, g.user.id,)
+            # owner
+            # by project id
+            _where = " WHERE deleted_at is null "
+            _by = request.args.get("by", False)
+            if _by:
+                if _by == 'project_id':
+                    _project_id = request.args.get('project_id', False)
+                    _where = _where + " and project_id=%s "% (_project_id, )
+                else:
+                    _where = _where + " and create_id =%s " % (g.user.id,)
+            else:
+                _where = _where + " and create_id =%s " % (g.user.id, )
+            _qrg = self._query_get % _where
             g.db_conn.execute(_qrg)
             if g.db_conn.count() > 0:
                 _collection = g.db_conn.one()[0]
@@ -91,11 +106,7 @@ class ProjectTaskList(Resource, ProjectTaskR):
 class ProjectTask(Resource, ProjectTaskR):
     def get(self, id):
         try:
-            _qrg = """
-                    SELECT array_to_json(array_agg(row_to_json(t) )) as collection
-                    FROM ( SELECT id,project_id, parent_id, name, description, start_date_at, due_date_at, completed_at
-                    FROM %s WHERE deleted_at IS NULL and create_id=%s and id = %s)t;
-                """ % (self._table, g.user.id, id,)
+            _qrg = self._query_get + " WHERE deleted_at IS NULL and id = %s" % (id, )
             g.db_conn.execute(_qrg)
             if g.db_conn.count() > 0:
                 _collection = g.db_conn.one()[0]

@@ -41,15 +41,26 @@ class ProjectIssueR:
     def __init__(self):
         pass
 
+    _query_get = """
+        SELECT array_to_json(array_agg(row_to_json(t) )) as collection
+                FROM ( SELECT id, project_task_id, assigned_user_id, name, description,kind, priority, completed_at
+                 FROM project_task_issues %s  )t;
+    """
 
 class ProjectIssueList(Resource, ProjectIssueR):
     def get(self):
         try:
-            _qrg = """
-                SELECT array_to_json(array_agg(row_to_json(t) )) as collection
-                FROM ( SELECT id, project_task_id, assigned_user_id, name, description,kind, priority, completed_at
-                 FROM %s WHERE deleted_at is NULL and create_id=%s )t;
-                """ % (self._table, g.user.id,)
+            _where = " WHERE deleted_at is null "
+            _by = request.args.get("by", False)
+            if _by:
+                if _by == 'project_task_id':
+                    _project_task_id = request.args.get('project_task_id', False)
+                    _where = _where + " and project_task_id=%s " % (_project_task_id,)
+                else:
+                    _where = _where + " and create_id =%s " % (g.user.id,)
+            else:
+                _where = _where + " and create_id =%s " % (g.user.id,)
+            _qrg = self._query_get % _where
             g.db_conn.execute(_qrg)
             if g.db_conn.count() > 0:
                 _collection = g.db_conn.one()[0]
@@ -91,11 +102,7 @@ class ProjectIssueList(Resource, ProjectIssueR):
 class ProjectIssue(Resource, ProjectIssueR):
     def get(self, id):
         try:
-            _qrg = """
-                    SELECT array_to_json(array_agg(row_to_json(t) )) as collection
-                    FROM ( SELECT id, project_task_id, assigned_user_id, name, description,kind, priority, completed_at
-                     FROM %s WHERE deleted_at is NULL and create_id=%s and id = %s)t;
-                """ % (self._table, g.user.id, id,)
+            _qrg = self._query_get + " WHERE deleted_at is null and id=%s" % (id,)
             g.db_conn.execute(_qrg)
             if g.db_conn.count() > 0:
                 _collection = g.db_conn.one()[0]

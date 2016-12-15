@@ -22,15 +22,48 @@ class ProjectR:
     def __init__(self):
         pass
 
+    _query_get = """
+    SELECT array_to_json(array_agg(row_to_json(t) )) as collection
+        FROM (
+            select
+                id, created_at, deleted_at, create_id, name, completed_at, null team
+            from
+                projects where deleted_at is null %s
+
+                union all
+
+            select
+                p.id,
+                p.created_at,
+                p.deleted_at,
+                p.create_id,
+                p.name,
+                p.completed_at,
+                pt.name
+            from
+                project_teams pt inner join project_teams_projects ptp on pt.id = ptp.team_id
+                inner join projects p on ptp.project_id = p.id
+            where pt.deleted_at is null and ptp.deleted_at is null %s
+        )t
+    """
+
 
 class ProjectList(Resource, ProjectR):
 
     def get(self):
         try:
-            _qrg = """
-                SELECT array_to_json(array_agg(row_to_json(t) )) as collection
-                FROM ( SELECT id, name, completed_at FROM %s WHERE deleted_at is NULL and create_id=%s )t;
-                """ % (self._table, g.user.id, )
+            where1 = " and id not in ( (select project_id from project_teams_projects where user_id = %s) ) " \
+                     " and create_id =%s " % (g.user.id, g.user.id, )
+            where2 = " and ptp.user_id =%s " % (g.user.id, )
+            _completed = request.args.get("completed")
+            if _completed == 'True' or _completed == 'true':
+                where1 = where1 + " and completed_at is not null "
+                where2 = where2 + " and p.completed_at is not null "
+            elif _completed == 'False' or _completed == 'false':
+                where1 = where1 + " and completed_at is null "
+                where2 = where2 + " and p.completed_at is null "
+
+            _qrg = self._query_get % (where1, where2)
             g.db_conn.execute(_qrg)
             if g.db_conn.count() > 0:
                 _collection = g.db_conn.one()[0]
@@ -75,8 +108,9 @@ class Project(Resource, ProjectR):
         try:
             _qrg = """
                     SELECT array_to_json(array_agg(row_to_json(t) )) as collection
-                    FROM ( SELECT id, name, completed_at FROM %s WHERE deleted_at IS NULL and create_id=%s and id = %s)t;
-                """ % (self._table, g.user.id, id, )
+                    FROM ( SELECT id, name, completed_at FROM %s WHERE
+                    deleted_at IS NULL id = %s)t;
+                """ % (self._table, id, )
             g.db_conn.execute(_qrg)
             if g.db_conn.count() > 0:
                 _data = g.db_conn.one()[0]
