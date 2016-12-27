@@ -9,7 +9,6 @@ from AoL.Utils.Validate import validate_rest
 
 
 class ProjectIssueR:
-    _table = 'project_task_issues'
     _fields = {
         u'project_task_id': {
             'required': True,
@@ -37,6 +36,7 @@ class ProjectIssueR:
         }
 
     }
+    _table = 'project_task_issues'
 
     def __init__(self):
         pass

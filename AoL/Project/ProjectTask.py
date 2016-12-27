@@ -24,9 +24,9 @@ class ProjectTaskR:
             'required': True,
             'typeof': 'int'
         },
-        u'parent_id': {
-            'typeof': 'int'
-        },
+        # u'parent_id': {
+        #     'typeof': 'int'
+        # },
         u'start_date_at': {
             'typeof': 'date'
         },
@@ -89,6 +89,7 @@ class ProjectTaskList(Resource, ProjectTaskR):
                     INSERT INTO %s (create_id, %s) VALUES (%s, %s)
                     RETURNING (select row_to_json(collection) FROM (VALUES(id)) collection(id));
                 """ % (self._table, _col, g.user.id, _val)
+                print _qrp
                 g.db_conn.execute(_qrp)
                 if g.db_conn.count() > 0:
                     _data = {self._table: g.db_conn.one()}
