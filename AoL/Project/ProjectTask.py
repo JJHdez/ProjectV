@@ -62,8 +62,15 @@ class ProjectTaskList(Resource, ProjectTaskR):
                     _where = _where + " and project_id=%s "% (_project_id, )
                 else:
                     _where = _where + " and create_id =%s " % (g.user.id,)
+
             else:
                 _where = _where + " and create_id =%s " % (g.user.id, )
+            _completed = request.args.get("completed")
+            if _completed == 'True' or _completed == 'true':
+                _where = _where + " and completed_at is not null "
+            elif _completed == 'False' or _completed == 'false':
+                _where = _where + " and completed_at is null "
+
             _qrg = self._query_get % _where
             g.db_conn.execute(_qrg)
             if g.db_conn.count() > 0:
@@ -89,7 +96,6 @@ class ProjectTaskList(Resource, ProjectTaskR):
                     INSERT INTO %s (create_id, %s) VALUES (%s, %s)
                     RETURNING (select row_to_json(collection) FROM (VALUES(id)) collection(id));
                 """ % (self._table, _col, g.user.id, _val)
-                print _qrp
                 g.db_conn.execute(_qrp)
                 if g.db_conn.count() > 0:
                     _data = {self._table: g.db_conn.one()}
@@ -129,6 +135,7 @@ class ProjectTask(Resource, ProjectTaskR):
             if not _errors:
                 _val = type_of_update_rest(self._fields, _request)
                 _qrp = "UPDATE %s SET %s WHERE id=%s;" % (self._table, _val, id,)
+                print _qrp
                 g.db_conn.execute(_qrp)
                 if g.db_conn.count() > 0:
                     _put = processing_rest_success(status_code=201, message="El registro fue actualizado correctamente")

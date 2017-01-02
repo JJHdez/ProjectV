@@ -4,6 +4,7 @@ from flask import Flask, request, render_template, send_from_directory, g
 from AoL.Utils.Db import PsqlAoL
 from flask_restful import Api
 from AoL.Auth.Auth import Auth
+from AoL.Auth.User import UserList
 from AoL.Habit.Habit import Habit, HabitList
 from AoL.Habit.HabitHistory import HistoryHabit, HistoryHabitList
 from AoL.Project.Project import Project, ProjectList
@@ -42,6 +43,8 @@ api.add_resource(Dream, api_v1 + 'dream/<int:id>')
 # Pending
 api.add_resource(PendingList, api_v1 + 'pending')
 api.add_resource(Pending, api_v1 + 'pending/<int:id>')
+# User
+api.add_resource(UserList, api_v1+'user')
 
 
 @app.before_request

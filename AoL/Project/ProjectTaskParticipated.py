@@ -13,7 +13,7 @@ class ProjectParticipatedR:
     _fields = {
         u'project_task_id': {
             'required': True,
-            'typeof': 'int'
+            'typeof': 'int',
         },
         u'assigned_user_id': {
             'required': True,
@@ -62,6 +62,12 @@ class ProjectParticipatedList(Resource, ProjectParticipatedR):
                     _where = _where + " and create_id =%s " % (g.user.id,)
             else:
                 _where = _where + " and create_id =%s " % (g.user.id,)
+            _completed = request.args.get("completed")
+            if _completed == 'True' or _completed == 'true':
+                _where = _where + " and completed_at is not null "
+            elif _completed == 'False' or _completed == 'false':
+                _where = _where + " and completed_at is null "
+
             _qrg = self._query_get % _where
             g.db_conn.execute(_qrg)
             if g.db_conn.count() > 0:
@@ -80,6 +86,7 @@ class ProjectParticipatedList(Resource, ProjectParticipatedR):
     def post(self):
         _request = request.json
         try:
+            print _request
             _errors = validate_rest(fields=self._fields, request=_request)
             if not _errors:
                 _col, _val = type_of_insert_rest(self._fields, _request)
