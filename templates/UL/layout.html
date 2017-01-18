@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+        <title>ULife</title>
+        <!-- Add to homescreen for Chrome on Android -->
+        <meta name="mobile-web-app-capable" content="yes">
+
+        <!-- Add to homescreen for Safari on iOS -->
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="apple-mobile-web-app-title" content="">
+        <link rel="shortcut icon" type="image/png" href="/images/favicon.png"/>
+
+        <!-- Tile icon for Win8 (144x144 + tile color) -->
+        <meta name="msapplication-TileImage" content="images/touch/ms-touch-icon-144x144-precomposed.png">
+        <meta name="msapplication-TileColor" content="#3372DF">
+
+        <link rel="shortcut icon" href="/images/favicon.png">
+
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:regular,bold,italic,thin,light,bolditalic,black,medium&amp;lang=en">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.purple-pink.min.css" />
+        <link rel="stylesheet" href="/styles.css">
+        {% block css %}{% endblock %}
+    </head>
+    <body>
+        <div class="demo-layout mdl-layout mdl-js-layout mdl-layout--fixed-header">
+            <header class="demo-header mdl-layout__header mdl-color" id="menu-header">
+                <div class="mdl-layout__header-row">
+                    <!--<span class="mdl-layout-title">{% block layout_title %}{% endblock %}</span>-->
+                    <img class="android-logo-image" src="/images/logo.png">ULife
+                    <div class="mdl-layout-spacer">
+                    </div>
+                    <div class="dock">
+                        <!--Yourself-->
+                        <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon" id="menu-dreams" v-on:click="redirect_index_dream">
+                            <!--<a href="/ul/yourself">-->
+                             <i class="material-icons">accessibility</i>
+                                <!--<a/>-->
+                            <div class="mdl-tooltip mdl-tooltip--bottom" for="menu-dreams">
+                                Se tu mismo
+                            </div>
+                        </button>
+                        <!--Dashboard-->
+                        <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon" id="menu-dashboard" v-on:click="redirect_index_dashboard">
+                            <i class="material-icons">dashboard</i>
+                            <div class="mdl-tooltip mdl-tooltip--bottom" for="menu-dashboard">
+                                Dashboard
+                            </div>
+                        </button>
+                    </div>
+                    <!--User profile-->
+                    <span class="mdl-chip mdl-chip--contact mdl-chip--deletable mdl-color--white" id="menu-user">
+                        <img class="mdl-chip__contact"
+                        src="http://ilovehdwallpapers.com/walls/beautiful-girl-face-with-moles-on-chin-wide.jpg"/>
+                        <span class="mdl-chip__text">{{session.user.name}}</span>
+                        <a class="mdl-chip__action" ><i class="material-icons">account_circle</i></a>
+                    </span>
+                    <ul class="mdl-menu mdl-js-menu mdl-js-ripple-effect mdl-menu--bottom-right" for="menu-user">
+                        <li class="mdl-menu__item">
+                            <i class="material-icons">perm_identity</i>
+                            Perfil
+                        </li>
+                        <li class="mdl-menu__item">
+                            <i class="material-icons">lock</i>
+                            Cerrar
+                        </li>
+                    </ul>
+                    <div class="dock">
+                        <!--Projects-->
+                        <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon" id="menu-project" v-on:click="redirect_index_project">
+                            <i class="material-icons">business_center</i>
+                            <div class="mdl-tooltip mdl-tooltip--bottom" for="menu-project">
+                                Projectos
+                            </div>
+                        </button>
+                        <!--Help-->
+                        <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon" id="menu-help">
+                            <i class="material-icons">help</i>
+                            <div class="mdl-tooltip mdl-tooltip--bottom" for="menu-help">
+                                Soporte
+                            </div>
+                        </button>
+                    </div>
+                    <div class="mdl-layout-spacer"></div>
+                    <!--<div class="mdl-textfield mdl-js-textfield mdl-textfield&#45;&#45;expandable">-->
+                    <!--<label class="mdl-button mdl-js-button mdl-button&#45;&#45;icon" for="search">-->
+                    <!--<i class="material-icons">search</i>-->
+                    <!--</label>-->
+                    <!--<div class="mdl-textfield__expandable-holder">-->
+                    <!--<input class="mdl-textfield__input" type="text" id="search">-->
+                    <!--<label class="mdl-textfield__label" for="search">Enter your query...</label>-->
+                    <!--</div>-->
+                    <!--</div>-->
+                </div>
+            </header>
+            <main class="mdl-layout__content mdl-color--grey-100">
+                {% block body %}{% endblock %}
+            </main>
+        </div>
+        <!--<a class="mdl-button mdl-js-button mdl-button&#45;&#45;raised mdl-js-ripple-effect mdl-button&#45;&#45;colored mdl-color-text&#45;&#45;white mdl-button&#45;&#45;fab zr-button-fab ">-->
+            <!--<button class="mdl-button mdl-js-button mdl-button&#45;&#45;fab mdl-js-ripple-effect mdl-button&#45;&#45;colored">-->
+                <!--<i class="material-icons">add</i>-->
+            <!--</button>-->
+        <!--</a>-->
+        <script src="https://vuejs.org/js/vue.js"></script>
+        <script>
+            window.addEventListener('load', function () {
+                var header_menu = new Vue(
+                    {
+                      el: '#menu-header',
+                      data: {
+                            //seen: false
+                        },
+                        methods: {
+                            redirect_index_dream: function (event) {
+                                window.location = '/ul/yourself';
+                           }
+                           redirect_index_dashboard: function (event) {
+                               window.location = '/ul/dashboard';
+                          }
+                          redirect_index_project: function (event) {
+                              window.location = '/ul/project';
+                         }
+                        }
+                    }
+                )
+
+                // End window addEventListener
+            })
+        </script>
+        {% block button_fab %}{% endblock %}
+        <script src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+        {% block js %}{% endblock %}
+    </body>
+</html>

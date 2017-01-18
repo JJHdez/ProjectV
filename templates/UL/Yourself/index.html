@@ -1,0 +1,345 @@
+{% extends "UL/layout.html" %}
+
+{% block layout_title %}
+    Se tu mismo
+{% endblock %}
+
+{% block css %}
+<style>
+    .background-dream{
+        width: 270px;
+        background: url('/images/xishan.jpg') center / cover;
+    }
+    .background-habit{
+        width: 170px;
+        background: url('/images/texture_006_by_kuschelirmel_stock.jpg') center / cover;
+    }
+    .background-pending{
+        width: 250px;
+        background: url('/images/watercolour_texture_by_summer__moon.jpg') center / cover;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="mdl-grid demo-content">
+
+    <div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
+        <div class="mdl-tabs__tab-bar">
+            <a href="#dreams-panel" class="mdl-tabs__tab is-active"><i class="material-icons">hdr_strong</i></a>
+            <a href="#habits-panel" class="mdl-tabs__tab"><i class="material-icons">gavel</i></a>
+            <a href="#pending-panel" class="mdl-tabs__tab"><i class="material-icons">list</i></a>
+            <!--<a href="#wish-panel" class="mdl-tabs__tab"><i class="material-icons">extension</i></a>-->
+        </div>
+
+        <div class="mdl-tabs__panel is-active" id="dreams-panel">
+            <div class="mdl-color--white mdl-shadow--2dp mdl-cell mdl-cell--12-col mdl-grid">
+                <div class="background-dream mdl-card mdl-shadow--2dp">
+                    <div class=" mdl-card__title">
+                        <h2 class="mdl-card__title-text">
+                            Crear una empresa llamada ZERO!
+                        </h2>
+                    </div>
+                    <div class="mdl-card__supporting-text">
+                    <span class="mdl-chip mdl-chip--contact">
+                        <i class="mdl-chip__contact material-icons">play_arrow</i>
+                        <span class="mdl-chip__text">2017-10-10</span>
+                    </span>
+                        <span class="mdl-chip mdl-chip--contact">
+                        <i class="mdl-chip__contact material-icons">stop</i>
+                        <span class="mdl-chip__text">2017-10-10</span>
+                    </span>
+                    </div>
+                    <div class="mdl-card__actions mdl-card--border">
+                        <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+                            Open
+                        </a>
+                    </div>
+                </div>
+                <div class="mdl-layout-spacer"></div>
+            </div>
+        </div>
+        <div class="mdl-tabs__panel" id="habits-panel">
+            <div class="mdl-grid mdl-cell mdl-shadow--2dp mdl-color--white mdl-cell--12-col">
+                <div class="background-habit mdl-card mdl-shadow--4dp">
+
+                    <div class=" mdl-card__title">
+                        <h2 class="mdl-card__title-text">
+                            Leer libros en ingles!
+                        </h2>
+                    </div>
+                    <div class="mdl-card__supporting-text">
+                        <div class="material-icons mdl-badge mdl-badge--overlap" data-badge="1">done</div>
+                        <div class="material-icons mdl-badge mdl-badge--overlap" data-badge="1">clear</div>
+                    </div>
+                    <div class="mdl-card__actions mdl-card--border">
+                        <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+                            Open
+                        </a>
+                        <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
+                            <i class="material-icons">mood</i>
+                        </button>
+                    </div>
+                </div>
+                <div class="mdl-layout-spacer"></div>
+                <div class="background-habit mdl-card mdl-shadow--2dp">
+
+                    <div class=" mdl-card__title">
+                        <h2 class="mdl-card__title-text">
+                            Leer libros en ingles!
+                        </h2>
+                    </div>
+                    <div class="mdl-card__supporting-text">
+                        <div class="material-icons mdl-badge mdl-badge--overlap" data-badge="1">done</div>
+                        <div class="material-icons mdl-badge mdl-badge--overlap" data-badge="1">clear</div>
+                    </div>
+                    <div class="mdl-card__actions mdl-card--border">
+                        <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+                            Open
+                        </a>
+                        <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
+                            <i class="material-icons">mood</i>
+                        </button>
+                    </div>
+                </div>
+                <div class="mdl-layout-spacer"></div>
+                <div class="background-habit mdl-card mdl-shadow--2dp">
+
+                    <div class=" mdl-card__title">
+                        <h2 class="mdl-card__title-text">
+                            Leer libros en ingles!
+                        </h2>
+                    </div>
+                    <div class="mdl-card__supporting-text">
+                        <div class="material-icons mdl-badge mdl-badge--overlap" data-badge="1">done</div>
+                        <div class="material-icons mdl-badge mdl-badge--overlap" data-badge="1">clear</div>
+                    </div>
+                    <div class="mdl-card__actions mdl-card--border">
+                        <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+                            Open
+                        </a>
+                        <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
+                            <i class="material-icons">mood</i>
+                        </button>
+                    </div>
+                </div>
+                <div class="mdl-layout-spacer"></div>
+                <div class="background-habit mdl-card mdl-shadow--2dp">
+
+                    <div class=" mdl-card__title">
+                        <h2 class="mdl-card__title-text">
+                            Leer libros en ingles!
+                        </h2>
+                    </div>
+                    <div class="mdl-card__supporting-text">
+                        <div class="material-icons mdl-badge mdl-badge--overlap" data-badge="1">done</div>
+                        <div class="material-icons mdl-badge mdl-badge--overlap" data-badge="1">clear</div>
+                    </div>
+                    <div class="mdl-card__actions mdl-card--border">
+                        <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+                            Open
+                        </a>
+                        <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
+                            <i class="material-icons">mood</i>
+                        </button>
+                    </div>
+                </div>
+                <div class="mdl-layout-spacer"></div>
+                <div class="background-habit mdl-card mdl-shadow--2dp">
+
+                    <div class=" mdl-card__title">
+                        <h2 class="mdl-card__title-text">
+                            Leer libros en ingles!
+                        </h2>
+                    </div>
+                    <div class="mdl-card__supporting-text">
+                        <div class="material-icons mdl-badge mdl-badge--overlap" data-badge="1">done</div>
+                        <div class="material-icons mdl-badge mdl-badge--overlap" data-badge="1">clear</div>
+                    </div>
+                    <div class="mdl-card__actions mdl-card--border">
+                        <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+                            Open
+                        </a>
+                        <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
+                            <i class="material-icons">mood</i>
+                        </button>
+                    </div>
+                </div>
+                <div class="mdl-layout-spacer"></div>
+                <div class="background-habit mdl-card mdl-shadow--2dp">
+
+                    <div class=" mdl-card__title">
+                        <h2 class="mdl-card__title-text">
+                            Leer libros en ingles!
+                        </h2>
+                    </div>
+                    <div class="mdl-card__supporting-text">
+                        <div class="material-icons mdl-badge mdl-badge--overlap" data-badge="1">done</div>
+                        <div class="material-icons mdl-badge mdl-badge--overlap" data-badge="1">clear</div>
+                    </div>
+                    <div class="mdl-card__actions mdl-card--border">
+                        <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+                            Open
+                        </a>
+                        <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
+                            <i class="material-icons">mood</i>
+                        </button>
+                    </div>
+                </div>
+                <div class="mdl-layout-spacer"></div>
+            </div>
+        </div>
+        <div class="mdl-tabs__panel" id="pending-panel">
+            <div class="mdl-grid mdl-cell mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--12-col">
+                <div class="background-pending mdl-card mdl-shadow--2dp">
+
+                    <div class=" mdl-card__title">
+                        <h3 class="mdl-card__title-text">
+                            Necesito hablar en Quick Learning para preguntar los precios!
+                        </h3>
+                    </div>
+                    <!--<div class="mdl-card__supporting-text">-->
+                    <!--<div class="material-icons mdl-badge mdl-badge&#45;&#45;overlap" data-badge="1">done</div>-->
+                    <!--<div class="material-icons mdl-badge mdl-badge&#45;&#45;overlap" data-badge="1">clear</div>-->
+                    <!--</div>-->
+                    <div class="mdl-card__actions mdl-card--border">
+                        <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+                            Open
+                        </a>
+                        <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
+                            <i class="material-icons">done</i>
+                        </button>
+                    </div>
+                </div>
+                <div class="mdl-layout-spacer"></div>
+            </div>
+        </div>
+        <!--<div class="mdl-tabs__panel" id="wish-panel">-->
+        <!--</div>-->
+    </div>
+</div>
+<!-- Dialog dreams-->
+<dialog id="dream-dialog" class="mdl-dialog mdl-cell--4-col">
+    <h4 class="mdl-dialog__title"> <i class="material-icons">hdr_strong</i> Objectivo</h4>
+    <div class="mdl-dialog__content">
+        <form action="#">
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                <input class="mdl-textfield__input" type="text" id="sample3">
+                <label class="mdl-textfield__label" for="sample3">Nombre del objectivo</label>
+            </div>
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                <input class="mdl-textfield__input" type="text" id="sample3">
+                <label class="mdl-textfield__label" for="sample3">Fecha a completar</label>
+            </div>
+        </form>
+    </div>
+    <div class="mdl-dialog__actions">
+        <button type="button" class="mdl-button">Agree</button>
+        <button type="button" class="mdl-button close">Disagree</button>
+    </div>
+</dialog>
+<!--Dialog Habit-->
+<dialog id="habit-dialog" class="mdl-dialog mdl-cell--4-col">
+    <h4 class="mdl-dialog__title"> <i class="material-icons">gavel</i> Habito</h4>
+    <div class="mdl-dialog__content">
+        <form action="#">
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                <input class="mdl-textfield__input" type="text" id="sample3">
+                <label class="mdl-textfield__label" for="sample3">Nombre del habito</label>
+            </div>
+        </form>
+    </div>
+    <div class="mdl-dialog__actions">
+        <button type="button" class="mdl-button">Agree</button>
+        <button type="button" class="mdl-button close">Disagree</button>
+    </div>
+</dialog>
+<!--Dialog pending-->
+<dialog id="pending-dialog" class="mdl-dialog mdl-cell--4-col">
+    <h4 class="mdl-dialog__title"> <i class="material-icons">list</i> Pendiente</h4>
+    <div class="mdl-dialog__content">
+        <form action="#">
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                <input class="mdl-textfield__input" type="text" id="sample3">
+                <label class="mdl-textfield__label" for="sample3">Nombre del pendiente</label>
+            </div>
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                <textarea class="mdl-textfield__input" type="text" rows="2" id="note"></textarea>
+                <label class="mdl-textfield__label" for="note">Descripcion</label>
+            </div>
+        </form>
+    </div>
+    <div class="mdl-dialog__actions">
+        <button type="button" class="mdl-button">Agree</button>
+        <button type="button" class="mdl-button close">Disagree</button>
+    </div>
+</dialog>
+{% endblock %}
+
+{% block button_fab %}
+<ul class="mdl-menu mdl-menu--top-right mdl-js-menu mdl-js-ripple-effect" data-mdl-for="add-task">
+    <li class="mdl-menu__item" id="add-dream-dialog">
+        <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored">
+            <i class="material-icons">hdr_strong</i>
+        </button>
+    </li>
+    <li class="mdl-menu__item" id="add-habit-dialog">
+        <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored">
+            <i class="material-icons">gavel</i>
+        </button>
+    </li>
+    <li class="mdl-menu__item" id="add-pending-dialog">
+        <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored">
+            <i class="material-icons">list</i>
+        </button>
+    </li>
+    <!--<li class="mdl-menu__item">-->
+        <!--<button class="mdl-button mdl-js-button mdl-button&#45;&#45;fab mdl-button&#45;&#45;mini-fab mdl-button&#45;&#45;colored">-->
+            <!--<i class="material-icons">extension</i>-->
+        <!--</button>-->
+    <!--</li>-->
+</ul>
+
+<a id="view-source"
+   class="mdl-button mdl-button--colored mdl-color-text--white mdl-button--fab ">
+    <i id="add-task" class="material-icons">add</i>
+</a>
+{% endblock %}
+
+{% block js%}
+<script>
+    var dreamDialog = document.querySelector('#dream-dialog');
+    var showDreamDialogButton = document.querySelector('#add-dream-dialog');
+    if (! dreamDialog.showModal) {
+        dialogPolyfill.registerDialog(dreamDialog);
+    }
+    showDreamDialogButton.addEventListener('click', function() {
+        dreamDialog.showModal();
+    });
+    dreamDialog.querySelector('.close').addEventListener('click', function() {
+        dreamDialog.close();
+    });
+    var habitDialog = document.querySelector('#habit-dialog');
+    var showHabitDialogButton = document.querySelector('#add-habit-dialog');
+    if (! habitDialog.showModal) {
+        dialogPolyfill.registerDialog(habitDialog);
+    }
+    showHabitDialogButton.addEventListener('click', function() {
+        habitDialog.showModal();
+    });
+    habitDialog.querySelector('.close').addEventListener('click', function() {
+        habitDialog.close();
+    });
+    var pendingDialog = document.querySelector('#pending-dialog');
+    var showPendingDialogButton = document.querySelector('#add-pending-dialog');
+    if (! pendingDialog.showModal) {
+        dialogPolyfill.registerDialog(pendingDialog);
+    }
+    showPendingDialogButton.addEventListener('click', function() {
+        pendingDialog.showModal();
+    });
+    pendingDialog.querySelector('.close').addEventListener('click', function() {
+        pendingDialog.close();
+    });
+</script>
+{% endblock %}
