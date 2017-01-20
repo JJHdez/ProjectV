@@ -1,24 +1,26 @@
-# A basic Flask quickstart 
+# Art Of Life ``` © 2016. by Zero 1/0.``` 
 *With support for serving easy APIs and static content*
 
-[![Build Status](http://img.shields.io/travis/ryanj/flask-base.svg)](https://travis-ci.org/ryanj/flask-base) [![Deploy](https://img.shields.io/badge/Launch_on-OpenShift-brightgreen.svg)](https://openshift.redhat.com/app/console/application_type/custom?cartridges%5B%5D=python-2&initial_git_url=https%3A%2F%2Fgithub.com%2Fryanj%2Fflask-base.git&name=flask)
 
-[![Launch on OpenShift](http://launch-shifter.rhcloud.com/button.svg)](https://openshift.redhat.com/app/console/application_type/custom?cartridges%5B%5D=python-2.7&initial_git_url=https%3A%2F%2Fgithub.com%2Fryanj%2Fflask-base.git&name=flask)
+Wiki Rest
+[sqlalchemy-tutorial](https://suhas.org/sqlalchemy-tutorial)
+[flaskrest](http://blog.luisrei.com/articles/flaskrest.html)
+[flask-restful-api-using-python-mysql](http://codehandbook.org/flask-restful-api-using-python-mysql/)
+[designing-a-restful-api-with-python-and-flask](https://blog.miguelgrinberg.com/post/designing-a-restful-api-with-python-and-flask)
 
-To deploy a clone of this application using the [`rhc` command line tool](http://rubygems.org/gems/rhc):
+Wiki Http
+[REST API Quick Tips](http://www.restapitutorial.com/lessons/restquicktips.html)
 
-    rhc app create flask python-2.7 --from-code=https://github.com/ryanj/flask-base.git
-    
-Or [link to a web-based clone+deploy](https://openshift.redhat.com/app/console/application_type/custom?cartridges%5B%5D=python-2.7&initial_git_url=https%3A%2F%2Fgithub.com%2Fryanj%2Fflask-base.git) on [OpenShift Online](http://OpenShift.com) or on [your own OpenShift cloud](http://openshift.github.io): 
 
-    https://openshift.redhat.com/app/console/application_type/custom?cartridges%5B%5D=python-2.7&initial_git_url=https%3A%2F%2Fgithub.com%2Fryanj%2Fflask-base.git
+Root User: admintihyw5t
+Root Password: RPhL7TfAcY_t
+Database Name: art0flife
+Connection URL: postgresql://$OPENSHIFT_POSTGRESQL_DB_HOST:$OPENSHIFT_POSTGRESQL_DB_PORT
 
-## Local server
-Start a local webserver by running:
+DB_USER = 'odoo'
+DB_PASSWORD = '0d004dm1n'
+DB_NAME = 'aol'
 
-```bash
-python app.py
-```
+https://guides.codepath.com/android/ViewPager-with-FragmentPagerAdapter
 
-## License
-This code is dedicated to the public domain to the maximum extent permitted by applicable law, pursuant to CC0 (http://creativecommons.org/publicdomain/zero/1.0/)
+https://github.com/GunaseelanArumaikkannu/MultiSpinner

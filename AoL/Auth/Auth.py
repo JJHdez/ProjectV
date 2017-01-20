@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 # © 2016. by Zero 1/0.
-from flask import g, jsonify
+from flask import g, jsonify, session
 from AoL.Auth.User import User
+from AoL.Utils.Exception import ExceptionRest
+from AoL.Utils.Utils import processing_rest_exception, processing_rest_success
 
 
 class Auth:
@@ -10,33 +12,47 @@ class Auth:
         pass
 
     def login(self, data):
-        _email = data.get('email')
-        _uid = data.get('uid')
-        _auth = data.get('auth')
-        _token = data.get('token')
-        _errors = []
-        if not _email:
-            _errors.append({'email': 'Is required'})
-        if not _uid:
-            _errors.append({'uid': 'Is required'})
-        if not _auth:
-            _errors.append({'auth': 'Is required'})
-        if not _token:
-            _errors.append({'token': 'Is required'})
-        _login = jsonify()
-        if len(_errors) == 0:
-            qry = "SELECT login('%s', '%s', '%s', '%s');" % (_email, _uid, _auth, _token)
-            g.db_conn.execute(qry)
-            if g.db_conn.count() > 0:
-                _data_qry = g.db_conn.one()[0]
-                _status_code = _data_qry['status_code']
-                del _data_qry[u'status_code']
-                # print _status_code
-                _login = jsonify(_data_qry)
-                _login.status_code = _status_code
-        else:
-            _login = jsonify(_errors)
-            _login.status_code = 400
+        _login = None
+        try:
+            _email = data.get('email')
+            _uid = data.get('uid')
+            _auth = data.get('auth')
+            _token = data.get('token')
+            _mode = data.get('mode', 'app')
+            _errors = []
+            if not _email:
+                _errors.append({'email': 'Is required'})
+            if not _uid:
+                _errors.append({'uid': 'Is required'})
+            if not _auth:
+                _errors.append({'auth': 'Is required'})
+            if not _token:
+                _errors.append({'token': 'Is required'})
+            _login = jsonify()
+            if len(_errors) == 0:
+                qry = "SELECT login('%s', '%s', '%s', '%s');" % (_email, _uid, _auth, _token)
+                g.db_conn.execute(qry)
+                if g.db_conn.count() > 0:
+                    _data_qry = g.db_conn.one()[0]
+                    if _data_qry:
+                        _status_code = _data_qry['status_code']
+                        del _data_qry[u'status_code']
+                        if _mode == 'web':
+                            # session.pop('X-Authorization', None)
+                            # session.pop('User', None)
+                            session['X-Authorization'] = _data_qry.get('user').get('token')
+                            session['user'] = _data_qry.get('user')
+                            _login = processing_rest_success(None, status_code=_status_code)
+                        else:
+                            _login = jsonify(_data_qry)
+                            _login.status_code = _status_code
+                    else:
+                        raise ExceptionRest(status_code=404, message="Verifique su usuario y contrsenia")
+            else:
+                raise ExceptionRest(status_code=404, message="No se han encontrado resultados")
+        except (Exception, ExceptionRest), e:
+            _login = processing_rest_exception(e)
+        print _login
         return _login
 
     def logout(self, type, token, uid):

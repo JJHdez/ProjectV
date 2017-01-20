@@ -23,7 +23,6 @@
 
 {% block body %}
 <div class="mdl-grid demo-content">
-
     <div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
         <div class="mdl-tabs__tab-bar">
             <a href="#dreams-panel" class="mdl-tabs__tab is-active"><i class="material-icons">hdr_strong</i></a>
@@ -33,31 +32,61 @@
         </div>
 
         <div class="mdl-tabs__panel is-active" id="dreams-panel">
-            <div class="mdl-color--white mdl-shadow--2dp mdl-cell mdl-cell--12-col mdl-grid">
-                <div class="background-dream mdl-card mdl-shadow--2dp">
+            <p v-if="!dreams.length">No hay objectivos registrados</p>
+            <div v-else class="mdl-color--white mdl-shadow--2dp mdl-cell mdl-cell--12-col mdl-grid">
+                <div class="background-dream mdl-card mdl-shadow--2dp" v-for="(dream, index) in dreams">
                     <div class=" mdl-card__title">
                         <h2 class="mdl-card__title-text">
-                            Crear una empresa llamada ZERO!
+                            ${dream.name}
                         </h2>
                     </div>
                     <div class="mdl-card__supporting-text">
-                    <span class="mdl-chip mdl-chip--contact">
+
+                    <span class="mdl-chip mdl-chip--contact" v-if="dream.created_at">
                         <i class="mdl-chip__contact material-icons">play_arrow</i>
-                        <span class="mdl-chip__text">2017-10-10</span>
+                        <span class="mdl-chip__text">${dream.created_at}</span>
                     </span>
-                        <span class="mdl-chip mdl-chip--contact">
+                    <span class="mdl-chip mdl-chip--contact" v-if="dream.due_date_at">
                         <i class="mdl-chip__contact material-icons">stop</i>
-                        <span class="mdl-chip__text">2017-10-10</span>
+                        <span class="mdl-chip__text">${dream.due_date_at}</span>
                     </span>
                     </div>
                     <div class="mdl-card__actions mdl-card--border">
-                        <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
-                            Open
-                        </a>
+                        <button v-on:click="_edit(dream,index)" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised mdl-button--colored">
+                            Editar
+                        </button>
+                        <button v-on:click="_done(dream,index)" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon">
+                            <i class="material-icons">done</i>
+                        </button>
+                        <!--<div class="mdl-tooltip" data-mdl-for="dream-done">-->
+                            <!--Finalizar-->
+                        <!--</div>-->
+
                     </div>
+                    <div class="mdl-layout-spacer"></div>
                 </div>
-                <div class="mdl-layout-spacer"></div>
+
             </div>
+            <!-- Dialog dreams-->
+            <dialog id="dream-dialog" class="mdl-dialog mdl-cell--4-col">
+                <h4 class="mdl-dialog__title"> <i class="material-icons">hdr_strong</i>Objectivo</h4>
+                <div class="mdl-dialog__content">
+                    <form action="#">
+                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                            <input class="mdl-textfield__input" type="text" id="name" v-model="dreamM.name" required="True">
+                            <label class="mdl-textfield__label" for="name">Nombre del objectivo</label>
+                        </div>
+                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                            <input class="mdl-textfield__input" type="date" id="due_date_at" v-model="dreamM.due_date_at">
+                            <label class="mdl-textfield__label" for="due_date_at">Fecha a completar</label>
+                        </div>
+                    </form>
+                </div>
+                <div class="mdl-dialog__actions">
+                    <button v-show="validationDreamM.accept" type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" id="dream-dialog-accept">Aceptar</button>
+                    <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" id="dream-dialog-cancel">Cancelar</button>
+                </div>
+            </dialog>
         </div>
         <div class="mdl-tabs__panel" id="habits-panel">
             <div class="mdl-grid mdl-cell mdl-shadow--2dp mdl-color--white mdl-cell--12-col">
@@ -218,67 +247,48 @@
         <!--</div>-->
     </div>
 </div>
-<!-- Dialog dreams-->
-<dialog id="dream-dialog" class="mdl-dialog mdl-cell--4-col">
-    <h4 class="mdl-dialog__title"> <i class="material-icons">hdr_strong</i> Objectivo</h4>
-    <div class="mdl-dialog__content">
-        <form action="#">
-            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                <input class="mdl-textfield__input" type="text" id="sample3">
-                <label class="mdl-textfield__label" for="sample3">Nombre del objectivo</label>
-            </div>
-            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                <input class="mdl-textfield__input" type="text" id="sample3">
-                <label class="mdl-textfield__label" for="sample3">Fecha a completar</label>
-            </div>
-        </form>
-    </div>
-    <div class="mdl-dialog__actions">
-        <button type="button" class="mdl-button">Agree</button>
-        <button type="button" class="mdl-button close">Disagree</button>
-    </div>
-</dialog>
+<!--Box-->
 <!--Dialog Habit-->
-<dialog id="habit-dialog" class="mdl-dialog mdl-cell--4-col">
-    <h4 class="mdl-dialog__title"> <i class="material-icons">gavel</i> Habito</h4>
-    <div class="mdl-dialog__content">
-        <form action="#">
-            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                <input class="mdl-textfield__input" type="text" id="sample3">
-                <label class="mdl-textfield__label" for="sample3">Nombre del habito</label>
-            </div>
-        </form>
-    </div>
-    <div class="mdl-dialog__actions">
-        <button type="button" class="mdl-button">Agree</button>
-        <button type="button" class="mdl-button close">Disagree</button>
-    </div>
-</dialog>
+<!--<dialog id="habit-dialog" class="mdl-dialog mdl-cell&#45;&#45;4-col">-->
+    <!--<h4 class="mdl-dialog__title"> <i class="material-icons">gavel</i> Habito</h4>-->
+    <!--<div class="mdl-dialog__content">-->
+        <!--<form action="#">-->
+            <!--<div class="mdl-textfield mdl-js-textfield mdl-textfield&#45;&#45;floating-label">-->
+                <!--<input class="mdl-textfield__input" type="text" id="sample3">-->
+                <!--<label class="mdl-textfield__label" for="sample3">Nombre del habito</label>-->
+            <!--</div>-->
+        <!--</form>-->
+    <!--</div>-->
+    <!--<div class="mdl-dialog__actions">-->
+        <!--<button type="button" class="mdl-button">Agree</button>-->
+        <!--<button type="button" class="mdl-button close">Disagree</button>-->
+    <!--</div>-->
+<!--</dialog>-->
 <!--Dialog pending-->
-<dialog id="pending-dialog" class="mdl-dialog mdl-cell--4-col">
-    <h4 class="mdl-dialog__title"> <i class="material-icons">list</i> Pendiente</h4>
-    <div class="mdl-dialog__content">
-        <form action="#">
-            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                <input class="mdl-textfield__input" type="text" id="sample3">
-                <label class="mdl-textfield__label" for="sample3">Nombre del pendiente</label>
-            </div>
-            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                <textarea class="mdl-textfield__input" type="text" rows="2" id="note"></textarea>
-                <label class="mdl-textfield__label" for="note">Descripcion</label>
-            </div>
-        </form>
-    </div>
-    <div class="mdl-dialog__actions">
-        <button type="button" class="mdl-button">Agree</button>
-        <button type="button" class="mdl-button close">Disagree</button>
-    </div>
-</dialog>
+<!--<dialog id="pending-dialog" class="mdl-dialog mdl-cell&#45;&#45;4-col">-->
+    <!--<h4 class="mdl-dialog__title"> <i class="material-icons">list</i> Pendiente</h4>-->
+    <!--<div class="mdl-dialog__content">-->
+        <!--<form action="#">-->
+            <!--<div class="mdl-textfield mdl-js-textfield mdl-textfield&#45;&#45;floating-label">-->
+                <!--<input class="mdl-textfield__input" type="text" id="sample3">-->
+                <!--<label class="mdl-textfield__label" for="sample3">Nombre del pendiente</label>-->
+            <!--</div>-->
+            <!--<div class="mdl-textfield mdl-js-textfield mdl-textfield&#45;&#45;floating-label">-->
+                <!--<textarea class="mdl-textfield__input" type="text" rows="2" id="note"></textarea>-->
+                <!--<label class="mdl-textfield__label" for="note">Descripcion</label>-->
+            <!--</div>-->
+        <!--</form>-->
+    <!--</div>-->
+    <!--<div class="mdl-dialog__actions">-->
+        <!--<button type="button" class="mdl-button">Agree</button>-->
+        <!--<button type="button" class="mdl-button close">Disagree</button>-->
+    <!--</div>-->
+<!--</dialog>-->
 {% endblock %}
 
 {% block button_fab %}
-<ul class="mdl-menu mdl-menu--top-right mdl-js-menu mdl-js-ripple-effect" data-mdl-for="add-task">
-    <li class="mdl-menu__item" id="add-dream-dialog">
+<ul id="button-fab-yourself" class="mdl-menu mdl-menu--top-right mdl-js-menu mdl-js-ripple-effect" data-mdl-for="add-task">
+    <li class="mdl-menu__item" id="show-dream-dialog">
         <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored">
             <i class="material-icons">hdr_strong</i>
         </button>
@@ -299,47 +309,11 @@
         <!--</button>-->
     <!--</li>-->
 </ul>
-
-<a id="view-source"
-   class="mdl-button mdl-button--colored mdl-color-text--white mdl-button--fab ">
+<a  class="mdl-button mdl-button--colored mdl-color-text--white mdl-button--fab zr-button-fab">
     <i id="add-task" class="material-icons">add</i>
 </a>
 {% endblock %}
 
 {% block js%}
-<script>
-    var dreamDialog = document.querySelector('#dream-dialog');
-    var showDreamDialogButton = document.querySelector('#add-dream-dialog');
-    if (! dreamDialog.showModal) {
-        dialogPolyfill.registerDialog(dreamDialog);
-    }
-    showDreamDialogButton.addEventListener('click', function() {
-        dreamDialog.showModal();
-    });
-    dreamDialog.querySelector('.close').addEventListener('click', function() {
-        dreamDialog.close();
-    });
-    var habitDialog = document.querySelector('#habit-dialog');
-    var showHabitDialogButton = document.querySelector('#add-habit-dialog');
-    if (! habitDialog.showModal) {
-        dialogPolyfill.registerDialog(habitDialog);
-    }
-    showHabitDialogButton.addEventListener('click', function() {
-        habitDialog.showModal();
-    });
-    habitDialog.querySelector('.close').addEventListener('click', function() {
-        habitDialog.close();
-    });
-    var pendingDialog = document.querySelector('#pending-dialog');
-    var showPendingDialogButton = document.querySelector('#add-pending-dialog');
-    if (! pendingDialog.showModal) {
-        dialogPolyfill.registerDialog(pendingDialog);
-    }
-    showPendingDialogButton.addEventListener('click', function() {
-        pendingDialog.showModal();
-    });
-    pendingDialog.querySelector('.close').addEventListener('click', function() {
-        pendingDialog.close();
-    });
-</script>
+<script src="/yourself.js"> </script>
 {% endblock %}

@@ -1,3 +1,4 @@
 *.pyc
 .idea/
-
+x/
+AoL/bin/backup

@@ -5,7 +5,7 @@ import subprocess
 import os
 import datetime
 DB_PASSWORD = os.environ.get('OPENSHIFT_POSTGRESQL_DB_PASSWORD', '0d004dm1n')
-DB_NAME = os.environ.get('PGDATABASE', 'aol')
+DB_NAME = os.environ.get('PGDATABASE', 'aol1')
 DB_USER = os.environ.get('OPENSHIFT_POSTGRESQL_DB_USERNAME', 'odoo')
 DB_HOST = os.environ.get('OPENSHIFT_POSTGRESQL_DB_HOST', 'localhost')
 DB_PORT = int(os.environ.get('OPENSHIFT_POSTGRESQL_DB_PORT', 5432))
