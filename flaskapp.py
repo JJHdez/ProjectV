@@ -43,7 +43,6 @@ def open_db():
             # print session
             if 'X-Authorization' in session and 'user' in session:
                 _token = session['X-Authorization']
-            print _token
             _auth = Auth()
             _rs = _auth.is_login(token=_token)
             if 'error' in _rs:
@@ -116,7 +115,7 @@ def is_login(func):
     return func_wrapper
 
 
-@app.route('/logout')
+@app.route('/logout', endpoint='/logout')
 @is_login
 def logout():
     session.pop('X-Authorization', None)
