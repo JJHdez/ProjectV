@@ -31,8 +31,8 @@ window.addEventListener('load', function ()
 
                 var data = {
                     'mode':'web',
-                    'uid':'123456' , //this.login.user_password,
-                    'email':'deploy.t500x@gmail.com' ,//this.login.user_email.trim(),
+                    'uid':this.login.user_password,
+                    'email':this.login.user_email.trim(),
                     'auth': 'email',
                     'token': 'sdfsdfsdfsdf'
                 };
@@ -43,13 +43,12 @@ window.addEventListener('load', function ()
                     contentType:'application/json'
                 }).done(function( response ) {
                     if (response.status_code == 200){
-                        console.log(response.status_code)
                         window.location = '/ul/dashboard';
                     }else{
                         var snackbarContainer = document.querySelector('#notification-index');
                         var data_snackbar = {
                             message: response.message,
-                            timeout: 2000,
+                            timeout: 2000
                         };
                         snackbarContainer.MaterialSnackbar.showSnackbar(data_snackbar);
                     }

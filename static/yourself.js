@@ -1,156 +1,176 @@
 window.addEventListener('load', function () {
     var apiv1 = '/api/v1/';
-    var delimiters = ['${', '}']
+    var delimiters = ['${', '}'];
+    var dreamDialog = null;
+    var showDreamDialogButton = null;
     /// DREAM ////
-
+    function getDateUtc(_date, _format){
+        var now_utc =  new Date(
+            _date.getUTCFullYear(),
+            _date.getUTCMonth(),
+            _date.getUTCDate(),
+            _date.getUTCHours(),
+            _date.getUTCMinutes(),
+            _date.getUTCSeconds()
+        );
+        var datetime_utc =  now_utc.getFullYear()+'-'+
+                            now_utc.getMonth()+'-'+
+                            now_utc.getDate();
+        if (_format == 'datetime'){
+            datetime_utc= datetime_utc+' '+
+                now_utc.getHours()+':'+
+                now_utc.getMinutes()+':'+
+                now_utc.getSeconds();
+        }
+        return datetime_utc;
+    }
 
     var dreams_panelV = new Vue({
         delimiters: delimiters,
         el: '#dreams-panel',
         data:{
             dreams: [],
-
-            dreamM:{
+            dreamModel:{
+                id:-1,
                 name: '',
                 due_date_at:'',
+                completed_at:'',
+                created_at:'',
+                index:-1
             },
             url: apiv1+'dream',
+            flagNew:true
         },
 
         methods:{
-
+            // if clicked tab dreams or load page your self
             init: function () {
-                var self =  this;
+                this._callback(null, this.url,'GET', 'init');
+            },
+
+            _accept :function() {
+                var  _action = this.flagNew?'new':'edit';
+                var  _method = this.flagNew?'POST':'PUT';
+                var  _url = this.flagNew?this.url:this.url+'/'+this.dreamModel.id;
+                var new_dream = {
+                    name: this.dreamModel.name
+                };
+                if (this.dreamModel.due_date_at.length>0){
+                    // if (!ULV.dateRE.test(this.dreamModel.due_date_at))
+                    new_dream['due_date_at']= this.dreamModel.due_date_at;
+                }
+                this._callback(new_dream,_url,_method,_action);
+            },
+            // clean model
+            _clean: function(){
+                this.dreamModel.name = '';
+                this.dreamModel.due_date_at= '';
+                this.dreamModel.index = -1;
+                this.dreamModel.id = -1;
+            },
+
+            _done: function(data, index){
+                var _values = {'completed_at': getDateUtc(new Date(),'datetime')};
+                this.dreamModel.index = index;
+                this._callback(_values, this.url+'/'+data.id, 'PUT','done');
+            },
+
+            _edit: function(data, index){
+                this.flagNew = false;
+                this.dreamModel.name = data.name;
+                this.dreamModel.due_date_at = data.due_date_at?data.due_date_at:'';
+                this.dreamModel.completed_at = data.completed_at;
+                this.dreamModel.created_at = data.created_at;
+                this.dreamModel.id = data.id;
+                this.dreamModel.index = index;
+                dream_dialog_open();
+            },
+
+            _callback: function(_data, _url, _method, _action){
+                var self = this;
+                var _json = null;
+                if (_data)
+                    _json = JSON.stringify(_data);
                 $.ajax({
-                    url: self.url,
-                    type:'GET',
+                    url: _url,
+                    type:_method,
+                    data:_json,
                     contentType:'application/json'
                 }).done(function( response ) {
-                    if (response.status_code==200){
-                        for (c = 0 ; c < response.data.dreams.length; c++){
-                            self.dreams.push(response.data.dreams[c])
+                    if (response.status_code==200 || response.status_code == 201){
+                        switch (_action){
+                            case 'init':
+                                for (var c = 0 ; c < response.data.dreams.length; c++){
+                                    self.dreams.push(response.data.dreams[c])
+                                }
+                                break;
+                            case 'done':
+                                self.dreams.splice(self.dreamModel.index,1);
+                                break;
+                            case 'new':
+                                _data['id']=response.data.dreams[0].id;
+                                _data['created_at'] = new Date().toJSON().slice(0,10).replace(/-/g,'/');
+                                self.dreams.push(_data);
+                                dream_dialog_close();
+                                break;
+                            case 'edit':
+                                _data['id']=self.dreamModel.id;
+                                _data['created_at'] = self.dreamModel.created_at;
+                                _data['due_date_at'] = self.dreamModel.due_date_at;
+                                self.dreams.splice(self.dreamModel.index,1,_data);
+                                dream_dialog_close();
+                                break
                         }
-//                        console.log(self.dreams)
-                    }
-                })
-            },
-
-            _new :function() {
-                var self = this;
-                var new_dream = {
-                    name:this.dreamM.name,
-                }
-                if (this.dreamM.due_date_at.length>0){
-                    if (!dateRE.test(this.dreamM.due_date_at)){
-                        this.dreamM.due_date_at = ''
-                        notify({message:'El formato de fecha es incorrecto!'})
-                        return;
-                    }
-                    new_dream.due_date_at = this.dreamM.due_date_at;
-                }
-                $.ajax({
-                    url: self.url,
-                    data: JSON.stringify(new_dream),
-                    type:'POST',
-                    contentType: 'application/json',
-                }).done(function( response ) {
-                    if (response.status_code==201){
-                        for (c = 0 ; c < response.data.dreams.length; c++){
-                            new_dream.id = response.data.dreams[c].id
-                            new_dream.created_at = new Date().toJSON().slice(0,10).replace(/-/g,'/');
-                            if (this.dreamM.due_date_at.length>0)
-                                new_dream.due_date_at  = this.dreamM.due_date_at
-                        }
-                        self._clean()
-                        self.dreams.push(new_dream)
-                        notify({message:response.message})
+                        if (response.message)
+                            notify({message: response.message});
+                        self._clean();
+                        return true;
                     }else{
-                        notify({message:response.message})
+                        notify({message:response.message});
+                        return false;
                     }
                 }).fail(function() {
-                    notify({message:'Mo se ha podido registrar favor interntar mas tarde! :('})
-                    return;
-                })
-                return true;
-            },
-            _clean: function(){
-                this.dreamM.name = '';
-                this.dreamM.due_date_at= '';
-            },
-            _done: function(data, index){
-                console.log(data)
-                console.log(index)
-                this.dreams.splice(index,1)
-                var now = new Date();
-
-
-            },
-            _edit: function(data, index){
-
-//                var now = new Date;
-//                var utc_timestamp = Date.UTC(
-//                    now.getUTCFullYear(),
-//                    now.getUTCMonth(),
-//                    now.getUTCDate(),
-//                    now.getUTCHours(),
-//                    now.getUTCMinutes(),
-//                    now.getUTCSeconds(),
-//                    now.getUTCMilliseconds());
-//                var todayUTC = new Date(utc_timestamp);
-//                var g = todayUTC.toISOString()//.slice(0, 10) //.replace(/-/g, '-');
-//                console.log(g)
-
-
-            },
+                    notify({message:'Error al generar la peticion, favor interntar mas tarde! :('});
+                    return false;
+                });
+            }
         }, // end methods
 
         computed: {
-            validationDreamM: function () {
+            validationDreamModel: function () {
             return {
-                    accept: this.dreamM.name.trim().length>3,
+                    accept: this.dreamModel.name.trim().length>3
                 }
             }
-        },
+        }
 
-    }) ///
-    dreams_panelV.init()
-    var dreamDialog = document.querySelector('#dream-dialog');
-    var showDreamDialogButton = document.querySelector('#show-dream-dialog');
+    });
+
+    dreams_panelV.init();
+
+    dreamDialog = document.querySelector('#dream-dialog');
+    showDreamDialogButton = document.querySelector('#show-dream-dialog');
+
     if (! dreamDialog.showModal) {
-         dialogPolyfill.registerDialog(dreamDialog);
+        dialogPolyfill.registerDialog(dreamDialog);
     }
     showDreamDialogButton.addEventListener('click', function() {
-        dreamDialog.showModal();
+        dream_dialog_open();
+        dreams_panelV.flagNew = true;
     });
     dreamDialog.querySelector('#dream-dialog-cancel').addEventListener('click', function() {
-        dreams_panelV._clean()
-        dreamDialog.close();
+        dreams_panelV._clean();
+        dream_dialog_close();
     });
     dreamDialog.querySelector('#dream-dialog-accept').addEventListener('click', function() {
-        if (dreams_panelV._new())
-            dreamDialog.close();
+        dreams_panelV._accept()
     });
-})
-
-// var habitDialog = document.querySelector('#habit-dialog');
-// var showHabitDialogButton = document.querySelector('#add-habit-dialog');
-// if (! habitDialog.showModal) {
-//     dialogPolyfill.registerDialog(habitDialog);
-// }
-// showHabitDialogButton.addEventListener('click', function() {
-//     habitDialog.showModal();
-// });
-// habitDialog.querySelector('.close').addEventListener('click', function() {
-//     habitDialog.close();
-// });
-// var pendingDialog = document.querySelector('#pending-dialog');
-// var showPendingDialogButton = document.querySelector('#add-pending-dialog');
-// if (! pendingDialog.showModal) {
-//     dialogPolyfill.registerDialog(pendingDialog);
-// }
-// showPendingDialogButton.addEventListener('click', function() {
-//     pendingDialog.showModal();
-// });
-// pendingDialog.querySelector('.close').addEventListener('click', function() {
-//     pendingDialog.close();
-// });
+    function dream_dialog_open() {
+        if(dreamDialog)
+            dreamDialog.showModal();
+    }
+    function dream_dialog_close() {
+        if(dreamDialog)
+            dreamDialog.close();
+    }
+});

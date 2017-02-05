@@ -33,38 +33,34 @@
 
         <div class="mdl-tabs__panel is-active" id="dreams-panel">
             <p v-if="!dreams.length">No hay objectivos registrados</p>
-            <div v-else class="mdl-color--white mdl-shadow--2dp mdl-cell mdl-cell--12-col mdl-grid">
-                <div class="background-dream mdl-card mdl-shadow--2dp" v-for="(dream, index) in dreams">
-                    <div class=" mdl-card__title">
-                        <h2 class="mdl-card__title-text">
-                            ${dream.name}
-                        </h2>
+            <div v-else class="mdl-color--white mdl-shadow--2dp mdl-cell mdl-cell--12-col mdl-grid" >
+                <div v-for="(dream, index) in dreams">
+                    <div class="background-dream mdl-card mdl-shadow--2dp">
+                        <div class=" mdl-card__title">
+                            <h2 class="mdl-card__title-text">
+                                ${dream.name}
+                            </h2>
+                        </div>
+                        <div class="mdl-card__supporting-text">
+                            <span class="mdl-chip mdl-chip--contact" v-if="dream.created_at">
+                                <i class="mdl-chip__contact material-icons">play_arrow</i>
+                                <span class="mdl-chip__text">${dream.created_at}</span>
+                            </span>
+                            <span class="mdl-chip mdl-chip--contact" v-if="dream.due_date_at">
+                                <i class="mdl-chip__contact material-icons">stop</i>
+                                <span class="mdl-chip__text">${dream.due_date_at}</span>
+                            </span>
+                        </div>
+                        <div class="mdl-card__actions mdl-card--border">
+                            <button v-on:click="_edit(dream,index)" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised mdl-button--colored">
+                                Editar
+                            </button>
+                            <button v-on:click="_done(dream,index)" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon">
+                                <i class="material-icons">done</i>
+                            </button>
+                        </div>
                     </div>
-                    <div class="mdl-card__supporting-text">
-
-                    <span class="mdl-chip mdl-chip--contact" v-if="dream.created_at">
-                        <i class="mdl-chip__contact material-icons">play_arrow</i>
-                        <span class="mdl-chip__text">${dream.created_at}</span>
-                    </span>
-                    <span class="mdl-chip mdl-chip--contact" v-if="dream.due_date_at">
-                        <i class="mdl-chip__contact material-icons">stop</i>
-                        <span class="mdl-chip__text">${dream.due_date_at}</span>
-                    </span>
-                    </div>
-                    <div class="mdl-card__actions mdl-card--border">
-                        <button v-on:click="_edit(dream,index)" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised mdl-button--colored">
-                            Editar
-                        </button>
-                        <button v-on:click="_done(dream,index)" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon">
-                            <i class="material-icons">done</i>
-                        </button>
-                        <!--<div class="mdl-tooltip" data-mdl-for="dream-done">-->
-                            <!--Finalizar-->
-                        <!--</div>-->
-
-                    </div>
-                    <div class="mdl-layout-spacer"></div>
-                </div>
+                </div><!--End for-->
 
             </div>
             <!-- Dialog dreams-->
@@ -73,21 +69,26 @@
                 <div class="mdl-dialog__content">
                     <form action="#">
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                            <input class="mdl-textfield__input" type="text" id="name" v-model="dreamM.name" required="True">
+                            <input class="mdl-textfield__input" type="text" id="name" v-model="dreamModel.name" required="True">
                             <label class="mdl-textfield__label" for="name">Nombre del objectivo</label>
                         </div>
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                            <input class="mdl-textfield__input" type="date" id="due_date_at" v-model="dreamM.due_date_at">
+                            <input class="mdl-textfield__input" type="date" id="due_date_at" v-model="dreamModel.due_date_at">
                             <label class="mdl-textfield__label" for="due_date_at">Fecha a completar</label>
                         </div>
                     </form>
                 </div>
                 <div class="mdl-dialog__actions">
-                    <button v-show="validationDreamM.accept" type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" id="dream-dialog-accept">Aceptar</button>
-                    <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" id="dream-dialog-cancel">Cancelar</button>
+                    <button v-show="validationDreamModel.accept"
+                            class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored"
+                            id="dream-dialog-accept">Aceptar</button>
+                    <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent"
+                            id="dream-dialog-cancel">Cancelar</button>
                 </div>
             </dialog>
         </div>
+        <!--End panel dream-->
+
         <div class="mdl-tabs__panel" id="habits-panel">
             <div class="mdl-grid mdl-cell mdl-shadow--2dp mdl-color--white mdl-cell--12-col">
                 <div class="background-habit mdl-card mdl-shadow--4dp">

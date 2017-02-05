@@ -235,7 +235,10 @@ _:-ms-input-placeholder, :root .demo-graph {
     position: relative;
     height: auto;
     width: auto;
-    background: url('/images/abstract_2_00-wallpaper-3840x2160.jpg') center 30% no-repeat;
+    /*background: url('/images/abstract_2_00-wallpaper-3840x2160.jpg') center 30% no-repeat;
+    background: url('/images/girl-sexy.jpg') center 30% no-repeat;
+    */
+    background: url('http://pre03.deviantart.net/5bb6/th/pre/i/2012/189/1/0/weeping_scarlet_by_stu761-d56fun8.jpg') center 30% no-repeat;
     background-size: cover;
 }
 .dock button i {
