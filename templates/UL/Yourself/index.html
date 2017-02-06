@@ -82,143 +82,68 @@
                     <button v-show="validationDreamModel.accept"
                             class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored"
                             id="dream-dialog-accept">Aceptar</button>
+                    <button v-show="validationDreamModel.remove" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect"
+                            id="dream-dialog-remove">Eliminar</button>
                     <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent"
-                            id="dream-dialog-cancel">Cancelar</button>
+                    id="dream-dialog-cancel">Cancelar</button>
+
                 </div>
             </dialog>
         </div>
         <!--End panel dream-->
 
         <div class="mdl-tabs__panel" id="habits-panel">
-            <div class="mdl-grid mdl-cell mdl-shadow--2dp mdl-color--white mdl-cell--12-col">
-                <div class="background-habit mdl-card mdl-shadow--4dp">
-
-                    <div class=" mdl-card__title">
-                        <h2 class="mdl-card__title-text">
-                            Leer libros en ingles!
-                        </h2>
+            <p v-if="!habits.length">No hay habitos registrados</p>
+            <div v-else class="mdl-grid mdl-cell mdl-shadow--2dp mdl-color--white mdl-cell--12-col">
+                <div v-for="(habit, index) in habits">
+                    <div class="background-habit mdl-card mdl-shadow--4dp">
+                        <div class=" mdl-card__title">
+                            <h2 class="mdl-card__title-text">
+                                ${habit.name}
+                            </h2>
+                        </div>
+                        <div class="mdl-card__supporting-text">
+                            <div class="material-icons mdl-badge mdl-badge--overlap"  v-bind:data-badge="habit.success">done</div>
+                            <div class="material-icons mdl-badge mdl-badge--overlap" v-bind:data-badge="habit.fail">clear</div>
+                        </div>
+                        <div class="mdl-card__actions mdl-card--border">
+                            <a v-on:click="_edit(habit,index)" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+                                Editar
+                            </a>
+                            <a v-on:click="_done(habit,index)" class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
+                                <i class="material-icons md-36">mood</i>
+                            </a>
+                        </div>
                     </div>
-                    <div class="mdl-card__supporting-text">
-                        <div class="material-icons mdl-badge mdl-badge--overlap" data-badge="1">done</div>
-                        <div class="material-icons mdl-badge mdl-badge--overlap" data-badge="1">clear</div>
-                    </div>
-                    <div class="mdl-card__actions mdl-card--border">
-                        <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
-                            Open
-                        </a>
-                        <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
-                            <i class="material-icons">mood</i>
-                        </button>
-                    </div>
+                    <div class="mdl-layout-spacer"></div>
                 </div>
-                <div class="mdl-layout-spacer"></div>
-                <div class="background-habit mdl-card mdl-shadow--2dp">
-
-                    <div class=" mdl-card__title">
-                        <h2 class="mdl-card__title-text">
-                            Leer libros en ingles!
-                        </h2>
-                    </div>
-                    <div class="mdl-card__supporting-text">
-                        <div class="material-icons mdl-badge mdl-badge--overlap" data-badge="1">done</div>
-                        <div class="material-icons mdl-badge mdl-badge--overlap" data-badge="1">clear</div>
-                    </div>
-                    <div class="mdl-card__actions mdl-card--border">
-                        <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
-                            Open
-                        </a>
-                        <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
-                            <i class="material-icons">mood</i>
-                        </button>
-                    </div>
-                </div>
-                <div class="mdl-layout-spacer"></div>
-                <div class="background-habit mdl-card mdl-shadow--2dp">
-
-                    <div class=" mdl-card__title">
-                        <h2 class="mdl-card__title-text">
-                            Leer libros en ingles!
-                        </h2>
-                    </div>
-                    <div class="mdl-card__supporting-text">
-                        <div class="material-icons mdl-badge mdl-badge--overlap" data-badge="1">done</div>
-                        <div class="material-icons mdl-badge mdl-badge--overlap" data-badge="1">clear</div>
-                    </div>
-                    <div class="mdl-card__actions mdl-card--border">
-                        <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
-                            Open
-                        </a>
-                        <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
-                            <i class="material-icons">mood</i>
-                        </button>
-                    </div>
-                </div>
-                <div class="mdl-layout-spacer"></div>
-                <div class="background-habit mdl-card mdl-shadow--2dp">
-
-                    <div class=" mdl-card__title">
-                        <h2 class="mdl-card__title-text">
-                            Leer libros en ingles!
-                        </h2>
-                    </div>
-                    <div class="mdl-card__supporting-text">
-                        <div class="material-icons mdl-badge mdl-badge--overlap" data-badge="1">done</div>
-                        <div class="material-icons mdl-badge mdl-badge--overlap" data-badge="1">clear</div>
-                    </div>
-                    <div class="mdl-card__actions mdl-card--border">
-                        <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
-                            Open
-                        </a>
-                        <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
-                            <i class="material-icons">mood</i>
-                        </button>
-                    </div>
-                </div>
-                <div class="mdl-layout-spacer"></div>
-                <div class="background-habit mdl-card mdl-shadow--2dp">
-
-                    <div class=" mdl-card__title">
-                        <h2 class="mdl-card__title-text">
-                            Leer libros en ingles!
-                        </h2>
-                    </div>
-                    <div class="mdl-card__supporting-text">
-                        <div class="material-icons mdl-badge mdl-badge--overlap" data-badge="1">done</div>
-                        <div class="material-icons mdl-badge mdl-badge--overlap" data-badge="1">clear</div>
-                    </div>
-                    <div class="mdl-card__actions mdl-card--border">
-                        <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
-                            Open
-                        </a>
-                        <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
-                            <i class="material-icons">mood</i>
-                        </button>
-                    </div>
-                </div>
-                <div class="mdl-layout-spacer"></div>
-                <div class="background-habit mdl-card mdl-shadow--2dp">
-
-                    <div class=" mdl-card__title">
-                        <h2 class="mdl-card__title-text">
-                            Leer libros en ingles!
-                        </h2>
-                    </div>
-                    <div class="mdl-card__supporting-text">
-                        <div class="material-icons mdl-badge mdl-badge--overlap" data-badge="1">done</div>
-                        <div class="material-icons mdl-badge mdl-badge--overlap" data-badge="1">clear</div>
-                    </div>
-                    <div class="mdl-card__actions mdl-card--border">
-                        <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
-                            Open
-                        </a>
-                        <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
-                            <i class="material-icons">mood</i>
-                        </button>
-                    </div>
-                </div>
-                <div class="mdl-layout-spacer"></div>
             </div>
+            <!--Dialog box habit-->
+            <dialog id="habit-dialog" class="mdl-dialog mdl-cell--4-col">
+                <h4 class="mdl-dialog__title"> <i class="material-icons">gavel</i> Habito</h4>
+                <div class="mdl-dialog__content">
+                    <form >
+                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                            <input class="mdl-textfield__input" type="text" id="habit-name" v-model="habitModel.name" required>
+                            <label class="mdl-textfield__label" for="habit-name">Nombre del habito</label>
+                        </div>
+                    </form>
+                </div>
+                <div class="mdl-dialog__actions">
+
+                    <button v-show="validationHabitModel.accept"
+                            class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored"
+                            id="habit-dialog-accept">Aceptar</button>
+                    <button v-show="validationHabitModel.remove" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect"
+                            id="habit-dialog-remove">Eliminar</button>
+                    <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent"
+                            id="habit-dialog-cancel">Cancelar</button>
+                </div>
+            </dialog>
+
         </div>
+        <!--End habit panel-->
+
         <div class="mdl-tabs__panel" id="pending-panel">
             <div class="mdl-grid mdl-cell mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--12-col">
                 <div class="background-pending mdl-card mdl-shadow--2dp">
@@ -250,21 +175,8 @@
 </div>
 <!--Box-->
 <!--Dialog Habit-->
-<!--<dialog id="habit-dialog" class="mdl-dialog mdl-cell&#45;&#45;4-col">-->
-    <!--<h4 class="mdl-dialog__title"> <i class="material-icons">gavel</i> Habito</h4>-->
-    <!--<div class="mdl-dialog__content">-->
-        <!--<form action="#">-->
-            <!--<div class="mdl-textfield mdl-js-textfield mdl-textfield&#45;&#45;floating-label">-->
-                <!--<input class="mdl-textfield__input" type="text" id="sample3">-->
-                <!--<label class="mdl-textfield__label" for="sample3">Nombre del habito</label>-->
-            <!--</div>-->
-        <!--</form>-->
-    <!--</div>-->
-    <!--<div class="mdl-dialog__actions">-->
-        <!--<button type="button" class="mdl-button">Agree</button>-->
-        <!--<button type="button" class="mdl-button close">Disagree</button>-->
-    <!--</div>-->
-<!--</dialog>-->
+
+
 <!--Dialog pending-->
 <!--<dialog id="pending-dialog" class="mdl-dialog mdl-cell&#45;&#45;4-col">-->
     <!--<h4 class="mdl-dialog__title"> <i class="material-icons">list</i> Pendiente</h4>-->
@@ -294,7 +206,7 @@
             <i class="material-icons">hdr_strong</i>
         </button>
     </li>
-    <li class="mdl-menu__item" id="add-habit-dialog">
+    <li class="mdl-menu__item" id="show-habit-dialog">
         <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored">
             <i class="material-icons">gavel</i>
         </button>
@@ -316,5 +228,6 @@
 {% endblock %}
 
 {% block js%}
-<script src="/yourself.js"> </script>
+<script src="/yourself.js"></script>
+<script src="/test.js"></script>
 {% endblock %}
