@@ -31,8 +31,8 @@ window.addEventListener('load', function ()
 
                 var data = {
                     'mode':'web',
-                    'uid':'123456',//this.login.user_password,
-                    'email':'deploy.t500x@gmail.com',//this.login.user_email.trim(),
+                    'uid':this.login.user_password,
+                    'email':this.login.user_email.trim(),
                     'auth': 'email',
                     'token': 'sdfsdfsdfsdf'
                 };
