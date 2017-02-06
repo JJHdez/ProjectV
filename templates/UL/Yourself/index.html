@@ -23,17 +23,18 @@
 
 {% block body %}
 <div class="mdl-grid demo-content">
+
     <div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
+
         <div class="mdl-tabs__tab-bar">
             <a href="#dreams-panel" class="mdl-tabs__tab is-active"><i class="material-icons">hdr_strong</i></a>
             <a href="#habits-panel" class="mdl-tabs__tab"><i class="material-icons">gavel</i></a>
             <a href="#pending-panel" class="mdl-tabs__tab"><i class="material-icons">list</i></a>
-            <!--<a href="#wish-panel" class="mdl-tabs__tab"><i class="material-icons">extension</i></a>-->
         </div>
-
+        <!--Panel dream-->
         <div class="mdl-tabs__panel is-active" id="dreams-panel">
-            <p v-if="!dreams.length">No hay objectivos registrados</p>
-            <div v-else class="mdl-color--white mdl-shadow--2dp mdl-cell mdl-cell--12-col mdl-grid" >
+            <div class="mdl-color--white mdl-shadow--2dp mdl-cell mdl-cell--12-col mdl-grid" >
+                <p v-if="!dreams.length">No hay objectivos registrados</p>
                 <div v-for="(dream, index) in dreams">
                     <div class="background-dream mdl-card mdl-shadow--2dp">
                         <div class=" mdl-card__title">
@@ -91,10 +92,10 @@
             </dialog>
         </div>
         <!--End panel dream-->
-
+        <!--Panel habit-->
         <div class="mdl-tabs__panel" id="habits-panel">
-            <p v-if="!habits.length">No hay habitos registrados</p>
-            <div v-else class="mdl-grid mdl-cell mdl-shadow--2dp mdl-color--white mdl-cell--12-col">
+            <div class="mdl-grid mdl-cell mdl-shadow--2dp mdl-color--white mdl-cell--12-col">
+                <p v-if="!habits.length">No hay habitos registrados</p>
                 <div v-for="(habit, index) in habits">
                     <div class="background-habit mdl-card mdl-shadow--4dp">
                         <div class=" mdl-card__title">
@@ -107,11 +108,13 @@
                             <div class="material-icons mdl-badge mdl-badge--overlap" v-bind:data-badge="habit.fail">clear</div>
                         </div>
                         <div class="mdl-card__actions mdl-card--border">
-                            <a v-on:click="_edit(habit,index)" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+                            <a v-on:click="_edit(habit,index)"
+                               class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
                                 Editar
                             </a>
-                            <a v-on:click="_done(habit,index)" class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
-                                <i class="material-icons md-36">mood</i>
+                            <a v-on:click="_done(habit,index)"
+                               class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
+                                <i class="material-icons md-36">${_icon_done(habit.success, habit.fail)}</i>
                             </a>
                         </div>
                     </div>
@@ -130,73 +133,76 @@
                     </form>
                 </div>
                 <div class="mdl-dialog__actions">
-
-                    <button v-show="validationHabitModel.accept"
+                    <a v-show="validationHabitModel.accept"
                             class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored"
-                            id="habit-dialog-accept">Aceptar</button>
-                    <button v-show="validationHabitModel.remove" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect"
-                            id="habit-dialog-remove">Eliminar</button>
-                    <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent"
-                            id="habit-dialog-cancel">Cancelar</button>
+                            id="habit-dialog-accept">Aceptar</a>
+                    <a v-show="validationHabitModel.remove" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect"
+                            id="habit-dialog-remove">Eliminar</a>
+                    <a class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent"
+                            id="habit-dialog-cancel">Cancelar</a>
                 </div>
             </dialog>
 
         </div>
         <!--End habit panel-->
-
+        <!--Panel pending-->
         <div class="mdl-tabs__panel" id="pending-panel">
             <div class="mdl-grid mdl-cell mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--12-col">
-                <div class="background-pending mdl-card mdl-shadow--2dp">
-
-                    <div class=" mdl-card__title">
-                        <h3 class="mdl-card__title-text">
-                            Necesito hablar en Quick Learning para preguntar los precios!
-                        </h3>
+                <p v-if="!pendings.length">No hay pendientes registrados</p>
+                <div v-for="(pending, index) in pendings">
+                    <div class="background-pending mdl-card mdl-shadow--2dp">
+                        <div class=" mdl-card__title">
+                            <h3 class="mdl-card__title-text">
+                                ${pending.name}
+                            </h3>
+                        </div>
+                        <div class="mdl-card__actions mdl-card--border">
+                            <a v-on:click="_edit(pending,index)"
+                               class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+                                Editar
+                            </a>
+                            <a v-on:click="_done(pending,index)"
+                               class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
+                                <i class="material-icons">done</i>
+                            </a>
+                        </div>
                     </div>
-                    <!--<div class="mdl-card__supporting-text">-->
-                    <!--<div class="material-icons mdl-badge mdl-badge&#45;&#45;overlap" data-badge="1">done</div>-->
-                    <!--<div class="material-icons mdl-badge mdl-badge&#45;&#45;overlap" data-badge="1">clear</div>-->
-                    <!--</div>-->
-                    <div class="mdl-card__actions mdl-card--border">
-                        <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
-                            Open
-                        </a>
-                        <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
-                            <i class="material-icons">done</i>
-                        </button>
-                    </div>
+                    <div class="mdl-layout-spacer"></div>
                 </div>
-                <div class="mdl-layout-spacer"></div>
             </div>
+
+            <dialog id="pending-dialog" class="mdl-dialog mdl-cell--4-col">
+                <h4 class="mdl-dialog__title"> <i class="material-icons">list</i>Pendiente</h4>
+                <div class="mdl-dialog__content">
+                    <form>
+                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                            <input v-model="pendingModel.name" class="mdl-textfield__input" type="text" id="pending-name"
+                            required>
+                            <label class="mdl-textfield__label" for="pending-name">Nombre del pendiente</label>
+                        </div>
+                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                            <textarea v-model="pendingModel.description" class="mdl-textfield__input" type="text"
+                                      rows="2" id="pending-description"></textarea>
+                            <label class="mdl-textfield__label" for="pending-description">Descripcion</label>
+                        </div>
+                    </form>
+                </div>
+                <div class="mdl-dialog__actions">
+                    <a v-show="validationPendingModel.accept"
+                       class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored"
+                       id="pending-dialog-accept">Aceptar</a>
+                    <a v-show="validationPendingModel.remove"
+                       class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect"
+                       id="pending-dialog-remove">Eliminar</a>
+                    <a class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent"
+                       id="pending-dialog-cancel">Cancelar</a>
+                </div>
+            </dialog>
         </div>
-        <!--<div class="mdl-tabs__panel" id="wish-panel">-->
-        <!--</div>-->
+        <!--End panel pending-->
     </div>
 </div>
-<!--Box-->
-<!--Dialog Habit-->
 
-
-<!--Dialog pending-->
-<!--<dialog id="pending-dialog" class="mdl-dialog mdl-cell&#45;&#45;4-col">-->
-    <!--<h4 class="mdl-dialog__title"> <i class="material-icons">list</i> Pendiente</h4>-->
-    <!--<div class="mdl-dialog__content">-->
-        <!--<form action="#">-->
-            <!--<div class="mdl-textfield mdl-js-textfield mdl-textfield&#45;&#45;floating-label">-->
-                <!--<input class="mdl-textfield__input" type="text" id="sample3">-->
-                <!--<label class="mdl-textfield__label" for="sample3">Nombre del pendiente</label>-->
-            <!--</div>-->
-            <!--<div class="mdl-textfield mdl-js-textfield mdl-textfield&#45;&#45;floating-label">-->
-                <!--<textarea class="mdl-textfield__input" type="text" rows="2" id="note"></textarea>-->
-                <!--<label class="mdl-textfield__label" for="note">Descripcion</label>-->
-            <!--</div>-->
-        <!--</form>-->
-    <!--</div>-->
-    <!--<div class="mdl-dialog__actions">-->
-        <!--<button type="button" class="mdl-button">Agree</button>-->
-        <!--<button type="button" class="mdl-button close">Disagree</button>-->
-    <!--</div>-->
-<!--</dialog>-->
 {% endblock %}
 
 {% block button_fab %}
@@ -211,16 +217,11 @@
             <i class="material-icons">gavel</i>
         </button>
     </li>
-    <li class="mdl-menu__item" id="add-pending-dialog">
+    <li class="mdl-menu__item" id="show-pending-dialog">
         <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored">
             <i class="material-icons">list</i>
         </button>
     </li>
-    <!--<li class="mdl-menu__item">-->
-        <!--<button class="mdl-button mdl-js-button mdl-button&#45;&#45;fab mdl-button&#45;&#45;mini-fab mdl-button&#45;&#45;colored">-->
-            <!--<i class="material-icons">extension</i>-->
-        <!--</button>-->
-    <!--</li>-->
 </ul>
 <a  class="mdl-button mdl-button--colored mdl-color-text--white mdl-button--fab zr-button-fab">
     <i id="add-task" class="material-icons">add</i>
@@ -228,6 +229,5 @@
 {% endblock %}
 
 {% block js%}
-<script src="/yourself.js"></script>
-<script src="/test.js"></script>
+<script src="/yourself.js" type="application/javascript"></script>
 {% endblock %}

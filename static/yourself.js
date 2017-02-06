@@ -3,27 +3,6 @@ window.addEventListener('load', function () {
     var apiv1 = '/api/v1/';
     var delimiters = ['${', '}'];
 
-    function getDateUtc(_date, _format){
-        var now_utc =  new Date(
-            _date.getUTCFullYear(),
-            _date.getUTCMonth(),
-            _date.getUTCDate(),
-            _date.getUTCHours(),
-            _date.getUTCMinutes(),
-            _date.getUTCSeconds()
-        );
-        var datetime_utc =  now_utc.getFullYear()+'-'+
-            now_utc.getMonth()+'-'+
-            now_utc.getDate();
-        if (_format == 'datetime'){
-            datetime_utc= datetime_utc+' '+
-                now_utc.getHours()+':'+
-                now_utc.getMinutes()+':'+
-                now_utc.getSeconds();
-        }
-        return datetime_utc;
-    }
-
     /// DREAM ////
     var dreamDialog = null;
     var showDreamDialogButton = null;
@@ -313,8 +292,20 @@ window.addEventListener('load', function () {
                     return false;
                 });
             },
+
             _remove : function () {
                 this._callback(null, this.url+'/'+this.habitModel.id, 'DELETE','remove');
+            },
+            _icon_done: function (_success, _fail) {
+                var _total_days = _success + _fail;
+                var _total_percent = _total_days>0? (_success*100)/_total_days:0;
+                var _status = 'sentiment_very_satisfied';
+                if(_total_percent>41 && _total_percent<59 && _total_days!=0){
+                    _status = 'sentiment_neutral';
+                }else if(_total_percent<40 && _total_days!=0){
+                    _status = 'sentiment_very_dissatisfied';
+                }
+                return _status;
             }
         }, // end methods
 
@@ -360,6 +351,165 @@ window.addEventListener('load', function () {
             habitDialog.close();
     }
 
+    /// Pending
+    var pendingDialog = null;
+    var showPendingDialogButton = null;
+
+    var pending_panelV = new Vue({
+        delimiters: delimiters,
+        el: '#pending-panel',
+        data:{
+            pendings: [],
+            pendingModel:{
+                index:-1,
+                id:-1,
+                name: '',
+                completed_at:'',
+                description:''
+            },
+            url: apiv1+'pending',
+            flagNew:true
+        },
+
+        methods:{
+            // if clicked tab pending or load page your self
+            init: function () {
+                this._callback(null, this.url,'GET', 'init');
+            },
+
+            _accept :function() {
+                var  _action = this.flagNew?'new':'edit';
+                var  _method = this.flagNew?'POST':'PUT';
+                var  _url = this.flagNew?this.url:this.url+'/'+this.pendingModel.id;
+                var new_dream = {
+                    name: this.pendingModel.name
+                };
+                if (this.pendingModel.description.length>0){
+                    new_dream['description']= this.pendingModel.description;
+                }
+                this._callback(new_dream,_url,_method,_action);
+            },
+            // clean model
+            _clean: function(){
+                this.pendingModel.name = '';
+                this.pendingModel.description= '';
+                this.pendingModel.index = -1;
+                this.pendingModel.id = -1;
+            },
+
+            _done: function(data, index){
+                var _values = {'completed_at': getDateUtc(new Date(),'datetime')};
+                this.pendingModel.index = index;
+                this._callback(_values, this.url+'/'+data.id, 'PUT','done');
+            },
+
+            _edit: function(data, index){
+                this.flagNew = false;
+                this.pendingModel.name = data.name;
+                this.pendingModel.description = data.description;
+                this.pendingModel.id = data.id;
+                this.pendingModel.index = index;
+                pending_dialog_open();
+            },
+
+            _callback: function(_data, _url, _method, _action){
+                var self = this;
+                var _json = null;
+                if (_data)
+                    _json = JSON.stringify(_data);
+                $.ajax({
+                    url: _url,
+                    type:_method,
+                    data:_json,
+                    contentType:'application/json'
+                }).done(function( response ) {
+                    if (response.status_code==200 || response.status_code == 201){
+                        switch (_action){
+                            case 'init':
+                                for (var c = 0 ; c < response.data.pendings.length; c++){
+                                    self.pendings.push(response.data.pendings[c])
+                                }
+                                break;
+                            case 'done':
+                                self.pendings.splice(self.pendingModel.index,1);
+                                break;
+                            case 'remove':
+                                self.pendings.splice(self.pendingModel.index,1);
+                                pending_dialog_close();
+                                break;
+                            case 'new':
+                                _data['id']=response.data.pendings[0].id;
+                                // _data['created_at'] = new Date().toJSON().slice(0,10).replace(/-/g,'/');
+                                self.pendings.push(_data);
+                                pending_dialog_close();
+                                break;
+                            case 'edit':
+                                _data['id']=self.pendingModel.id;
+                                _data['description'] = self.pendingModel.description;
+                                self.pendings.splice(self.pendingModel.index,1,_data);
+                                pending_dialog_close();
+                                break
+                        }
+                        if (response.message)
+                            notify({message: response.message});
+                        self._clean();
+                        return true;
+                    }else{
+                        notify({message:response.message});
+                        return false;
+                    }
+                }).fail(function() {
+                    notify({message:'Error al generar la peticion, favor interntar mas tarde! :('});
+                    return false;
+                });
+            },
+
+            _remove : function () {
+                this._callback(null, this.url+'/'+this.pendingModel.id, 'DELETE','remove');
+            }
+        }, // end methods
+
+        computed: {
+            validationPendingModel: function () {
+                return {
+                    accept: this.pendingModel.name.trim().length>3,
+                    remove: !this.flagNew
+                }
+            }
+        }
+
+    });
+
+    pending_panelV.init();
+
+    pendingDialog = document.querySelector('#pending-dialog');
+    showPendingDialogButton = document.querySelector('#show-pending-dialog');
+
+    if (! pendingDialog.showModal) {
+        dialogPolyfill.registerDialog(pendingDialog);
+    }
+    showPendingDialogButton.addEventListener('click', function() {
+        pending_dialog_open();
+        pending_panelV.flagNew = true;
+    });
+    pendingDialog.querySelector('#pending-dialog-cancel').addEventListener('click', function() {
+        pending_panelV._clean();
+        pending_dialog_close();
+    });
+    pendingDialog.querySelector('#pending-dialog-remove').addEventListener('click', function() {
+        pending_panelV._remove();
+    });
+    pendingDialog.querySelector('#pending-dialog-accept').addEventListener('click', function() {
+        pending_panelV._accept()
+    });
+    function pending_dialog_open() {
+        if(pendingDialog)
+            pendingDialog.showModal();
+    }
+    function pending_dialog_close() {
+        if(pendingDialog)
+            pendingDialog.close();
+    }
 
 
 });
