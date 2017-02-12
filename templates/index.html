@@ -57,14 +57,17 @@
                         <form>
 
                             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                                <input class="mdl-textfield__input" type="email" id="login-user-email" v-model="login.user_email">
+                                <input v-model="login.user_email"
+                                       class="mdl-textfield__input" type="email" id="login-user-email" >
                                 <label class="mdl-textfield__label" for="login-user-email">
                                     <i class="material-icons md-18">person</i>Correo electronico
                                 </label>
                             </div>
 
                             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                                <input class="mdl-textfield__input" type="password" id="login-user-password" v-model="login.user_password">
+                                <input  @keyup.enter="auth" v-model="login.user_password"
+                                        class="mdl-textfield__input" type="password"
+                                        id="login-user-password" >
                                 <label class="mdl-textfield__label" for="login-user-password">
                                     <i class="material-icons md-18">lock</i>Contraseña
                                 </label>
@@ -72,11 +75,11 @@
                         </form>
                     </div>
                     <div class="mdl-card__actions mdl-card--border">
-                        <a v-show="validation.sign_in" id="sign-in" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect mdl-button--raised" v-on:click="auth">
-                            Iniciar sesion
-                        </a>
                         <a v-show="validation.sign_in" id="login-cancel" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect mdl-button--raised" v-on:click="cancel">
                             Cancelar
+                        </a>
+                        <a v-show="validation.sign_in" id="sign-in" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect mdl-button--raised" v-on:click="auth">
+                            Iniciar sesion
                         </a>
                     </div>
                 </div>

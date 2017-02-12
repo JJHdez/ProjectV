@@ -1,80 +1,188 @@
 {% extends "UL/layout.html" %}
 {% block layout_title %} Proyectos {% endblock %}
-{% block body %}
-<div class="mdl-grid portfolio-max-width">
-    <!--<div class="mdl-grid mdl-cell mdl-cell&#45;&#45;12-col mdl-cell&#45;&#45;4-col-tablet mdl-card mdl-shadow&#45;&#45;4dp">-->
-        <!--<div class="mdl-card__media mdl-cell mdl-cell&#45;&#45;12-col-tablet">-->
-            <!--<img class="article-image" src=" ../../images/example-blog01.jpg" border="0" alt="">-->
-        <!--</div>-->
-        <!--<div class="mdl-cell mdl-cell&#45;&#45;8-col">-->
-            <!--<h2 class="mdl-card__title-text">Velit anim eiusmod labore sit amet</h2>-->
-            <!--<div class="mdl-card__supporting-text padding-top">-->
-                <!--<span>Posted 2 days ago</span>-->
-                <!--<div id="tt1" class=" icon material-icons portfolio-share-btn">share</div>-->
-                <!--<div class="mdl-tooltip" for="tt1">-->
-                    <!--Share via social media-->
-                <!--</div>-->
-            <!--</div>-->
-            <!--<div class="mdl-card__supporting-text no-left-padding">-->
-                <!--<p>Excepteur reprehenderit sint exercitation ipsum consequat qui sit id velit elit. Velit anim eiusmod labore sit amet. Voluptate voluptate irure occaecat deserunt incididunt esse in. Qui ullamco consectetur aute fugiat officia ullamco proident Lorem ad irure. Sint eu ut consectetur ut esse veniam laboris adipisicing aliquip minim anim labore commodo.</p>-->
-                <!--<span>Category: <a href="#">Latest</a></span>-->
-            <!--</div>-->
-        <!--</div>-->
-    <!--</div>-->
-    <div class="mdl-cell mdl-cell--3-col mdl-cell--3-col-tablet mdl-card  mdl-card mdl-shadow--2dp portfolio-blog-card-compact">
-        <div class="mdl-card__title mdl-card--expand">
-            <h2 class="mdl-card__title-text">To-do</h2>
-        </div>
-        <div class="mdl-card__supporting-text">
-                <i class="material-icons  mdl-list__item-avatar mdl-badge mdl-badge--overlap mdl-badge--no-background" data-badge="1">list</i>
-                <i class="material-icons  mdl-list__item-avatar mdl-badge mdl-badge--overlap mdl-badge--no-background" data-badge="1">subject</i>
-                <i class="material-icons  mdl-list__item-avatar mdl-badge mdl-badge--overlap mdl-badge--no-background" data-badge="1">bug_report</i>
-        </div>
-        <div class="mdl-card__actions mdl-card--border">
-            <a href="{{url_for(prefix_admin+'/project/task')}}" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect mdl-button--accent">
-                Views
-            </a>
-        </div>
-    </div>
-</div>
+{% block css %}
+<style>
+    .project-card-wide > .mdl-card__title {
+        /*color: #fff;*/
+        height: 100px;
+        background: url('http://pre07.deviantart.net/e38e/th/pre/i/2004/250/0/b/_hypnotized_by_sc3l.jpg') center / cover;
+    }
+</style>
+{% endblock%}
 
-<dialog class="mdl-dialog mdl-cell--6-col">
-    <h4 class="mdl-dialog__title">Proyecto</h4>
-    <div class="mdl-dialog__content">
-        <form action="#">
-            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                <input class="mdl-textfield__input" type="text" id="sample3">
-                <label class="mdl-textfield__label" for="sample3">Nombre del proyecto</label>
+{% block body %}
+<div class="mdl-grid">
+    <!--<div id="projects-panel" class="mdl-grid mdl-cell mdl-cell&#45;&#45;12-col mdl-cell&#45;&#45;4-col-tablet mdl-card mdl-shadow&#45;&#45;4dp">-->
+    <div id="projects-panel" class="mdl-cell mdl-cell--12-col mdl-grid">
+
+            <p v-if="!projects.length">No hay proyectos registrados</p>
+            <div v-for="(project, index) in projects" class="mdl-cell">
+
+                <div class="project-card-wide mdl-card mdl-shadow--4dp">
+                    <div class="mdl-card__title mdl-card--expand">
+                        <h2 class="mdl-card__title-text">${project.name}</h2>
+                    </div>
+
+                    <div class="mdl-card__supporting-text">
+                        <!--<i class="material-icons  mdl-list__item-avatar mdl-badge mdl-badge&#45;&#45;overlap mdl-badge&#45;&#45;no-background" data-badge="1">list</i>-->
+                        <i class="material-icons  mdl-list__item-avatar mdl-badge mdl-badge--overlap mdl-badge--no-background" data-badge="1">subject</i>
+                        <i class="material-icons  mdl-list__item-avatar mdl-badge mdl-badge--overlap mdl-badge--no-background" data-badge="1">bug_report</i>
+                    </div>
+
+                    <div class="mdl-card__actions mdl-card--border">
+                        <a v-on:click="_view_task(project,index)"
+                           class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+                            Ver tareas
+                        </a>
+                        <span v-if="project.team"  class="mdl-chip mdl-chip--contact mdl-chip--deletable">
+                            <i class="mdl-chip__contact material-icons">people</i>
+                            <span class="mdl-chip__text">${project.team}</span>
+                            <!--<a href="#" class="mdl-chip__action"><i class="material-icons">cancel</i></a>-->
+                        </span>
+                    </div>
+
+                    <div class="mdl-card__menu">
+                        <a v-on:click="_edit(project,index)" class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
+                            <i class="material-icons">edit</i>
+                        </a>
+                    </div>
+                </div>
+                <div class="mdl-layout-spacer"></div>
+
             </div>
-        </form>
+            <dialog id="project-dialog" class="mdl-dialog mdl-cell--4-col">
+                <h4 class="mdl-dialog__title"><i class="material-icons">business_center</i>Proyecto</h4>
+                <div class="mdl-dialog__content">
+                    <form action="#">
+                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                            <input class="mdl-textfield__input" type="text" id="project-name"
+                                   v-model="projectModel.name" required>
+                            <label class="mdl-textfield__label" for="project-name">Nombre del proyecto</label>
+                        </div>
+                    </form>
+                </div>
+                <div class="mdl-dialog__actions">
+                    <button v-show="validationProjectModel.accept"
+                            class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored"
+                            id="project-dialog-accept">Aceptar</button>
+                    <button v-show="validationProjectModel.remove"
+                            class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect"
+                            id="project-dialog-remove">Eliminar</button>
+                    <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent"
+                            id="project-dialog-cancel">Cancelar</button>
+
+                </div>
+            </dialog>
     </div>
-    <div class="mdl-dialog__actions">
-        <button type="button" class="mdl-button">Agree</button>
-        <button type="button" class="mdl-button close">Disagree</button>
+
+    <div id="project-tasks-panel" class="mdl-cell mdl-cell--12-col mdl-grid">
+        <h3 v-if="tasks.length">${project_name}</h3>
+        <p v-if="!tasks.length">No hay tareas registradas</p>
+        <table v-else class="mdl-cell mdl-cell--12-col mdl-data-table mdl-js-data-table mdl-shadow--4dp">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th class="mdl-data-table__cell--non-numeric">Nombre</th>
+                    <th>Fecha inicio / fin</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            <tr v-for="(task, index) in tasks">
+                <td>
+                    <a v-on:click="_edit(task,index)" class="mdl-button mdl-js-button mdl-button--icon">
+                        <i class="material-icons">edit</i>
+                    </a>
+                    <a v-on:click="_done(task,index)" class="mdl-button mdl-js-button mdl-button--icon">
+                        <i class="material-icons">done</i>
+                    </a>
+                </td>
+                <td class="mdl-data-table__cell--non-numeric">
+                    ${task.name}
+                </td>
+                <td>
+                    <span v-if="task.start_date_at"class="mdl-chip mdl-chip--contact">
+                        <span class="mdl-chip__contact mdl-color--teal mdl-color-text--white">S</span>
+                        <span class="mdl-chip__text">${task.start_date_at}</span>
+                    </span>
+                    <span v-if="task.due_date_at" class="mdl-chip mdl-chip--contact">
+                        <span class="mdl-chip__contact mdl-color--teal mdl-color-text--white">E</span>
+                        <span class="mdl-chip__text">${task.due_date_at}</span>
+                    </span>
+                </td>
+                <td>
+                    <a href="{{url_for(prefix_admin+'/project/task/subtask')}}">
+                        <i class="material-icons  mdl-list__item-avatar mdl-badge mdl-badge--overlap mdl-badge--no-background" data-badge="1">subject</i>
+                    </a>
+                    <a href="{{url_for(prefix_admin+'/project/task/issue')}}">
+                        <i class="material-icons  mdl-list__item-avatar mdl-badge mdl-badge--overlap mdl-badge--no-background" data-badge="1">bug_report</i>
+                    </a>
+                </td>
+            </tr>
+        </table>
+
+        <dialog id="task-dialog" class="mdl-dialog mdl-cell--4-col">
+            <h4 class="mdl-dialog__title"><i class="material-icons">list</i>Tarea</h4>
+            <div class="mdl-dialog__content">
+                <form>
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        <input v-model="taskModel.name"
+                               class="mdl-textfield__input" type="text" id="task-name" required>
+                        <label class="mdl-textfield__label" for="task-name">Nombre de la tarea</label>
+                    </div>
+                    <br/>
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        <input v-model="taskModel.start_date_at"
+                               class="mdl-textfield__input" type="date" id="task-start-date-at">
+                        <label class="mdl-textfield__label" for="task-start-date-at">Fecha de inicio</label>
+                    </div>
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        <input v-model="taskModel.due_date_at"
+                               class="mdl-textfield__input" type="date" id="task-due-date-at">
+                        <label class="mdl-textfield__label" for="task-due-date-at">Fecha fin</label>
+                    </div>
+
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        <textarea v-model="taskModel.description"
+                                  class="mdl-textfield__input" type="text" rows="4" id="note"></textarea>
+                        <label class="mdl-textfield__label" for="note">Descripcion</label>
+                    </div>
+                </form>
+            </div>
+            <div class="mdl-dialog__actions">
+                <button v-show="validationTaskModel.accept"
+                        class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored"
+                        id="task-dialog-accept">Aceptar</button>
+                <button v-show="validationTaskModel.remove" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect"
+                        id="task-dialog-remove">Eliminar</button>
+                <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent"
+                        id="task-dialog-cancel">Cancelar</button>
+
+            </div>
+        </dialog>
     </div>
-</dialog>
+
+</div>
 
 {% endblock %}
 
 {% block button_fab %}
-<a id="view-source"
-   class="mdl-button mdl-button--colored mdl-color-text--white mdl-button--fab ">
-    <i id="add-project" class="material-icons">business_center</i>
+<a id="show-project-dialog" class="mdl-button mdl-button--colored mdl-color-text--white mdl-button--fab zr-button-fab">
+    <i class="material-icons">business_center</i>
 </a>
+
+<a id="from-task-back-project"
+   class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored  zr-button-fab zr-second-fab">
+    <i class="material-icons">arrow_back</i>
+</a>
+<a id="show-task-dialog"
+   class="mdl-button mdl-button--colored mdl-color-text--white mdl-button--fab zr-button-fab">
+    <i class="material-icons">list</i>
+</a>
+
 {% endblock %}
 
 {% block js %}
-<script>
-    var dialog = document.querySelector('dialog');
-    var showDialogButton = document.querySelector('#add-project');
-    if (! dialog.showModal) {
-        dialogPolyfill.registerDialog(dialog);
-    }
-    showDialogButton.addEventListener('click', function() {
-        dialog.showModal();
-    });
-    dialog.querySelector('.close').addEventListener('click', function() {
-        dialog.close();
-    });
-</script>
+<script src="/project.js" type="application/javascript"></script>
+<script src="/test.js" type="application/javascript"></script>
 {% endblock %}

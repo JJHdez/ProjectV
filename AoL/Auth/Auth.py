@@ -47,9 +47,9 @@ class Auth:
                             _login = jsonify(_data_qry)
                             _login.status_code = _status_code
                     else:
-                        raise ExceptionRest(status_code=404, message="Verifique su usuario y contrsenia")
+                        raise ExceptionRest(status_code=404, message="Verifique su usuario y contrseña")
             else:
-                raise ExceptionRest(status_code=404, message="No se han encontrado resultados")
+                raise ExceptionRest(status_code=404, message="El usuario no esta registrado")
         except (Exception, ExceptionRest), e:
             _login = processing_rest_exception(e)
         print _login

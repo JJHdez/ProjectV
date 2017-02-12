@@ -228,6 +228,9 @@ _:-ms-input-placeholder, :root .demo-graph {
     margin-bottom: 40px;
     z-index: 900;
 }
+.zr-second-fab{
+    right:72px;
+}
 .zr-background-transparent{
     background-color : transparent;
 }
@@ -239,7 +242,7 @@ _:-ms-input-placeholder, :root .demo-graph {
     background: url('/images/girl-sexy.jpg') center 30% no-repeat;
     */
     background-size: cover;
-    background: url('http://orig03.deviantart.net/8418/f/2012/137/b/3/b3edae0cd189c70632e214d5b3f110c1-d5040df.jpg') center 30% no-repeat;
+    background: url('http://orig05.deviantart.net/710b/f/2010/136/c/b/smiley_faces_by_soad2k.jpg') center 30% no-repeat;
 }
 .dock button i {
     -webkit-box-reflect: below 3px

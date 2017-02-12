@@ -135,7 +135,6 @@ class ProjectTask(Resource, ProjectTaskR):
             if not _errors:
                 _val = type_of_update_rest(self._fields, _request)
                 _qrp = "UPDATE %s SET %s WHERE id=%s;" % (self._table, _val, id,)
-                print _qrp
                 g.db_conn.execute(_qrp)
                 if g.db_conn.count() > 0:
                     _put = processing_rest_success(status_code=201, message="El registro fue actualizado correctamente")
