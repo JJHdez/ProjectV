@@ -231,6 +231,9 @@ _:-ms-input-placeholder, :root .demo-graph {
 .zr-second-fab{
     right:72px;
 }
+.zr-third-fab{
+    right:144px;
+}
 .zr-background-transparent{
     background-color : transparent;
 }

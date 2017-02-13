@@ -163,9 +163,11 @@
     </div>
 
     <div class="mdl-cell mdl-cell--12-col mdl-grid">
+
         <div id="project-sub-tasks-panel" class="mdl-cell mdl-cell--6-col mdl-grid">
             <h3 v-if="subTasks.length">${task_name}</h3>
             <p v-if="!subTasks.length">No hay sub-tareas registradas</p>
+
             <table v-else
                    class="mdl-cell mdl-cell--6-col mdl-data-table mdl-js-data-table mdl-shadow--4dp">
                 <thead>
@@ -263,64 +265,112 @@
 
         <div class="mdl-layout-spacer"></div>
 
-        <!--<div id="project-task-issues-panel" class="mdl-cell mdl-cell&#45;&#45;6-col mdl-grid">-->
+        <div id="project-task-issues-panel" class="mdl-cell mdl-cell--6-col mdl-grid">
 
-            <!--<table class="mdl-cell mdl-cell&#45;&#45;6-col mdl-data-table mdl-js-data-table mdl-shadow&#45;&#45;4dp">-->
-                <!--<thead>-->
-                <!--<tr>-->
-                    <!--<th></th>-->
-                    <!--<th class="mdl-data-table__cell&#45;&#45;non-numeric">Nombre</th>-->
-                    <!--<th>Tipo</th>-->
-                    <!--&lt;!&ndash;<th>Prioridad</th>&ndash;&gt;-->
-                    <!--<th>Asignado</th>-->
-                <!--</tr>-->
-                <!--</thead>-->
-                <!--<tbody>-->
-                <!--<tr>-->
-                    <!--<td>-->
-                        <!--<a  class="mdl-button mdl-js-button mdl-button&#45;&#45;icon">-->
-                            <!--<i class="material-icons">edit</i>-->
-                        <!--</a>-->
-                        <!--<a class="mdl-button mdl-js-button mdl-button&#45;&#45;icon">-->
-                            <!--<i class="material-icons">done</i>-->
-                        <!--</a>-->
-                    <!--</td>-->
-                    <!--<td class="mdl-data-table__cell&#45;&#45;non-numeric">Acrylic (Transparent)</td>-->
-                    <!--<td>-->
-                <!--<span class="mdl-chip mdl-chip&#45;&#45;contact">-->
-                    <!--<span class="mdl-chip__contact mdl-color&#45;&#45;teal mdl-color-text&#45;&#45;white"></span>-->
-                    <!--<span class="mdl-chip__text">Bug</span>-->
-                <!--</span>-->
-                    <!--&lt;!&ndash;</td>&ndash;&gt;-->
-                    <!--&lt;!&ndash;<td>&ndash;&gt;-->
-                        <!--<br/>-->
-                <!--<span class="mdl-chip mdl-chip&#45;&#45;contact">-->
-                    <!--<span class="mdl-chip__contact mdl-color&#45;&#45;red mdl-color-text&#45;&#45;white"></span>-->
-                    <!--<span class="mdl-chip__text">Critoc</span>-->
-                <!--</span>-->
-                    <!--</td>-->
-                    <!--<td>-->
-                <!--<span class="mdl-chip mdl-chip&#45;&#45;contact mdl-chip&#45;&#45;deletable">-->
-                    <!--<img class="mdl-chip__contact" src="https://getmdl.io/templates/dashboard/images/user.jpg"></img>-->
-                    <!--<span class="mdl-chip__text">Jose Juan</span>-->
-                    <!--&lt;!&ndash;<a href="#" class="mdl-chip__action"><i class="material-icons">cancel</i></a>&ndash;&gt;-->
-                <!--</span>-->
-                    <!--</td>-->
-                <!--</tr>-->
-                <!--&lt;!&ndash;<tr>&ndash;&gt;-->
-                <!--&lt;!&ndash;<td class="mdl-data-table__cell&#45;&#45;non-numeric">Plywood (Birch)</td>&ndash;&gt;-->
-                <!--&lt;!&ndash;<td>50</td>&ndash;&gt;-->
-                <!--&lt;!&ndash;<td>$1.25</td>&ndash;&gt;-->
-                <!--&lt;!&ndash;</tr>&ndash;&gt;-->
-                <!--&lt;!&ndash;<tr>&ndash;&gt;-->
-                <!--&lt;!&ndash;<td class="mdl-data-table__cell&#45;&#45;non-numeric">Laminate (Gold on Blue)</td>&ndash;&gt;-->
-                <!--&lt;!&ndash;<td>10</td>&ndash;&gt;-->
-                <!--&lt;!&ndash;<td>$12.35</td>&ndash;&gt;-->
-                <!--&lt;!&ndash;</tr>&ndash;&gt;-->
-                <!--</tbody>-->
-            <!--</table>-->
+            <table class="mdl-cell mdl-cell--6-col mdl-data-table mdl-js-data-table mdl-shadow--4dp">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th class="mdl-data-table__cell--non-numeric">Nombre</th>
+                        <th>Tipo</th>
+                        <th>Asignado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(issue, index) in issues">
+                        <td>
+                            <a v-on:click="_edit(issue,index)"  class="mdl-button mdl-js-button mdl-button--icon">
+                                <i class="material-icons">edit</i>
+                            </a>
+                            <a v-on:click="_done(issue,index)" class="mdl-button mdl-js-button mdl-button--icon">
+                                <i class="material-icons">done</i>
+                            </a>
+                        </td>
+                        <td class="mdl-data-table__cell--non-numeric">
+                            ${issue.name}
+                        </td>
+                        <td>
+                            <span class="mdl-chip mdl-chip--contact">
+                                <span class="mdl-chip__contact mdl-color--teal mdl-color-text--white"></span>
+                                <span class="mdl-chip__text">${get_kind(issue.kind)}</span>
+                            </span>
+                            <br/>
+                            <span class="mdl-chip mdl-chip--contact">
+                                <span class="mdl-chip__contact mdl-color--red mdl-color-text--white"></span>
+                                <span class="mdl-chip__text">${get_priority(issue.priority)}</span>
+                            </span>
+                        </td>
+                        <td>
+                            <span class="mdl-chip mdl-chip--contact mdl-chip--deletable">
+                                <!--<img class="mdl-chip__contact" src="https://getmdl.io/templates/dashboard/images/user.jpg"></img>-->
+                                <i class="material-icons mdl-chip__contact">person</i>
+                                <span class="mdl-chip__text">${get_assigned_user(issue.assigned_user_id)}</span>
+                            </span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
 
-        <!--</div>-->
+            <dialog id="issue-dialog" class="mdl-dialog mdl-cell--6-col">
+                <h4 class="mdl-dialog__title">Problema</h4>
+                <div class="mdl-dialog__content">
+                    <form action="#">
+                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                            <input  v-model="issueModel.name" required
+                                    class="mdl-textfield__input" type="text" id="issue-name">
+                            <label class="mdl-textfield__label" for="issue-name">Nombre de la problema</label>
+                        </div>
+                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                            <select v-model="issueModel.assigned_user_id" required
+                                    class="mdl-textfield__input" id="issue-assigned-user-id">
+                                <option v-for="user in assigned_users" v-bind:value="user.id"
+                                        v-bind:selected="user.id == issueModel.assigned_user_id ? 'true' : 'false'">
+                                    ${user.name} ${user.last_name} ${user.email}
+                                </option>
+                            </select>
+                            <label class="mdl-textfield__label" for="issue-assigned-user-id">Usuario a asignar</label>
+                        </div>
+                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                            <select v-model="issueModel.kind" required
+                                    class="mdl-textfield__input" id="issue-kind">
+                                <option v-for="kind in kinds" v-bind:value="kind.value"
+                                        v-bind:selected="kind.value == issueModel.kind? 'true' : 'false'">
+                                    ${kind.text}
+                                </option>
+
+                            </select>
+                            <label class="mdl-textfield__label" for="issue-kind">Tipo</label>
+                        </div>
+                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                            <select v-model="issueModel.priority" required
+                                    class="mdl-textfield__input" id="issue-priority">
+                                <option v-for="priority in priorities" v-bind:value="priority.value"
+                                        v-bind:selected="priority.value == issueModel.priority ? 'true' : 'false'">
+                                    ${priority.text}
+                                </option>
+                            </select>
+                            <label class="mdl-textfield__label" for="issue-priority">Prioridad</label>
+                        </div>
+
+                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                            <textarea v-model="issueModel.description" required
+                                      class="mdl-textfield__input" rows="4" id="issue-description"></textarea>
+                            <label class="mdl-textfield__label" for="issue-description">Descripcion</label>
+                        </div>
+                    </form>
+                </div>
+                <div class="mdl-dialog__actions">
+                    <button v-show="validationIssueModel.accept"
+                            class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored"
+                            id="issue-dialog-accept">Aceptar</button>
+                    <button v-show="validationIssueModel.remove" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect"
+                            id="issue-dialog-remove">Eliminar</button>
+                    <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent"
+                            id="issue-dialog-cancel">Cancelar</button>
+                </div>
+            </dialog>
+
+        </div>
 
     </div>
 </div>
@@ -345,8 +395,12 @@
 </a>
 <!--end task fab-->
 <a id="from-sub-task-back-task"
-   class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored  zr-button-fab zr-second-fab">
+   class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored zr-button-fab zr-third-fab">
     <i class="material-icons">arrow_back</i>
+</a>
+<a id="show-issue-dialog"
+   class="mdl-button mdl-button--colored mdl-color-text--white mdl-button--fab zr-button-fab zr-second-fab">
+    <i class="material-icons">bug_report</i>
 </a>
 <a id="show-sub-task-dialog"
    class="mdl-button mdl-button--colored mdl-color-text--white mdl-button--fab zr-button-fab">

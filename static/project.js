@@ -2,7 +2,10 @@ window.addEventListener('load', function () {
     var apiv1 = '/api/v1/';
     var delimiters = ['${', '}'];
 
-    var projectV = taskV = subTaskV = null;
+    var projectV = null;
+    var taskV = null;
+    var subTaskV = null;
+    var issueV = null;
     // Project controller
     var projectDialog = null;
     var showProjectDialogButton = null;
@@ -14,6 +17,276 @@ window.addEventListener('load', function () {
     // Project sub-task controller
     var subTaskDialog = null;
     var showSubTaskDialogButton = null;
+
+
+    var issueDialog = null;
+    var showIssueDialogButton = null;
+
+
+    /// PROJECT TASK
+    issueV = new Vue({
+        delimiters: delimiters,
+        el: '#project-task-issues-panel',
+        data: {
+            issues: [],
+            issueModel: {
+                index: -1,
+                id: -1,
+                name: '',
+                kind: '',
+                priority: '',
+                project_task_id:'',
+                description:'',
+                assigned_user_id:-1
+            },
+            url: apiv1 + 'project/task/issue',
+            flagNew: true,
+            assigned_users: [],
+            kinds:[
+                {value:'bug', text:'Problema'},
+                {value:'enhancement', text:'Mejora'},
+                {value:'proposal', text:'Tarea'},
+                {value:'research', text:'Investigacion'}
+            ],
+            priorities:[
+                {value:'trivial', text:'trivial'},
+                {value:'minor', text:'Menor'},
+                {value:'major', text:'Mayor'},
+                {value:'critical', text:'Critico'},
+                {value:'blocker', text:'Bloquear'}
+            ]
+        },
+
+        methods: {
+            // if clicked tab issues or load page your self
+            init: function (_task_id) {
+                var _url = this.url+"?completed=False&by=project_task_id&project_task_id="+_task_id;
+                this._callback(null, _url, 'GET', 'init');
+                this.get_users();
+            },
+
+            _accept: function () {
+                var _action = this.flagNew ? 'new' : 'edit';
+                var _method = this.flagNew ? 'POST' : 'PUT';
+                var _url = this.flagNew ? this.url : this.url + '/' + this.issueModel.id;
+
+                var new_project_task_issue = {
+                    name: this.issueModel.name,
+                    project_task_id: taskV.current_task.id,
+                    assigned_user_id: this.issues.assigned_user_id,
+                    kind: this.issues.kind,
+                    priority: this.issues.priority,
+                };
+                if (this.issueModel.description.trim().length>3)
+                    new_project_task_issue['description']=this.issueModel.description.trim();
+
+                this._callback(new_project_task_issue, _url, _method, _action);
+            },
+            // clean model
+            _clean: function () {
+                this.issueModel.index = -1;
+                this.issueModel.id = -1;
+                this.issueModel.name = '';
+                this.issueModel.kind = '';
+                this.issueModel.priority = '';
+                this.issueModel.description= '';
+                this.issueModel.project_task_id= -1;
+                this.issueModel.user_assigned_id = -1;
+            },
+
+            _done: function (data, index) {
+                var _values = {'completed_at': getDateUtc(new Date(), 'datetime')};
+                this.issueModel.index = index;
+                this._callback(_values, this.url + '/' + data.id, 'PUT', 'done');
+            },
+
+            _edit: function (data, index) {
+                this.flagNew = false;
+                this.issueModel.index = index;
+                this.issueModel.id = data.id;
+                this.issueModel.name = data.name;
+                this.issueModel.kind = data.kind;
+                this.issueModel.priority = data.priority;
+                this.issueModel.description= data.description;
+                this.issueModel.assigned_user_id = data.assigned_user_id;
+                issue_dialog_open();
+            },
+
+            _callback: function (_data, _url, _method, _action) {
+                var self = this;
+                var _json = null;
+                if (_data)
+                    _json = JSON.stringify(_data);
+                $.ajax({
+                    url: _url,
+                    type: _method,
+                    data: _json,
+                    contentType: 'application/json'
+                }).done(function (response) {
+                    console.log(response);
+                    if (response.status_code == 200 || response.status_code == 201) {
+                        switch (_action) {
+                            case 'init':
+                                for (var c = 0; c < response.data.project_task_issues.length; c++) {
+                                    self.issues.push(response.data.project_task_issues[c])
+                                }
+                                break;
+                            case 'done':
+                                self.issues.splice(self.issueModel.index, 1);
+                                break;
+                            case 'remove':
+                                self.issues.splice(self.issueModel.index, 1);
+                                issue_dialog_close();
+                                break;
+                            case 'new':
+                                _data['id'] = response.data.project_task_issues[0].id;
+                                self.issues.push(_data);
+                                issue_dialog_close();
+                                break;
+                            case 'edit':
+                                _data['id'] = self.issueModel.id;
+                                // _data['created_at'] = self.issueModel.created_at;
+                                // _data['due_date_at'] = self.issueModel.due_date_at;
+                                self.issues.splice(self.issueModel.index, 1, _data);
+                                issue_dialog_close();
+                                break;
+                            case 'users':
+                                for (var o = 0; o < response.data.users.length; o++) {
+                                    self.assigned_users.push(response.data.users[o])
+                                }
+                                break;
+                        }
+                        if (response.message)
+                            notify({message: response.message});
+                        self._clean();
+                        return true;
+                    } else {
+                        notify({message: response.message});
+                        return false;
+                    }
+                }).fail(function () {
+                    notify({message: 'Error al generar la peticion, favor interntar mas tarde! :('});
+                    return false;
+                });
+            },
+
+            _remove: function () {
+                this._callback(null, this.url + '/' + this.issueModel.id, 'DELETE', 'remove');
+            },
+            _panel_show_hide:function(_action){
+                if (_action == 'hide'){
+                    $("#project-task-issues-panel").hide();
+                    $("#show-issue-dialog").hide();
+                }else {
+                    $("#project-task-issues-panel").show();
+                    $("#show-issue-dialog").show();
+                }
+            },
+            get_users: function () {
+                this.issueModel.assigned_user_id = -1;
+                this.assigned_users = [];
+                var _url = apiv1 +
+                    "user?get=team&by=project_task_id&project_task_id="+taskV.current_task.id;
+                this._callback(null, _url, 'GET','users');
+            },
+            get_assigned_user: function (user_id) {
+                var _name = '';
+                for (var i =0 ; i<this.assigned_users.length;i++){
+                    if (user_id == this.assigned_users[i].id){
+                        _name = this.assigned_users[i].name;
+                        break;
+                    }
+                }
+                return _name;
+            },
+            get_kind: function (kind) {
+                var _kind = '';
+                for (var i =0 ; i<this.kinds.length;i++){
+                    if (kind == this.kinds[i].value){
+                        _kind = this.kinds[i].text;
+                        break;
+                    }
+                }
+                return _kind;
+            },
+            get_priority: function (priority) {
+                var _priority= '';
+                for (var i =0 ; i<this.priorities.length;i++){
+                    if (priority == this.priorities[i].value){
+                        _priority = this.priorities[i].text;
+                        break;
+                    }
+                }
+                return _priority;
+            }
+
+        }, // end methods
+
+        computed: {
+            validationIssueModel: function () {
+                return {
+                    accept: this.issueModel.name.trim().length > 3,
+                    remove: !this.flagNew
+                }
+            },
+            task_name: function () {
+                var _title = '';
+                if (taskV!= null)
+                    if(taskV.current_task!= null)
+                        _title = taskV.current_task.name;
+                return _title
+            }
+        },
+
+        watch: {
+            'issueModel.assigned_user_id': function(val) {
+                this.issues.assigned_user_id = val;
+            },
+            'issueModel.kind': function(val) {
+                this.issues.kind = val;
+            },
+            'issueModel.priority': function(val) {
+                this.issues.priority = val;
+            }
+        }
+    });
+
+    issueV._panel_show_hide('hide');
+
+    issueDialog = document.querySelector('#issue-dialog');
+    showIssueDialogButton = document.querySelector('#show-issue-dialog');
+
+    if (!issueDialog.showModal) {
+        dialogPolyfill.registerDialog(issueDialog);
+    }
+    showIssueDialogButton.addEventListener('click', function () {
+        issueV.flagNew = true;
+        issue_dialog_open();
+    });
+    issueDialog.querySelector('#issue-dialog-cancel').addEventListener('click', function () {
+        issueV._clean();
+        issue_dialog_close();
+    });
+    issueDialog.querySelector('#issue-dialog-remove').addEventListener('click', function () {
+        issueV._remove();
+    });
+    issueDialog.querySelector('#issue-dialog-accept').addEventListener('click', function () {
+        issueV._accept()
+    });
+    function issue_dialog_open() {
+        if (issueDialog && taskV.current_task)
+            issueDialog.showModal();
+    }
+    function issue_dialog_close() {
+        if (issueDialog)
+            issueDialog.close();
+    }
+
+
+
+
+
+
 
 
     /// PROJECT TASK
@@ -173,9 +446,14 @@ window.addEventListener('load', function () {
             _back_task: function () {
                 this._panel_show_hide('hide');
                 this.subTasks = [];
+                // hiden  issues
+                issueV.issues = [];
+                issueV._panel_show_hide('hide');
+
                 taskV.tasks = [];
                 taskV.init(projectV.current_project.id);
                 taskV._panel_show_hide('show');
+
             },
 
             get_users: function () {
@@ -268,7 +546,7 @@ window.addEventListener('load', function () {
 
 
     /// PROJECT TASK
-    var taskV = new Vue({
+    taskV = new Vue({
         delimiters: delimiters,
         el: '#project-tasks-panel',
         data: {
@@ -402,6 +680,8 @@ window.addEventListener('load', function () {
                 this.tasks = [];
                 subTaskV.init(this.current_task.id);
                 subTaskV._panel_show_hide('show');
+                issueV.init(this.current_task.id);
+                issueV._panel_show_hide('show');
 
             },
             _panel_show_hide:function(_action){
