@@ -24,25 +24,26 @@
                     </div>
 
                     <div class="mdl-card__supporting-text">
-                        <!--<i class="material-icons  mdl-list__item-avatar mdl-badge mdl-badge&#45;&#45;overlap mdl-badge&#45;&#45;no-background" data-badge="1">list</i>-->
-                        <i class="material-icons  mdl-list__item-avatar mdl-badge mdl-badge--overlap mdl-badge--no-background" data-badge="1">subject</i>
-                        <i class="material-icons  mdl-list__item-avatar mdl-badge mdl-badge--overlap mdl-badge--no-background" data-badge="1">bug_report</i>
+                        <i
+                            class="material-icons  mdl-list__item-avatar mdl-badge mdl-badge--overlap mdl-badge--no-background" data-badge="1">
+                            format_list_numbered
+                        </i>
                     </div>
 
                     <div class="mdl-card__actions mdl-card--border">
                         <a v-on:click="_view_task(project,index)"
-                           class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+                           class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised  mdl-button--accent">
                             Ver tareas
                         </a>
                         <span v-if="project.team"  class="mdl-chip mdl-chip--contact mdl-chip--deletable">
                             <i class="mdl-chip__contact material-icons">people</i>
                             <span class="mdl-chip__text">${project.team}</span>
-                            <!--<a href="#" class="mdl-chip__action"><i class="material-icons">cancel</i></a>-->
                         </span>
                     </div>
 
                     <div class="mdl-card__menu">
-                        <a v-on:click="_edit(project,index)" class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
+                        <a v-on:click="_edit(project,index)"
+                            class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
                             <i class="material-icons">edit</i>
                         </a>
                     </div>
@@ -51,25 +52,34 @@
 
             </div>
             <dialog id="project-dialog" class="mdl-dialog mdl-cell--4-col">
-                <h4 class="mdl-dialog__title"><i class="material-icons">business_center</i>Proyecto</h4>
+                <h4 class="mdl-dialog__title">
+                    <i class="material-icons">widgets</i>Proyecto
+                </h4>
                 <div class="mdl-dialog__content">
                     <form action="#">
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                             <input class="mdl-textfield__input" type="text" id="project-name"
                                    v-model="projectModel.name" required>
-                            <label class="mdl-textfield__label" for="project-name">Nombre del proyecto</label>
+                            <label class="mdl-textfield__label" for="project-name">Nombre</label>
                         </div>
                     </form>
                 </div>
                 <div class="mdl-dialog__actions">
                     <button v-show="validationProjectModel.accept"
                             class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored"
-                            id="project-dialog-accept">Aceptar</button>
+                            id="project-dialog-accept">
+                        <i class="material-icons">check_circle</i>Aceptar
+                    </button>
                     <button v-show="validationProjectModel.remove"
                             class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect"
-                            id="project-dialog-remove">Eliminar</button>
-                    <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent"
-                            id="project-dialog-cancel">Cancelar</button>
+                            id="project-dialog-remove">
+                        <i class="material-icons">delete_forever</i>Eliminar
+                    </button>
+                    <button
+                            class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent"
+                            id="project-dialog-cancel">
+                        <i class="material-icons">cancel</i>Cancelar
+                    </button>
 
                 </div>
             </dialog>
@@ -112,23 +122,29 @@
                 </td>
                 <td>
                     <a v-on:click="_view_sub_task_issues(task,index)">
-                        <i class="material-icons  mdl-list__item-avatar mdl-badge mdl-badge--overlap mdl-badge--no-background" data-badge="1">subject</i>
+                        <i class="material-icons mdl-list__item-avatar mdl-badge mdl-badge--overlap mdl-badge--no-background"
+                            data-badge="1">format_list_bulleted
+                        </i>
                     </a>
                     <a v-on:click="_view_sub_task_issues(task,index)">
-                        <i class="material-icons  mdl-list__item-avatar mdl-badge mdl-badge--overlap mdl-badge--no-background" data-badge="1">bug_report</i>
+                        <i class="material-icons  mdl-list__item-avatar mdl-badge mdl-badge--overlap mdl-badge--no-background"
+                           data-badge="1">bug_report
+                        </i>
                     </a>
                 </td>
             </tr>
         </table>
 
         <dialog id="task-dialog" class="mdl-dialog mdl-cell--4-col">
-            <h4 class="mdl-dialog__title"><i class="material-icons">list</i>Tarea</h4>
+            <h4 class="mdl-dialog__title">
+                <i class="material-icons">format_list_numbered</i>Tarea
+            </h4>
             <div class="mdl-dialog__content">
-                <form>
+                <form action="#">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input v-model="taskModel.name"
                                class="mdl-textfield__input" type="text" id="task-name" required>
-                        <label class="mdl-textfield__label" for="task-name">Nombre de la tarea</label>
+                        <label class="mdl-textfield__label" for="task-name">Nombre</label>
                     </div>
                     <br/>
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
@@ -139,24 +155,30 @@
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input v-model="taskModel.due_date_at"
                                class="mdl-textfield__input" type="date" id="task-due-date-at">
-                        <label class="mdl-textfield__label" for="task-due-date-at">Fecha fin</label>
+                        <label class="mdl-textfield__label" for="task-due-date-at">Fecha a finalizar</label>
                     </div>
 
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <textarea v-model="taskModel.description"
                                   class="mdl-textfield__input" type="text" rows="4" id="note"></textarea>
-                        <label class="mdl-textfield__label" for="note">Descripcion</label>
+                        <label class="mdl-textfield__label" for="note">Descripción</label>
                     </div>
                 </form>
             </div>
             <div class="mdl-dialog__actions">
                 <button v-show="validationTaskModel.accept"
                         class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored"
-                        id="task-dialog-accept">Aceptar</button>
+                        id="task-dialog-accept">
+                    <i class="material-icons">check_circle</i>Aceptar
+                </button>
                 <button v-show="validationTaskModel.remove" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect"
-                        id="task-dialog-remove">Eliminar</button>
+                        id="task-dialog-remove">
+                    <i class="material-icons">delete_forever</i>Eliminar
+                </button>
                 <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent"
-                        id="task-dialog-cancel">Cancelar</button>
+                        id="task-dialog-cancel">
+                    <i class="material-icons">cancel</i>Cancelar
+                </button>
 
             </div>
         </dialog>
@@ -165,9 +187,8 @@
     <div class="mdl-cell mdl-cell--12-col mdl-grid">
 
         <div id="project-sub-tasks-panel" class="mdl-cell mdl-cell--6-col mdl-grid">
-            <h3 v-if="subTasks.length">${task_name}</h3>
+            <h3 v-if="subTasks.length">${task_name}</h3> <br/>
             <p v-if="!subTasks.length">No hay sub-tareas registradas</p>
-
             <table v-else
                    class="mdl-cell mdl-cell--6-col mdl-data-table mdl-js-data-table mdl-shadow--4dp">
                 <thead>
@@ -213,13 +234,15 @@
             </table>
 
             <dialog id="sub-task-dialog" class="mdl-dialog mdl-cell--6-col">
-                <h4 class="mdl-dialog__title">Subtarea</h4>
+                <h4 class="mdl-dialog__title">
+                    <i class="material-icons">format_list_bulleted</i>Subtarea
+                </h4>
                 <div class="mdl-dialog__content">
                     <form action="#">
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                             <input v-model="subTaskModel.name"
                                    class="mdl-textfield__input" type="text" id="sub-task-name" required>
-                            <label class="mdl-textfield__label" for="sub-task-name">Nombre de la subtarea</label>
+                            <label class="mdl-textfield__label" for="sub-task-name">Nombre</label>
                         </div>
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                             <select v-model="subTaskModel.assigned_user_id"
@@ -240,24 +263,30 @@
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                             <input v-model="subTaskModel.due_date_at"
                                    class="mdl-textfield__input" type="date" id="sub-task-due-date">
-                            <label class="mdl-textfield__label" for="sub-task-due-date">Fecha fin</label>
+                            <label class="mdl-textfield__label" for="sub-task-due-date">Fecha a finalizar</label>
                         </div>
 
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                             <textarea v-model="subTaskModel.description"
                                       class="mdl-textfield__input" rows="4" id="sub-task-description"></textarea>
-                            <label class="mdl-textfield__label" for="sub-task-description">Descripcion</label>
+                            <label class="mdl-textfield__label" for="sub-task-description">Descripción</label>
                         </div>
                     </form>
                 </div>
                 <div class="mdl-dialog__actions">
                     <button v-show="validationSubTaskModel.accept"
                             class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored"
-                            id="sub-task-dialog-accept">Aceptar</button>
+                            id="sub-task-dialog-accept">
+                        <i class="material-icons">check_circle</i>Aceptar
+                    </button>
                     <button v-show="validationSubTaskModel.remove" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect"
-                            id="sub-task-dialog-remove">Eliminar</button>
+                            id="sub-task-dialog-remove">
+                        <i class="material-icons">delete_forever</i>Eliminar
+                    </button>
                     <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent"
-                            id="sub-task-dialog-cancel">Cancelar</button>
+                            id="sub-task-dialog-cancel">
+                        <i class="material-icons">cancel</i>Cancelar
+                    </button>
                 </div>
             </dialog>
 
@@ -266,8 +295,9 @@
         <div class="mdl-layout-spacer"></div>
 
         <div id="project-task-issues-panel" class="mdl-cell mdl-cell--6-col mdl-grid">
-
-            <table class="mdl-cell mdl-cell--6-col mdl-data-table mdl-js-data-table mdl-shadow--4dp">
+            <h3 v-if="issues.length">${task_name}</h3> <br/>
+            <p v-if="!issues.length">No hay bugs registrados</p>
+            <table v-else class="mdl-cell mdl-cell--6-col mdl-data-table mdl-js-data-table mdl-shadow--4dp">
                 <thead>
                     <tr>
                         <th></th>
@@ -312,13 +342,15 @@
             </table>
 
             <dialog id="issue-dialog" class="mdl-dialog mdl-cell--6-col">
-                <h4 class="mdl-dialog__title">Problema</h4>
+                <h4 class="mdl-dialog__title">
+                    <i class="material-icons">bug_report</i>Problema
+                </h4>
                 <div class="mdl-dialog__content">
                     <form action="#">
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                             <input  v-model="issueModel.name" required
                                     class="mdl-textfield__input" type="text" id="issue-name">
-                            <label class="mdl-textfield__label" for="issue-name">Nombre de la problema</label>
+                            <label class="mdl-textfield__label" for="issue-name">Nombre</label>
                         </div>
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                             <select v-model="issueModel.assigned_user_id" required
@@ -355,18 +387,24 @@
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                             <textarea v-model="issueModel.description" required
                                       class="mdl-textfield__input" rows="4" id="issue-description"></textarea>
-                            <label class="mdl-textfield__label" for="issue-description">Descripcion</label>
+                            <label class="mdl-textfield__label" for="issue-description">Descripción</label>
                         </div>
                     </form>
                 </div>
                 <div class="mdl-dialog__actions">
                     <button v-show="validationIssueModel.accept"
                             class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored"
-                            id="issue-dialog-accept">Aceptar</button>
+                            id="issue-dialog-accept">
+                        <i class="material-icons">check_circle</i>Aceptar
+                    </button>
                     <button v-show="validationIssueModel.remove" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect"
-                            id="issue-dialog-remove">Eliminar</button>
+                            id="issue-dialog-remove">
+                        <i class="material-icons">delete_forever</i>Eliminar
+                    </button>
                     <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent"
-                            id="issue-dialog-cancel">Cancelar</button>
+                            id="issue-dialog-cancel">
+                        <i class="material-icons">cancel</i>Cancelar
+                    </button>
                 </div>
             </dialog>
 
@@ -380,7 +418,7 @@
 {% block button_fab %}
 <!--start project  fab-->
 <a id="show-project-dialog" class="mdl-button mdl-button--colored mdl-color-text--white mdl-button--fab zr-button-fab">
-    <i class="material-icons">business_center</i>
+    <i class="material-icons">widgets</i>
 </a>
 <!--end project fab-->
 
@@ -391,7 +429,7 @@
 </a>
 <a id="show-task-dialog"
    class="mdl-button mdl-button--colored mdl-color-text--white mdl-button--fab zr-button-fab">
-    <i class="material-icons">list</i>
+    <i class="material-icons">format_list_numbered</i>
 </a>
 <!--end task fab-->
 <a id="from-sub-task-back-task"
@@ -404,11 +442,10 @@
 </a>
 <a id="show-sub-task-dialog"
    class="mdl-button mdl-button--colored mdl-color-text--white mdl-button--fab zr-button-fab">
-    <i class="material-icons">format_list_numbered</i>
+    <i class="material-icons">format_list_bulleted</i>
 </a>
 {% endblock %}
 
 {% block js %}
 <script src="/project.js" type="application/javascript"></script>
-<script src="/test.js" type="application/javascript"></script>
 {% endblock %}

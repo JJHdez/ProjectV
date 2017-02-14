@@ -384,8 +384,8 @@ window.addEventListener('load', function () {
                 var new_dream = {
                     name: this.pendingModel.name
                 };
-                if (this.pendingModel.description.length>0){
-                    new_dream['description']= this.pendingModel.description;
+                if (this.pendingModel.description.trim().length>0){
+                    new_dream['description']= this.pendingModel.description.trim();
                 }
                 this._callback(new_dream,_url,_method,_action);
             },
@@ -406,7 +406,7 @@ window.addEventListener('load', function () {
             _edit: function(data, index){
                 this.flagNew = false;
                 this.pendingModel.name = data.name;
-                this.pendingModel.description = data.description;
+                this.pendingModel.description = data.description?data.description:'';
                 this.pendingModel.id = data.id;
                 this.pendingModel.index = index;
                 pending_dialog_open();
