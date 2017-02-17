@@ -184,13 +184,21 @@
         </dialog>
     </div>
 
-    <div class="mdl-cell mdl-cell--12-col mdl-grid">
+    <div id="project-sub-tasks-issues-panel" class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
+        <h3 id="task-title"></h3>
+        <div class="mdl-tabs__tab-bar">
+            <a id="tab-project-sub-tasks-panel" href="#project-sub-tasks-panel" class="mdl-tabs__tab is-active">
+                <i class="material-icons">format_list_bulleted</i>
+            </a>
+            <a id="tab-project-task-issues-panel" href="#project-task-issues-panel" class="mdl-tabs__tab">
+                <i class="material-icons">bug_report</i>
+            </a>
+        </div>
 
-        <div id="project-sub-tasks-panel" class="mdl-cell mdl-cell--6-col mdl-grid">
-            <h3 v-if="subTasks.length">${task_name}</h3> <br/>
+        <div id="project-sub-tasks-panel" class="mdl-tabs__panel is-active ">
             <p v-if="!subTasks.length">No hay sub-tareas registradas</p>
             <table v-else
-                   class="mdl-cell mdl-cell--6-col mdl-data-table mdl-js-data-table mdl-shadow--4dp">
+                   class="mdl-cell mdl-cell--10-col mdl-data-table mdl-js-data-table mdl-shadow--4dp">
                 <thead>
                 <tr>
                     <th></th>
@@ -291,13 +299,9 @@
             </dialog>
 
         </div>
-
-        <div class="mdl-layout-spacer"></div>
-
-        <div id="project-task-issues-panel" class="mdl-cell mdl-cell--6-col mdl-grid">
-            <h3 v-if="issues.length">${task_name}</h3> <br/>
+        <div id="project-task-issues-panel" class="mdl-tabs__panel">
             <p v-if="!issues.length">No hay bugs registrados</p>
-            <table v-else class="mdl-cell mdl-cell--6-col mdl-data-table mdl-js-data-table mdl-shadow--4dp">
+            <table v-else class="mdl-cell mdl-cell--10-col mdl-data-table mdl-js-data-table mdl-shadow--4dp">
                 <thead>
                     <tr>
                         <th></th>
@@ -409,7 +413,6 @@
             </dialog>
 
         </div>
-
     </div>
 </div>
 
@@ -433,11 +436,11 @@
 </a>
 <!--end task fab-->
 <a id="from-sub-task-back-task"
-   class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored zr-button-fab zr-third-fab">
+   class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored zr-button-fab zr-second-fab">
     <i class="material-icons">arrow_back</i>
 </a>
 <a id="show-issue-dialog"
-   class="mdl-button mdl-button--colored mdl-color-text--white mdl-button--fab zr-button-fab zr-second-fab">
+   class="mdl-button mdl-button--colored mdl-color-text--white mdl-button--fab zr-button-fab">
     <i class="material-icons">bug_report</i>
 </a>
 <a id="show-sub-task-dialog"

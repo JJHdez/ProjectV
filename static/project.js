@@ -1,4 +1,6 @@
-window.addEventListener('load', function () {
+window.addEventListener('load', function ()
+{
+
     var apiv1 = '/api/v1/';
     var delimiters = ['${', '}'];
 
@@ -174,13 +176,13 @@ window.addEventListener('load', function () {
                 this._callback(null, this.url + '/' + this.issueModel.id, 'DELETE', 'remove');
             },
             _panel_show_hide:function(_action){
-                if (_action == 'hide'){
-                    $("#project-task-issues-panel").hide();
-                    $("#show-issue-dialog").hide();
-                }else {
-                    $("#project-task-issues-panel").show();
-                    $("#show-issue-dialog").show();
-                }
+                // if (_action == 'hide'){
+                //     $("#project-task-issues-panel").hide();
+                //     $("#show-issue-dialog").hide();
+                // }else {
+                //     $("#project-task-issues-panel").show();
+                //     $("#show-issue-dialog").show();
+                // }
             },
             get_users: function () {
                 this.issueModel.assigned_user_id = -1;
@@ -283,11 +285,24 @@ window.addEventListener('load', function () {
     }
 
 
+    $( "#tab-project-sub-tasks-panel" ).click(function() {
+        show_fab_issues_subtasks('show-sub-task-dialog')
+    });
 
+    $( "#tab-project-task-issues-panel" ).click(function() {
+        show_fab_issues_subtasks('show-issue-dialog')
+    });
 
-
-
-
+    function show_fab_issues_subtasks(_show) {
+        var _fab_buttons = ['show-sub-task-dialog', 'show-issue-dialog'];
+        for (var f = 0 ; f<_fab_buttons.length; f++){
+            if (_show == _fab_buttons[f]){
+                $('#'+_fab_buttons[f]).show();
+            }else{
+                $('#'+_fab_buttons[f]).hide();
+            }
+        }
+    }
 
     /// PROJECT TASK
     subTaskV = new Vue({
@@ -434,12 +449,16 @@ window.addEventListener('load', function () {
             },
             _panel_show_hide:function(_action){
                 if (_action == 'hide'){
-                    $("#project-sub-tasks-panel").hide();
+                    $("#project-sub-tasks-issues-panel").hide();
+                    //     $("#project-sub-tasks-panel").hide();
                     $("#show-sub-task-dialog").hide();
+                    $("#show-issue-dialog").hide();
                     $("#from-sub-task-back-task").hide();
                 }else {
-                    $("#project-sub-tasks-panel").show();
+                    $("#project-sub-tasks-issues-panel").show();
+                //     $("#project-sub-tasks-panel").show();
                     $("#show-sub-task-dialog").show();
+                    // $("#show-issue-dialog").show();
                     $("#from-sub-task-back-task").show();
                 }
             },
@@ -682,7 +701,7 @@ window.addEventListener('load', function () {
                 subTaskV._panel_show_hide('show');
                 issueV.init(this.current_task.id);
                 issueV._panel_show_hide('show');
-
+                $('#task-title').text(data.name);
             },
             _panel_show_hide:function(_action){
                 if (_action == 'hide'){

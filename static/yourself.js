@@ -1,4 +1,26 @@
-window.addEventListener('load', function () {
+window.addEventListener('load', function ()
+{
+    show_fab_pending_habits_dreams('show-dream-dialog');
+    $( "#tab-dreams-panel" ).click(function() {
+        show_fab_pending_habits_dreams('show-dream-dialog')
+    });
+    $( "#tab-habits-panel" ).click(function() {
+        show_fab_pending_habits_dreams('show-habit-dialog')
+    });
+    $( "#tab-pending-panel" ).click(function() {
+        show_fab_pending_habits_dreams('show-pending-dialog')
+    });
+
+    function show_fab_pending_habits_dreams(_show) {
+        var _fab_buttons = ['show-dream-dialog', 'show-habit-dialog','show-pending-dialog'];
+        for (var f = 0 ; f<_fab_buttons.length; f++){
+            if (_show == _fab_buttons[f]){
+                $('#'+_fab_buttons[f]).show();
+            }else{
+                $('#'+_fab_buttons[f]).hide();
+            }
+        }
+    }
 
     var apiv1 = '/api/v1/';
     var delimiters = ['${', '}'];

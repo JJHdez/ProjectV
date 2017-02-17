@@ -27,13 +27,13 @@
     <div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
 
         <div class="mdl-tabs__tab-bar">
-            <a href="#dreams-panel" class="mdl-tabs__tab is-active">
+            <a id="tab-dreams-panel" href="#dreams-panel" class="mdl-tabs__tab is-active">
                 <i class="material-icons">gps_fixed</i>
             </a>
-            <a href="#habits-panel" class="mdl-tabs__tab">
+            <a id="tab-habits-panel" href="#habits-panel" class="mdl-tabs__tab">
                 <i class="material-icons">gavel</i>
             </a>
-            <a href="#pending-panel" class="mdl-tabs__tab">
+            <a id="tab-pending-panel" href="#pending-panel" class="mdl-tabs__tab">
                 <i class="material-icons">subject</i>
             </a>
         </div>
@@ -183,6 +183,7 @@
 
         </div>
         <!--End habit panel-->
+
         <!--Panel pending-->
         <div class="mdl-tabs__panel" id="pending-panel">
             <div class="mdl-grid mdl-cell mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--12-col">
@@ -256,26 +257,26 @@
 {% endblock %}
 
 {% block button_fab %}
-<ul id="button-fab-yourself" class="mdl-menu mdl-menu--top-right mdl-js-menu mdl-js-ripple-effect" data-mdl-for="add-task">
-    <li class="mdl-menu__item" id="show-dream-dialog">
-        <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored">
+<!--<ul id="button-fab-yourself" class="mdl-menu mdl-menu&#45;&#45;top-right mdl-js-menu mdl-js-ripple-effect" data-mdl-for="add-task">-->
+    <!--<li class="mdl-menu__item" >-->
+        <button id="show-dream-dialog" class="mdl-button mdl-js-button mdl-button--fab mdl-button--colored zr-button-fab">
             <i class="material-icons">gps_fixed</i>
         </button>
-    </li>
-    <li class="mdl-menu__item" id="show-habit-dialog">
-        <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored">
+    <!--</li>-->
+    <!--<li class="mdl-menu__item" >-->
+        <button id="show-habit-dialog" class="mdl-button mdl-js-button mdl-button--fab mdl-button--colored zr-button-fab">
             <i class="material-icons">gavel</i>
         </button>
-    </li>
-    <li class="mdl-menu__item" id="show-pending-dialog">
-        <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored">
+    <!--</li>-->
+    <!--<li class="mdl-menu__item" >-->
+        <button id="show-pending-dialog" class="mdl-button mdl-js-button mdl-button--fab mdl-button--colored zr-button-fab">
             <i class="material-icons">subject</i>
         </button>
-    </li>
-</ul>
-<a  class="mdl-button mdl-button--colored mdl-color-text--white mdl-button--fab zr-button-fab">
-    <i id="add-task" class="material-icons">add</i>
-</a>
+    <!--</li>-->
+<!--</ul>-->
+<!--<a  class="mdl-button mdl-button&#45;&#45;colored mdl-color-text&#45;&#45;white mdl-button&#45;&#45;fab zr-button-fab">-->
+    <!--<i id="add-task" class="material-icons">add</i>-->
+<!--</a>-->
 {% endblock %}
 
 {% block js%}
