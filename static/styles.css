@@ -245,7 +245,15 @@ _:-ms-input-placeholder, :root .demo-graph {
     background: url('/images/girl-sexy.jpg') center 30% no-repeat;
     */
     background-size: cover;
-    background: url('http://orig05.deviantart.net/710b/f/2010/136/c/b/smiley_faces_by_soad2k.jpg') center 30% no-repeat;
+    background: url('http://img09.deviantart.net/244a/i/2013/013/d/e/watercolor_and_ink_texture_by_jane_beata-d5rcn9h.jpg') center 30% no-repeat;
+}
+
+.zr-background-reset-password {
+    position: relative;
+    height: auto;
+    width: auto;
+    background-size: cover;
+    background: url('http://img03.deviantart.net/6027/i/2010/150/3/5/watercolor_textures_08_by_tuesdayraindrops.jpg') center 30% no-repeat;
 }
 .dock button i {
     -webkit-box-reflect: below 3px
@@ -263,4 +271,8 @@ _:-ms-input-placeholder, :root .demo-graph {
 .dock button.prev i {
     /*-webkit-transform: scale(1.7);*/
     zoom: 50%;
+}
+
+.center-elements{
+    margin: 0 auto;
 }

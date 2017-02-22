@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # ZERO 1/0 © 2016
 from flask import Flask, request, render_template, send_from_directory, g, session, url_for, redirect
+from flask_mail import Mail, Message
 from AoL.Utils.Db import PsqlAoL
 from flask_restful import Api
 from AoL.Auth.Auth import Auth
@@ -18,9 +19,13 @@ from AoL.Pending.Pending import Pending, PendingList
 from UL.Dashboard.Dashboard import DashboardCtl
 from UL.Project.Project import ProjectCtl
 from UL.Yourself.Yourself import YourselfCtl
+from UL.Home.Home import HomeCtl
+from UL.Auth.ResetPassword import ResetPasswordCtl
 app = Flask(__name__)
+
 app.config.from_pyfile('flaskapp.cfg')
 api = Api(app)
+mail = Mail(app)
 
 
 @app.before_request
@@ -32,6 +37,8 @@ def open_db():
         port=app.config.get('DB_PORT'),
         host=app.config.get('DB_HOST')
     )
+    g.mail = mail
+
     if g.db_conn:
         g.db_conn.execute("set timezone to 'UTC';")
     _url_path = str(request.url_rule)
@@ -89,7 +96,7 @@ def login():
 # Web App
 @app.route('/', endpoint='/')
 def index():
-    return render_template('index.html')
+    return HomeCtl.index()
 
 
 @app.route('/<path:resource>')
@@ -160,10 +167,22 @@ def issue():
     return ProjectCtl.bug()
 
 
+@app.route('/reset/password', endpoint='reset/password', methods=['GET', 'POST', 'PUT'])
+def reset_password():
+    if request.method == 'GET':
+        return ResetPasswordCtl.index()
+    elif request.method == 'PUT':
+        return ResetPasswordCtl.token()
+    elif request.method == 'POST':
+        return ResetPasswordCtl.password_change()
+
+
+# Url testing
 @app.route('/test')
 def test():
     return render_template('test.html')
 
-app.secret_key = '\xb2<\xf2\xc5hfg\xed\xb7:\xecH\x05/hJ\x93\xb2\xf5\xdb\xc9\r\x92\xe4'
+# Url testing
+
 if __name__ == '__main__':
     app.run()
