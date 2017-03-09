@@ -48,7 +48,7 @@ window.addEventListener('load', function ()
                         contentType:'application/json'
                     }).done(function( response ) {
                         if (response.status_code == 200){
-                            window.location = '/ul/dashboard';
+                            window.location = '/ul/yourself';
                         }else{
                             var data_snackbar = {
                                 message: response.message,
