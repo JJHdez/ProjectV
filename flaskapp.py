@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 # ZERO 1/0 © 2016
 from flask import Flask, request, render_template, send_from_directory, g, session, url_for, redirect
-from flask_mail import Mail, Message
+from flask_mail import Mail
+from flask_babel import Babel
 from AoL.Utils.Db import PsqlAoL
 from flask_restful import Api
 from AoL.Auth.Auth import Auth
@@ -21,11 +22,13 @@ from UL.Project.Project import ProjectCtl
 from UL.Yourself.Yourself import YourselfCtl
 from UL.Home.Home import HomeCtl
 from UL.Auth.ResetPassword import ResetPasswordCtl
+from UL.Pomodoro.Pomodoro import PomodoroCtl
 app = Flask(__name__)
 
 app.config.from_pyfile('flaskapp.cfg')
 api = Api(app)
 mail = Mail(app)
+babel = Babel(app)
 
 
 @app.before_request
@@ -56,6 +59,16 @@ def open_db():
                 return _rs['error']
             else:
                 g.user = _rs['user']
+
+
+# @babel.localeselector
+# def get_locate():
+#     pass
+#
+#
+# @babel.timezoneselector
+# def get_timezone():
+#     pass
 
 # RESTful AOL
 api_v1 = '/api/v1/'
@@ -143,6 +156,7 @@ def yourself():
     return YourselfCtl.index()
 
 
+# start - Projects
 @app.route(prefix_admin+'/project', endpoint=startpoint_admin+'/project')
 @is_login
 def project():
@@ -165,6 +179,14 @@ def subtask():
 @is_login
 def issue():
     return ProjectCtl.bug()
+# end - Projects
+
+
+# start - Projects
+@app.route(prefix_admin+'/pomodoro', endpoint=startpoint_admin+'/porodoro')
+@is_login
+def pomodoro():
+    return PomodoroCtl.index()
 
 
 @app.route('/reset/password', endpoint='reset/password', methods=['GET', 'POST', 'PUT'])

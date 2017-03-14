@@ -17,6 +17,9 @@
                     },
                     redirect_index_project: function (event) {
                         window.location = '/ul/project';
+                    },
+                    redirect_index_pomodoro: function (event) {
+                        window.location = '/ul/pomodoro';
                     }
                 }
             }

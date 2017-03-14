@@ -248,7 +248,7 @@ _:-ms-input-placeholder, :root .demo-graph {
     background: url('http://img09.deviantart.net/244a/i/2013/013/d/e/watercolor_and_ink_texture_by_jane_beata-d5rcn9h.jpg') center 30% no-repeat;
 }
 
-.zr-background-reset-password {
+.zr-background-reset-passwordzr-background-reset-password {
     position: relative;
     height: auto;
     width: auto;
@@ -275,4 +275,17 @@ _:-ms-input-placeholder, :root .demo-graph {
 
 .center-elements{
     margin: 0 auto;
+}
+.center-all-elements{
+    display:flex;
+    align-items: center;
+    justify-content:center;
+}
+/* Pomodoro */
+.zr-background-pomodoro{
+    position: relative;
+    height: auto;
+    width: auto;
+    background-size: cover;
+    background: url('http://orig07.deviantart.net/0057/f/2010/029/3/d/simple_by_whiteangel92.jpg') center 100% no-repeat;
 }
