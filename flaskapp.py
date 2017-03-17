@@ -117,13 +117,18 @@ def serveStaticResource(resource):
     return send_from_directory('static/', resource)
 
 
-prefix_admin = app.config.get('PREFIX_ADMIN')
+prefix_admin = app.config.get('APP_PREFIX_ADMIN')
 startpoint_admin = prefix_admin[1:]
 
 
 @app.context_processor
 def prefix_admin_template():
     return dict(prefix_admin=startpoint_admin)
+
+
+@app.context_processor
+def app_name():
+    return dict(app_name=app.config.get('APP_NAME', ''))
 
 
 def is_login(func):
