@@ -7,15 +7,15 @@
 {% block css %}
 <style>
     .background-dream{
-        width: 270px;
+        /*width: 270px;*/
         background: url('/images/xishan.jpg') center / cover;
     }
     .background-habit{
-        width: 170px;
+        /*width: 170px;*/
         background: url('/images/texture_006_by_kuschelirmel_stock.jpg') center / cover;
     }
     .background-pending{
-        width: 250px;
+        /*width: 250px;*/
         background: url('/images/watercolour_texture_by_summer__moon.jpg') center / cover;
     }
 </style>
@@ -39,41 +39,30 @@
         </div>
         <!--Panel dream-->
         <div class="mdl-tabs__panel is-active" id="dreams-panel">
-            <div class="mdl-color--white mdl-shadow--2dp mdl-cell mdl-cell--12-col mdl-grid" >
-                <p v-if="!dreams.length">No hay objetivos registrados</p>
-                <div v-for="(dream, index) in dreams">
-                    <div class="background-dream mdl-card mdl-shadow--2dp">
-                        <div class=" mdl-card__title">
-                            <h2 class="mdl-card__title-text">
-                                ${dream.name}
-                            </h2>
-                        </div>
-                        <div class="mdl-card__supporting-text">
-                            <span class="mdl-chip mdl-chip--contact" v-if="dream.created_at">
-                                <i class="mdl-chip__contact material-icons">play_arrow</i>
-                                <span class="mdl-chip__text">${dream.created_at}</span>
-                            </span>
-                            <span class="mdl-chip mdl-chip--contact" v-if="dream.due_date_at">
-                                <i class="mdl-chip__contact material-icons">stop</i>
-                                <span class="mdl-chip__text">${dream.due_date_at}</span>
-                            </span>
-                        </div>
-                        <div class="mdl-card__actions mdl-card--border">
-                            <button v-on:click="_done(dream,index)"
-                                    class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised mdl-button--colored">
-                                <i class="material-icons">assignment_turned_in</i>Realizado
-                            </button>
-                        </div>
-                        <div class="mdl-card__menu">
-                            <a v-on:click="_edit(dream,index)"
-                               class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
-                                <i class="material-icons">edit</i>
-                            </a>
-                        </div>
-                    </div>
-                </div><!--End for-->
+            <div v-for="(dream, index) in dreams" class="mdl-list">
+                <div
+                     class="mdl-list__item mdl-list__item--two-line mdl-shadow--2dp">
+                    <span class="mdl-list__item-primary-content ">
+                        <button v-on:click="_done(dream,index)"
+                                class=" mdl-list__item-avatar mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab
+                                mdl-button--colored mdl-button-raised mdl-js-ripple-effect">
+                            <i class="material-icons">assignment_turned_in</i>
+                        </button>
+                        <span>${dream.name}</span>
+                        <span class="mdl-list__item-sub-title">${dream.created_at} - ${dream.due_date_at}</span>
+                    </span>
+                    <a class="mdl-list__item-secondary-action" href="#">
+                        <a v-on:click="_edit(dream,index)"
+                           class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab
+                            mdl-button--colored mdl-button-raised mdl-js-ripple-effect">
+                            <i class="material-icons">edit</i>
+                        </a>
+                    </a>
+                    </a>
 
+                </div>
             </div>
+
             <!-- Dialog dreams-->
             <dialog id="dream-dialog" class="mdl-dialog mdl-cell--4-col">
                 <h4 class="mdl-dialog__title">
@@ -117,38 +106,30 @@
 
         <!--Panel habit-->
         <div class="mdl-tabs__panel" id="habits-panel">
-            <div class="mdl-grid mdl-cell mdl-shadow--2dp mdl-color--white mdl-cell--12-col">
-                <p v-if="!habits.length">No hay habitos registrados</p>
-                <div v-for="(habit, index) in habits">
-                    <div class="background-habit mdl-card mdl-shadow--4dp">
-                        <div class=" mdl-card__title">
-                            <h2 class="mdl-card__title-text">
-                                ${habit.name}
-                            </h2>
-                        </div>
-                        <div class="mdl-card__supporting-text">
-                            <div class="material-icons mdl-badge mdl-badge--overlap"
-                                 v-bind:data-badge="habit.success">done</div>
-                            <div class="material-icons mdl-badge mdl-badge--overlap"
-                                 v-bind:data-badge="habit.fail">clear</div>
-                        </div>
-                        <div class="mdl-card__actions mdl-card--border">
-                            <button v-on:click="_done(habit,index)"
-                               class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised mdl-button--accent">
-                                <i class="material-icons">${_icon_done(habit.success, habit.fail)}</i>
-                                Realizado
-                            </button>
-                        </div>
-                        <div class="mdl-card__menu">
-                            <a v-on:click="_edit(habit,index)"
-                               class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
-                                <i class="material-icons">edit</i>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="mdl-layout-spacer"></div>
-                </div>
-            </div>
+            <p v-if="!habits.length">No hay habitos registrados</p>
+            <ul class="mdl-list">
+                <li v-for="(habit, index) in habits"
+                     class="mdl-list__item mdl-list__item--two-line mdl-shadow--2dp">
+                    <span class="mdl-list__item-primary-content">
+                        <button v-on:click="_done(habit,index)"
+                                class=" mdl-list__item-avatar mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab
+                                        mdl-button--colored mdl-button-raised mdl-js-ripple-effect">
+                            <i class="material-icons">${_icon_done(habit.success, habit.fail)}</i>
+                        </button>
+                        <span>${habit.name}</span>
+                      <!--<span class="mdl-list__item-sub-title">62 Episodes</span>-->
+                    </span>
+                    <span class="mdl-list__item-secondary-content">
+                      <a class="mdl-list__item-secondary-action" href="#">
+                        <a v-on:click="_edit(habit,index)"
+                           class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab
+                            mdl-button--colored mdl-button-raised mdl-js-ripple-effect">
+                            <i class="material-icons">edit</i>
+                        </a>
+                      </a>
+                    </span>
+                </li>
+            </ul>
             <!--Dialog box habit-->
             <dialog id="habit-dialog" class="mdl-dialog mdl-cell--4-col">
                 <h4 class="mdl-dialog__title">
@@ -186,31 +167,42 @@
 
         <!--Panel pending-->
         <div class="mdl-tabs__panel" id="pending-panel">
-            <div class="mdl-grid mdl-cell mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--12-col">
-                <p v-if="!pendings.length">No hay pendientes registrados</p>
-                <div v-for="(pending, index) in pendings">
-                    <div class="background-pending mdl-card mdl-shadow--2dp">
-                        <div class=" mdl-card__title">
-                            <h3 class="mdl-card__title-text">
-                                ${pending.name}
-                            </h3>
-                        </div>
-                        <div class="mdl-card__actions mdl-card--border">
-                            <button v-on:click="_done(pending,index)"
-                                    class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised mdl-button--colored">
-                                <i class="material-icons">assignment_turned_in</i>Realizado
-                            </button>
-                        </div>
-                        <div class="mdl-card__menu">
-                            <a v-on:click="_edit(pending,index)"
-                               class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
+            <p v-if="!pendings.length">No hay pendientes registrados</p>
+            <ul class="mdl-list">
+                <li v-for="(pending, index) in pendings"
+                    class="mdl-list__item mdl-list__item--three-line mdl-shadow--2dp">
+                    <span class="mdl-list__item-primary-content">
+                        <button id="pending-button-done"
+                                v-on:click="_done(pending,index)"
+                                class="mdl-list__item-avatar mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab
+                                mdl-button--colored mdl-button-raised mdl-js-ripple-effect">
+                            <i class="material-icons">assignment_turned_in</i>
+                            <div class="mdl-tooltip" data-mdl-for="pending-button-done">
+                                Hecho
+                            </div>
+                        </button>
+                        <span>
+                            ${pending.name}
+                        </span>
+                        <span class="mdl-list__item-text-body">
+                            ${pending.description}
+                        </span>
+                    </span>
+                    <span class="mdl-list__item-secondary-content">
+                        <a class="mdl-list__item-secondary-action">
+                            <button id="pending-button-edit"
+                                    v-on:click="_edit(pending,index)"
+                                    class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab
+                                    mdl-button--colored mdl-button-raised mdl-js-ripple-effect">
                                 <i class="material-icons">edit</i>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="mdl-layout-spacer"></div>
-                </div>
-            </div>
+                            </button>
+                            <div class="mdl-tooltip" data-mdl-for="pending-button-edit">
+                                Editar
+                            </div>
+                        </a>
+                    </span>
+                </li>
+            </ul>
 
             <dialog id="pending-dialog" class="mdl-dialog mdl-cell--4-col">
                 <h4 class="mdl-dialog__title">
