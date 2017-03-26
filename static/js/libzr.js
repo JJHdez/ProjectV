@@ -3,8 +3,10 @@ var Libzr = (function Libzr() {
         "someVar": "This value made public by `someMethod`",
         "privateVar": "Can't see this value"
     };
+
     return function LibzrConstructor() {
         var _this = this; // Cache the `this` keyword
+
         _this.init= function () {
             // Add format date
             Date.prototype.format = function(format)
@@ -28,6 +30,7 @@ var Libzr = (function Libzr() {
                 return format;
             };
         };
+
         _this.getApi= function () {
             return '/api/v1/';
         };
@@ -58,11 +61,12 @@ var Libzr = (function Libzr() {
             }
         };
 
-        _this.formatDate =  function (date) {
+        _this.isStrDate =  function (date) {
             // format DD/MM/YYYY or DD-MM-YYYY
             var dateRE = /^(0?[1-9]|[12][0-9]|3[01])[\/\-](0?[1-9]|1[012])[\/\-]\d{4}$/;
             return dateRE.test(date);
         };
+
         _this.getUtcDate= function (_date) {
             if (_date === undefined)
                 _date = new Date();
@@ -77,9 +81,47 @@ var Libzr = (function Libzr() {
             return now_utc;
 
         };
+
         _this.getRandom= function (min, max) {
             return Math.floor(Math.random() * (max - min + min)) + 1;
         };
+
+        _this.getDiffDay =  function (start_date, due_date) {
+            var timeDiff = start_date.getTime() - due_date.getTime();
+            return Math.ceil(timeDiff / (1000 * 3600 * 24));
+        };
+
+        // _this.snackBarNotify =  function (id) {
+        //     var myElem = document.getElementById(id);
+        //     if (myElem === null){
+        //         console.log('Snack Bar Notify id don\'t exists')
+        //     }else{
+        //         var notify = new Vue({
+        //             delimiters: libzr.getDelimiterVue(),
+        //             el: '#'+id,
+        //             template:
+        //             '<div id="zr-notify-snackbar" class="mdl-js-snackbar mdl-snackbar">'+
+        //                 '<!--<div id="notify-snackbar-background" class="mdl-color&#45;&#45;red">-->'+
+        //                     '<div class="mdl-snackbar__text"></div>'+
+        //                     '<button class="mdl-snackbar__action" type="button"></button>'+
+        //                 '<!--</div>-->'+
+        //             '</div>',
+        //             data: {
+        //
+        //             },
+        //             methods:{
+        //                 notify: function (data) {
+        //                     var snackbarContainer = document.querySelector('#zr-notify-snackbar');
+        //                     if (!data.hasOwnProperty('timeout')){
+        //                         data.timeout =2000;
+        //                     }
+        //                     snackbarContainer.MaterialSnackbar.showSnackbar(data);
+        //                 }
+        //             }
+        //         });
+        //         notify.notify(data)
+        //     }
+        // }
     };
 }());
 const libzr = new Libzr(); // invoke
