@@ -1,35 +1,9 @@
 window.addEventListener('load', function ()
 {
-    show_fab_pending_habits_dreams('show-dream-dialog');
-    $( "#tab-dreams-panel" ).click(function() {
-        show_fab_pending_habits_dreams('show-dream-dialog')
-    });
-    $( "#tab-habits-panel" ).click(function() {
-        show_fab_pending_habits_dreams('show-habit-dialog')
-    });
-    $( "#tab-pending-panel" ).click(function() {
-        show_fab_pending_habits_dreams('show-pending-dialog')
-    });
-
-    function show_fab_pending_habits_dreams(_show) {
-        var _fab_buttons = ['show-dream-dialog', 'show-habit-dialog','show-pending-dialog'];
-        for (var f = 0 ; f<_fab_buttons.length; f++){
-            if (_show == _fab_buttons[f]){
-                $('#'+_fab_buttons[f]).show();
-            }else{
-                $('#'+_fab_buttons[f]).hide();
-            }
-        }
-    }
-
-    var apiv1 = '/api/v1/';
-    var delimiters = ['${', '}'];
-
     /// DREAM ////
     var dreamDialog = null;
-    var showDreamDialogButton = null;
     var dreams_panelV = new Vue({
-        delimiters: delimiters,
+        delimiters: libzr.getDelimiterVue(),
         el: '#dreams-panel',
         data:{
             dreams: [],
@@ -41,7 +15,7 @@ window.addEventListener('load', function ()
                 created_at:'',
                 index:-1
             },
-            url: apiv1+'dream',
+            url: libzr.getApi()+'dream',
             flagNew:true
         },
 
@@ -50,7 +24,10 @@ window.addEventListener('load', function ()
             init: function () {
                 this._callback(null, this.url,'GET', 'init');
             },
-
+            add : function () {
+                this.flagNew = true;
+                this._accept();
+            },
             _accept :function() {
                 var  _action = this.flagNew?'new':'edit';
                 var  _method = this.flagNew?'POST':'PUT';
@@ -118,7 +95,7 @@ window.addEventListener('load', function ()
                                 _data['id']=response.data.dreams[0].id;
                                 _data['created_at'] = new Date().toJSON().slice(0,10).replace(/-/g,'/');
                                 self.dreams.push(_data);
-                                dream_dialog_close();
+                                // dream_dialog_close();
                                 break;
                             case 'edit':
                                 _data['id']=self.dreamModel.id;
@@ -143,6 +120,18 @@ window.addEventListener('load', function ()
             },
             _remove : function () {
                 this._callback(null, this.url+'/'+this.dreamModel.id, 'DELETE','remove');
+            },
+            dreamBackground: function (dream, index) {
+                return "mdl-card mdl-shadow--2dp zr-dream-background-"+ libzr.getRandom(1,4);
+            },
+            getDate: function (_date) {
+                if (!_date)
+                    _date = '';
+                else{
+                    _date = new Date(_date);
+                    _date = _date.format('yyyy-M-d')
+                }
+                return _date;
             }
         }, // end methods
 
@@ -160,15 +149,15 @@ window.addEventListener('load', function ()
     dreams_panelV.init();
 
     dreamDialog = document.querySelector('#dream-dialog');
-    showDreamDialogButton = document.querySelector('#show-dream-dialog');
+    // showDreamDialogButton = document.querySelector('#show-dream-dialog');
 
     if (! dreamDialog.showModal) {
         dialogPolyfill.registerDialog(dreamDialog);
     }
-    showDreamDialogButton.addEventListener('click', function() {
-        dream_dialog_open();
-        dreams_panelV.flagNew = true;
-    });
+    // showDreamDialogButton.addEventListener('click', function() {
+    //     dream_dialog_open();
+    //     dreams_panelV.flagNew = true;
+    // });
     dreamDialog.querySelector('#dream-dialog-cancel').addEventListener('click', function() {
         dreams_panelV._clean();
         dream_dialog_close();
@@ -191,9 +180,8 @@ window.addEventListener('load', function ()
 
     /// HABIT ///
     var habitDialog = null;
-    var showHabitDialogButton = null;
     var habits_panelV = new Vue({
-        delimiters: delimiters,
+        delimiters: libzr.getDelimiterVue(),
         el: '#habits-panel',
         data:{
             habits: [],
@@ -205,7 +193,7 @@ window.addEventListener('load', function ()
                 success: -1,
                 status: ''
             },
-            url: apiv1+'habit',
+            url: libzr.getApi()+'habit',
             flagNew:true
         },
 
@@ -216,7 +204,10 @@ window.addEventListener('load', function ()
                 var _url = this.url + '?view=current_task&date='+_date;
                 this._callback(null, _url,'GET', 'init');
             },
-
+            add : function () {
+                this.flagNew = true;
+                this._accept();
+            },
             _accept :function() {
                 var  _action = this.flagNew?'new':'edit';
                 var  _method = this.flagNew?'POST':'PUT';
@@ -293,7 +284,7 @@ window.addEventListener('load', function ()
                             _data['status']='';
                             self.habits.push(_data);
                             message = 'Fue agregado correctamente!';
-                            habit_dialog_close();
+                            // habit_dialog_close();
                             break;
                         case 'edit':
                             _data['id']=self.habitModel.id;
@@ -328,6 +319,9 @@ window.addEventListener('load', function ()
                     _status = 'sentiment_very_dissatisfied';
                 }
                 return _status;
+            },
+            habitBackground: function (habit, index) {
+                return "mdl-card mdl-shadow--2dp zr-habit-background-"+ libzr.getRandom(1,4);
             }
         }, // end methods
 
@@ -345,15 +339,15 @@ window.addEventListener('load', function ()
     habits_panelV.init();
 
     habitDialog = document.querySelector('#habit-dialog');
-    showHabitDialogButton = document.querySelector('#show-habit-dialog');
+    // showHabitDialogButton = document.querySelector('#show-habit-dialog');
 
     if (! habitDialog.showModal) {
         dialogPolyfill.registerDialog(habitDialog);
     }
-    showHabitDialogButton.addEventListener('click', function() {
-        habit_dialog_open();
-        habits_panelV.flagNew = true;
-    });
+    // showHabitDialogButton.addEventListener('click', function() {
+    //     habit_dialog_open();
+    //     habits_panelV.flagNew = true;
+    // });
     habitDialog.querySelector('#habit-dialog-cancel').addEventListener('click', function() {
         habits_panelV._clean();
         habit_dialog_close();
@@ -378,7 +372,7 @@ window.addEventListener('load', function ()
     var showPendingDialogButton = null;
 
     var pending_panelV = new Vue({
-        delimiters: delimiters,
+        delimiters: libzr.getDelimiterVue(),
         el: '#pending-panel',
         data:{
             pendings: [],
@@ -389,7 +383,7 @@ window.addEventListener('load', function ()
                 completed_at:'',
                 description:''
             },
-            url: apiv1+'pending',
+            url: libzr.getApi()+'pending',
             flagNew:true
         },
 
@@ -398,7 +392,10 @@ window.addEventListener('load', function ()
             init: function () {
                 this._callback(null, this.url,'GET', 'init');
             },
-
+            add : function () {
+                this.flagNew = true;
+                this._accept();
+            },
             _accept :function() {
                 var  _action = this.flagNew?'new':'edit';
                 var  _method = this.flagNew?'POST':'PUT';
@@ -463,7 +460,7 @@ window.addEventListener('load', function ()
                                 _data['id']=response.data.pendings[0].id;
                                 // _data['created_at'] = new Date().toJSON().slice(0,10).replace(/-/g,'/');
                                 self.pendings.push(_data);
-                                pending_dialog_close();
+                                // pending_dialog_close();
                                 break;
                             case 'edit':
                                 _data['id']=self.pendingModel.id;
@@ -488,6 +485,9 @@ window.addEventListener('load', function ()
 
             _remove : function () {
                 this._callback(null, this.url+'/'+this.pendingModel.id, 'DELETE','remove');
+            },
+            pendingBackground: function(pending,index){
+                return "mdl-list__item mdl-list__item--three-line mdl-shadow--2dp zr-pending-background-"+libzr.getRandom(1,4);
             }
         }, // end methods
 
@@ -505,15 +505,15 @@ window.addEventListener('load', function ()
     pending_panelV.init();
 
     pendingDialog = document.querySelector('#pending-dialog');
-    showPendingDialogButton = document.querySelector('#show-pending-dialog');
+    // showPendingDialogButton = document.querySelector('#show-pending-dialog');
 
     if (! pendingDialog.showModal) {
         dialogPolyfill.registerDialog(pendingDialog);
     }
-    showPendingDialogButton.addEventListener('click', function() {
-        pending_dialog_open();
-        pending_panelV.flagNew = true;
-    });
+    // showPendingDialogButton.addEventListener('click', function() {
+    //     pending_dialog_open();
+    //     pending_panelV.flagNew = true;
+    // });
     pendingDialog.querySelector('#pending-dialog-cancel').addEventListener('click', function() {
         pending_panelV._clean();
         pending_dialog_close();

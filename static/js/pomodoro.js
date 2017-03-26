@@ -1,19 +1,16 @@
 window.addEventListener('load', function ()
 {
-
-    var apiv1 = '/api/v1/';
-    var delimiters = ['${', '}'];
-    var timerRE = /-?([01]?[0-9]|2[0-3]):([0-5][0-9])|([0-5][0-9])?/;
-    document.querySelector('#progress-pomodoro-timer').addEventListener('mdl-componentupgraded', function() {
-        this.MaterialProgress.setProgress(80);
-        this.MaterialProgress.setBuffer(90);
-    });
+    var timerRE = /([0-5][0-9])/;
+    // document.querySelector('#progress-pomodoro-timer').addEventListener('mdl-componentupgraded', function() {
+    //     this.MaterialProgress.setProgress(80);
+    //     this.MaterialProgress.setBuffer(90);
+    // });
 
     var Pomodoro = new Vue({
-        delimiters: delimiters,
+        delimiters: libzr.getDelimiterVue(),
         el: '#pomodoro-content',
         data: {
-            url: apiv1 + 'pomodoro',
+            url: libzr.getApi() + 'pomodoro',
             activities: [],
             timer: {
                 hour:0,
@@ -40,10 +37,6 @@ window.addEventListener('load', function ()
         },
 
         methods: {
-
-            init: function () {
-
-            },
 
             add:function () {
                 var _timer_tmp = this.activity.timer.split(':');
@@ -93,22 +86,22 @@ window.addEventListener('load', function ()
                 this._callback(_values, this.url + '/' + data.id, 'PUT', 'done');
             },
 
-            _edit: function (data, index) {
-                this.flagNew = false;
-                this.issueModel.index = index;
-                this.issueModel.id = data.id;
-                this.issueModel.name = data.name;
-                this.issueModel.kind = data.kind;
-                this.issueModel.priority = data.priority;
-                this.issueModel.description= data.description;
-                this.issueModel.assigned_user_id = data.assigned_user_id;
-
-            },
+            // _edit: function (data, index) {
+            //     this.flagNew = false;
+            //     this.issueModel.index = index;
+            //     this.issueModel.id = data.id;
+            //     this.issueModel.name = data.name;
+            //     this.issueModel.kind = data.kind;
+            //     this.issueModel.priority = data.priority;
+            //     this.issueModel.description= data.description;
+            //     this.issueModel.assigned_user_id = data.assigned_user_id;
+            //
+            // },
 
             remove: function (acivity, index) {
                 var _data = [];
                 _data ['index'] = index;
-                this._callback(_data, this.url + '/' + acivity.id, 'DELETE', 'remove');
+                // this._callback(_data, this.url +  remove: !this.flagNew '/' + acivity.id, 'DELETE', 'remove');
             },
 
             _callback: function (_data, _url, _method, _action) {
@@ -160,7 +153,10 @@ window.addEventListener('load', function ()
         //    Timer
             start: function (activity, index) {
                 var self = this;
-                if (self.timer.hour == 0  && self.timer.minute == 0 && self.timer.second == 0 ){
+                if (self.interval == null &&
+                    self.timer.hour == 0  && self.timer.minute == 0 &&
+                    self.timer.second == 0 ){
+
                     var _timer_tmp = activity.timer.split(':');
                     if(_timer_tmp.length==3){
 
@@ -169,7 +165,7 @@ window.addEventListener('load', function ()
                         self.timer.second = 59;
                         // Notify desktop
 
-                        self.notify(activity.name, {'body':activity.timer});
+                        libzr.notifyBrowser(activity.name, {'body':activity.timer});
 
                         this.interval = setInterval(function () {
                             if (!self.is_pause){
@@ -185,7 +181,7 @@ window.addEventListener('load', function ()
 
                                 if (self.timer.hour == 0 &&  self.timer.minute == 0 && self.timer.second == 0){
                                     // Notify desktop
-                                    self.notify(activity.name, {'body': '00:00:00'});
+                                    libzr.notifyBrowser(activity.name, {'body': '00:00:00'});
                                     self.stop(activity, index);
                                 }else{
                                     var _total =  (self.timer.hour * 59) +
@@ -201,17 +197,21 @@ window.addEventListener('load', function ()
                     }
                 }
             },
+          
             getZero: function (value) {
                 return ( value - 1 < 0 ? 0: value -1);
             },
+           
             stop:function (activity, index) {
                 clearInterval(this.interval);
+                this.interval = null;
                 this._clean(['timer'])
             },
 
             pause: function (acivity, index) {
               this.is_pause = !this.is_pause;
             },
+            
             progress: function (_progress, _buffer) {
                 // 30 = 100%
                 console.log(_progress, _buffer);
@@ -221,42 +221,17 @@ window.addEventListener('load', function ()
                     this.MaterialProgress.setBuffer(90);
                 });
             },
+            
+            addBreak: function () {
 
-            notify: function (name, params) {
-                if (("Notification" in window)) {
-                    // Let's check if the user is okay to get some notification
-                    if (Notification.permission !== 'denied') {
-                        Notification.requestPermission(function (permission) {
-                            // Whatever the user answers, we make sure we store the information
-                            if(!('permission' in Notification)) {
-                                Notification.permission = permission;
-                            }
-                            // If the user is okay, let's create a notification
-                            if (permission === "granted") {
-                                params['icon'] = '/images/logo.png';
-                                var notification = new Notification(name, params);
-                            }
-                        });
-                    }
-                }else{
-                    console.log("This browser does not support desktop notification");
-                }
             }
         }, // end methods
 
         computed: {
             validationActivityModel: function () {
                 return {
-                    add: true//this.activity.name.trim().length > 3 && timerRE.test(this.activity.timer)
-                    // remove: !this.flagNew
+                    add: this.activity.name.trim().length > 3 && timerRE.test(this.activity.timer)
                 }
-            },
-            task_name: function () {
-                var _title = '';
-                if (taskV!= null)
-                    if(taskV.current_task!= null)
-                        _title = taskV.current_task.name;
-                return _title
             }
         },
 

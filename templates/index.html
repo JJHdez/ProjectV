@@ -3,7 +3,7 @@
 <div class="android-content mdl-layout__content zr-background-index">
     <div id="form-login" class="zr-background-transparent mdl-card mdl-cell mdl-cell--4-col">
         <div class="mdl-card__title">
-            <!-- <h2 class="mdl-card__title-text">HOLA</h2> -->
+             <!--<h2 class="mdl-card__title-text">HOLA</h2>-->
         </div>
         <div class="mdl-card__supporting-text">
             <form>
@@ -27,12 +27,20 @@
             </form>
         </div>
         <div class="mdl-card__actions mdl-card--border">
-            <a v-show="validation.sign_in" id="login-cancel" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect mdl-button--raised" v-on:click="cancel">
+            <button v-show="validation.sign_in"
+               v-on:click="cancel"
+               id="login-cancel"
+               class="mdl-button mdl-button--colored mdl-js-button
+                      mdl-js-ripple-effect mdl-button--raised mdl-button--accent">
                 Cancelar
-            </a>
-            <a v-show="validation.sign_in" id="sign-in" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect mdl-button--raised" v-on:click="auth">
+            </button>
+            <button v-show="validation.sign_in"
+               v-on:click="auth"
+               id="sign-in"
+               class="mdl-button mdl-button--colored mdl-js-button
+                      mdl-js-ripple-effect mdl-button--raised">
                 Iniciar sesion
-            </a>
+            </button>
         </div>
     </div>
 </div>

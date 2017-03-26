@@ -20,7 +20,7 @@ window.addEventListener('load', function ()
                 validation: function () {
                     return {
                         // user_email_recovery: emailRE.test(this.login.user_email_recovery),
-                        sign_in:emailRE.test(this.login.user_email) && this.login.user_password
+                        sign_in: emailRE.test(this.login.user_email) && this.login.user_password
                     }
                 }
             },
@@ -36,8 +36,8 @@ window.addEventListener('load', function ()
 
                     var data = {
                         'mode':'web',
-                        'uid':this.login.user_password,
-                        'email':this.login.user_email.trim(),
+                        'uid': this.login.user_password,
+                        'email': this.login.user_email.trim(),
                         'auth': 'email',
                         'token': MD5(this.login.user_email)
                     };

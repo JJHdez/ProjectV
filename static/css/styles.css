@@ -241,11 +241,8 @@ _:-ms-input-placeholder, :root .demo-graph {
     position: relative;
     height: auto;
     width: auto;
-    /*background: url('/images/abstract_2_00-wallpaper-3840x2160.jpg') center 30% no-repeat;
-    background: url('/images/girl-sexy.jpg') center 30% no-repeat;
-    */
     background-size: cover;
-    background: url('http://img09.deviantart.net/244a/i/2013/013/d/e/watercolor_and_ink_texture_by_jane_beata-d5rcn9h.jpg') center 30% no-repeat;
+    background: url('/images/index/1.jpg') center 30% no-repeat;
 }
 
 .zr-background-reset-passwordzr-background-reset-password {
@@ -253,7 +250,7 @@ _:-ms-input-placeholder, :root .demo-graph {
     height: auto;
     width: auto;
     background-size: cover;
-    background: url('http://img03.deviantart.net/6027/i/2010/150/3/5/watercolor_textures_08_by_tuesdayraindrops.jpg') center 30% no-repeat;
+    background: url('/images/index/reset-password-background.jpg') center 30% no-repeat;
 }
 .dock button i {
     -webkit-box-reflect: below 3px
@@ -281,11 +278,53 @@ _:-ms-input-placeholder, :root .demo-graph {
     align-items: center;
     justify-content:center;
 }
-/* Pomodoro */
-.zr-background-pomodoro{
-    position: relative;
-    height: auto;
-    width: auto;
-    background-size: cover;
-    background: url('http://orig07.deviantart.net/0057/f/2010/029/3/d/simple_by_whiteangel92.jpg') center 100% no-repeat;
+
+.zr-pomodoro-font-timer {
+    font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
+    line-height: 1;
+    color: #767777;
+    font-weight: 500;
+    display:flex;
+    align-items: center;
+    justify-content:center;
+    font-size: 60px;
+}
+
+.zr-dream-background-1{
+    background: url('/images/dream/1.jpg') center / cover;
+}
+.zr-dream-background-2{
+    background: url('/images/dream/2.jpg') center / cover;
+}
+.zr-dream-background-3{
+    background: url('/images/dream/3.jpg') center / cover;
+}
+.zr-dream-background-4{
+    background: url('/images/dream/4.jpg') center / cover;
+}
+
+.zr-habit-background-1{
+    background: url('/images/habit/1.jpg') center / cover;
+}
+.zr-habit-background-2{
+    background: url('/images/habit/2.jpg') center / cover;
+}
+.zr-habit-background-3{
+    background: url('/images/habit/3.jpg') center / cover;
+}
+.zr-habit-background-4{
+    background: url('/images/habit/4.jpg') center / cover;
+}
+
+.zr-pending-background-1{
+    background: url('/images/pending/1.jpg') center;
+}
+.zr-pending-background-2{
+    background: url('/images/pending/2.jpg') center;
+}
+.zr-pending-background-3{
+    background: url('/images/pending/3.jpg') center;
+}
+.zr-pending-background-4{
+    background: url('/images/pending/4.jpg') center;
 }
