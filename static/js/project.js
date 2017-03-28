@@ -404,6 +404,7 @@ window.addEventListener('load', function ()
         //  Controller Issue
 
             initIssue: function (task, index) {
+                this.issues = [];
                 var _url = this.urlIssue+"?completed=False&by=project_task_id&project_task_id="+task.id;
                 this._requestIssue(null, _url, 'GET', 'init');
             },
