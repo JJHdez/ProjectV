@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 # ZERO 1/0 © 2016
+# Fask Core
 from flask import Flask, request, render_template, send_from_directory, g, session, url_for, redirect
 from flask_mail import Mail
 from flask_babel import Babel
 from AoL.Utils.Db import PsqlAoL
 from flask_restful import Api
+# AOL Core RESTFul
 from AoL.Auth.Auth import Auth
 from AoL.Auth.User import UserList
 from AoL.Habit.Habit import Habit, HabitList
@@ -16,7 +18,8 @@ from AoL.Project.ProjectTaskIssue import ProjectIssue, ProjectIssueList
 from AoL.Wish.Wish import Wish, WishList
 from AoL.Dream.Dream import Dream, DreamList
 from AoL.Pending.Pending import Pending, PendingList
-# UL
+from AoL.Pomodoro.Pomodoro import Pomodoro, PomodoroList
+# UL Core
 from UL.Dashboard.Dashboard import DashboardCtl
 from UL.Project.Project import ProjectCtl
 from UL.Yourself.Yourself import YourselfCtl
@@ -97,6 +100,9 @@ api.add_resource(PendingList, api_v1 + 'pending')
 api.add_resource(Pending, api_v1 + 'pending/<int:id>')
 # User
 api.add_resource(UserList, api_v1+'user')
+# Pomodoro
+api.add_resource(PomodoroList, api_v1 + 'pomodoro')
+api.add_resource(Pomodoro, api_v1 + 'pomodoro/<int:id>')
 
 
 @app.route(api_v1 + 'login', methods=['POST'])

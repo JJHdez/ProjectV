@@ -45,26 +45,31 @@
 
         <li v-for="(activity, index) in activities" class="mdl-list__item mdl-list__item--two-line">
             <span class="mdl-list__item-primary-content">
-              <i class="material-icons  mdl-list__item-avatar">person</i>
+              <i v-bind:class="getIcon(activity, index, 'class')">${getIcon(activity, index, 'icon')}</i>
               <span>${activity.name}</span>
             <span class="mdl-list__item-sub-title">${activity.timer}</span>
             </span>
             <span class="mdl-list__item-secondary-action">
-                <button v-on:click="remove(activity,index)"
+                <button v-if="removeShow(activity, index)"
+                        v-on:click="remove(activity,index)"
                         class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab
                                 mdl-button--colored mdl-button-raised mdl-js-ripple-effect">
                     <i class="material-icons">delete_forever</i>
                  </button>
-                 <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab
+                 <button v-if="pauseOrStopShow(activity,index)"
+                         v-on:click="stop(activity, index)"
+                         class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab
                                 mdl-button--colored mdl-button-raised mdl-js-ripple-effect">
                     <i class="material-icons">stop</i>
                  </button>
-                 <button v-on:click="pause(activity,index)"
+                 <button v-if="pauseOrStopShow(activity,index)"
+                         v-on:click="pause(activity,index)"
                          class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab
                                 mdl-button--colored mdl-button-raised mdl-js-ripple-effect">
                     <i class="material-icons">pause_circle_outline</i>
                  </button>
-                <button v-on:click="start(activity,index)"
+                <button v-if="playShow(activity,index)"
+                        v-on:click="play(activity,index)"
                         class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab
                                 mdl-button--colored mdl-button-raised mdl-js-ripple-effect">
                     <i class="material-icons">play_circle_outline</i>
