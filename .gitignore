@@ -1,4 +1,10 @@
+# Source
 *.pyc
+
+# Editor
 .idea/
-x/
-AoL/bin/backup
+
+# X files
+#/tools/x-files
+#/tools/Bin
+/tools/

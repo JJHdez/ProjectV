@@ -1,26 +1,64 @@
-# Art Of Life ``` © 2016. by Zero 1/0.``` 
-*With support for serving easy APIs and static content*
+# PROJECT V
+---
+<p align="center">
+    <a href="https://vuejs.org" target="_blank">
+        <img width="100"src="https://vuejs.org/images/logo.png">
+    </a>
+     <a href="https://material.io/" target="_blank">
+		Material.io
+    </a>
+    <a href="http://flask.pocoo.org/" target="_blank">
+        <img width="200"src="http://flask.pocoo.org/static/logo/flask.svg">
+    </a>
+</p>
+
+## Intro
+
+Project V(violet) is a project that join all applications of use common
+for everybody (end user, entrepreneur). One site, one app.
+
+Now only include this modules:
+* [x] Goal manage
+* [x] Habits control
+* [x] Pending list
+* [x] Project manage
+* [x] Pomodoro
+
+## Demo
+To check out living example, visit [Violet](http://art0flife-zero1zero.rhcloud.com)
+
+user: demo@demo.demo
+
+password: demo@demo.demo
 
 
-Wiki Rest
-[sqlalchemy-tutorial](https://suhas.org/sqlalchemy-tutorial)
-[flaskrest](http://blog.luisrei.com/articles/flaskrest.html)
-[flask-restful-api-using-python-mysql](http://codehandbook.org/flask-restful-api-using-python-mysql/)
-[designing-a-restful-api-with-python-and-flask](https://blog.miguelgrinberg.com/post/designing-a-restful-api-with-python-and-flask)
+## Contributing
+#### Issue Reporting Guidelines
+* Github issues
 
-Wiki Http
-[REST API Quick Tips](http://www.restapitutorial.com/lessons/restquicktips.html)
+#### Pull Request Guidelines
+* The master branch is basically just a snapshot of the latest stable release.
+  All development should be done in dedicated branches.
+  Do not submit PRs against the master branch.
+* All submit PRs against the dev branch.
+* Make your changes in a new git branch:
+  ``git checkout -b my-fix-branch master``
+* Commit your changes using a descriptive commit message and prefix:
+    * ``[IMP]`` for improvements
+    * ``[FIX]`` for bug fixes
+    * ``[REF]`` for refactoring
+    * ``[ADD]`` for adding new resources
+    * ``[REM]`` for removing of resources
+
+## Configuration
+* Install libraries [requirements.txt](requirements.txt)
+* Replace values in file ``flaskapp.cfg``
+* Restore ``tools/Db/last release.sql`` on [PostgreSQL](www.postgresql.org)
 
 
-Root User: admintihyw5t
-Root Password: RPhL7TfAcY_t
-Database Name: art0flife
-Connection URL: postgresql://$OPENSHIFT_POSTGRESQL_DB_HOST:$OPENSHIFT_POSTGRESQL_DB_PORT
 
-DB_USER = 'odoo'
-DB_PASSWORD = '0d004dm1n'
-DB_NAME = 'aol'
+## License
 
-https://guides.codepath.com/android/ViewPager-with-FragmentPagerAdapter
+Licensed under an [Apache-2.0](LICENSE) license.
 
-https://github.com/GunaseelanArumaikkannu/MultiSpinner
+Copyright © 2016-Present, ProjectV Authors. All Rights Reserved.
