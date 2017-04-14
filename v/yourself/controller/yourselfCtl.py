@@ -23,4 +23,4 @@ class YourselfCtl:
 
     @staticmethod
     def index():
-        return render_template('UL/Yourself/index.html')
+        return render_template('yourself/index.html')

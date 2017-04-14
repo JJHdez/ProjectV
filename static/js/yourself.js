@@ -138,7 +138,7 @@ window.addEventListener('load', function ()
                 this._callback(null, this.url+'/'+this.dreamModel.id, 'DELETE','remove');
             },
             dreamBackground: function (dream, index) {
-                return "mdl-card mdl-shadow--2dp zr-dream-background-"+ libzr.getRandom(1,4);
+                return "mdl-card mdl-shadow--2dp zr-dream-background-1";//+ libzr.getRandom(1,4);
             },
             getDate: function (_date) {
                 if (!_date)
@@ -337,7 +337,7 @@ window.addEventListener('load', function ()
                 return _status;
             },
             habitBackground: function (habit, index) {
-                return "mdl-card mdl-shadow--2dp zr-habit-background-"+ libzr.getRandom(1,4);
+                return "mdl-card mdl-shadow--2dp zr-habit-background-1";//+ libzr.getRandom(1,4);
             }
         }, // end methods
 
@@ -503,7 +503,7 @@ window.addEventListener('load', function ()
                 this._callback(null, this.url+'/'+this.pendingModel.id, 'DELETE','remove');
             },
             pendingBackground: function(pending,index){
-                return "mdl-list__item mdl-list__item--three-line mdl-shadow--2dp zr-pending-background-"+libzr.getRandom(1,4);
+                return "mdl-list__item mdl-list__item--three-line mdl-shadow--2dp zr-pending-background-1";//+libzr.getRandom(1,4);
             }
         }, // end methods
 

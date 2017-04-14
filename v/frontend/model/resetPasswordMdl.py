@@ -53,7 +53,7 @@ class ResetPasswordMdl:
         return id
 
     def template_email_reset_password(self, email, url):
-        _template = render_template('Email/reset_password.html', email=email, url=url)
+        _template = render_template('email/resetPassword.html', email=email, url=url)
         msg = Message(
                       sender=("JMED MEXICO", "jmed.mexico@gmail.com"),
                       recipients=[email],

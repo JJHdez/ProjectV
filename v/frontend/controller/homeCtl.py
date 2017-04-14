@@ -23,4 +23,4 @@ class HomeCtl:
 
     @staticmethod
     def index():
-        return render_template('index.html')
+        return render_template('frontend/index.html')

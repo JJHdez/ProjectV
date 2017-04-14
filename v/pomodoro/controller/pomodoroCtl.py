@@ -23,4 +23,4 @@ class PomodoroCtl:
 
     @staticmethod
     def index():
-        return render_template('UL/Pomodoro/index.html')
+        return render_template('pomodoro/index.html')

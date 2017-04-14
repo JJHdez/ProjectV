@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from flask import render_template, g, request, redirect
+from flask import render_template, request, redirect
 from v.tools.validate import validate_rest
 from v.tools.exception import ExceptionRest
 from v.tools.v import processing_rest_exception, processing_rest_success
@@ -30,7 +30,7 @@ class ResetPasswordCtl:
         _token = request.args.get('token', False)
         rpo = ResetPasswordMdl()
         if _token and rpo.token_available(_token):
-            return render_template('reset_password.html', token=_token)
+            return render_template('frontend/resetPassword.html', token=_token)
         else:
             return redirect('/')
 

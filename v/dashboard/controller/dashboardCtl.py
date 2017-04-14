@@ -23,4 +23,4 @@ class DashboardCtl:
 
     @staticmethod
     def index():
-        return render_template('UL/dashboard.html')
+        return render_template('dashboard.html')

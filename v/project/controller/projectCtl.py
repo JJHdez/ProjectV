@@ -23,7 +23,7 @@ class ProjectCtl:
 
     @staticmethod
     def index():
-        return render_template('UL/Project/index.html')
+        return render_template('project/index.html')
 
     @staticmethod
     def project():
@@ -31,12 +31,12 @@ class ProjectCtl:
 
     @staticmethod
     def task():
-        return render_template('UL/Project/task.html')
+        return render_template('project/task.html')
 
     @staticmethod
     def subtask():
-        return render_template('UL/Project/subtask.html')
+        return render_template('project/subtask.html')
 
     @staticmethod
     def bug():
-        return render_template('UL/Project/issue.html')
+        return render_template('project/issue.html')
