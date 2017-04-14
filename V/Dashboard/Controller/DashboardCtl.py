@@ -16,11 +16,11 @@
 from flask import render_template
 
 
-class YourselfCtl:
+class DashboardCtl:
 
     def __init__(self):
         pass
 
     @staticmethod
     def index():
-        return render_template('UL/Yourself/index.html')
+        return render_template('UL/dashboard.html')

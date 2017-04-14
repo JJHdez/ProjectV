@@ -13,14 +13,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from flask import render_template
 
-
-class YourselfCtl:
+class WishMdl:
+    _table = 'wishes'
+    _fields = {
+        'name': {'required': True, 'typeof': 'str', 'length': {'min': 3}},
+        'priority': {'typeof': 'int'},
+        'due_date_at': {'typeof': 'date'},
+        'completed_at': {'typeof': 'date'},
+    }
 
     def __init__(self):
         pass
-
-    @staticmethod
-    def index():
-        return render_template('UL/Yourself/index.html')

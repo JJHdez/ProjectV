@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from flask import Flask, request, render_template, \
+from flask import Flask, request, \
     send_from_directory, g, session, url_for, redirect
 from flask_mail import Mail
 from flask_babel import Babel
@@ -22,35 +22,35 @@ from flask_restful import Api
 from V.Tools.Db import PsqlAoL
 
 # User
-from V.Auth.Controller.ResetPassword import ResetPasswordCtl
-from V.Auth.Rest.Auth import Auth
-from V.Auth.Rest.User import UserListRst
+from V.Frontend.Controller.ResetPasswordCtl import ResetPasswordCtl
+from V.Auth.Rest.AuthRst import Auth, AuthListRst
 
 # Project
-from V.Project.Controller.Project import ProjectCtl
-from V.Project.Rest.Project import ProjectRst, ProjectListRst
-from V.Project.Rest.ProjectTask import ProjectTaskRst, ProjectTaskListRst
-from V.Project.Rest.ProjectTaskParticipated import ProjectParticipatedRst, ProjectParticipatedListRst
-from V.Project.Rest.ProjectTaskIssue import ProjectIssueRst, ProjectIssueListRst
+from V.Project.Controller.ProjectCtl import ProjectCtl
+from V.Project.Rest.ProjectRst import ProjectRst, ProjectListRst
+from V.Project.Rest.ProjectTaskRst import ProjectTaskRst, ProjectTaskListRst
+from V.Project.Rest.ProjectTaskParticipatedRst import ProjectParticipatedRst, ProjectParticipatedListRst
+from V.Project.Rest.ProjectTaskIssueRst import ProjectIssueRst, ProjectIssueListRst
 
 # Wish list
-from V.Wish.Rest.Wish import WishRst, WishListRst
+from V.Wish.Rest.WishRst import WishRst, WishListRst
 
 # Yourself
 from V.Yourself.Controller.Yourself import YourselfCtl
-from V.Yourself.Habit.Rest.Habit import HabitRst, HabitListRst
-from V.Yourself.Habit.Rest.HabitHistory import HistoryHabitRst, HistoryHabitListRst
-from V.Yourself.Dream.Rest.Dream import DreamRst, DreamListRst
-from V.Yourself.Pending.Rest.Pending import PendingRst, PendingListRst
+from V.Yourself.Habit.Rest.HabitRst import HabitRst, HabitListRst
+from V.Yourself.Habit.Rest.HistoryHabitRst import HistoryHabitRst, HistoryHabitListRst
+from V.Yourself.Dream.Rest.DreamRst import DreamRst, DreamListRst
+from V.Yourself.Pending.Rest.PendingRst import PendingRst, PendingListRst
 
 # Pomodoro
-from V.Pomodoro.Controller.Pomodoro import PomodoroCtl
-from V.Pomodoro.Rest.Pomodoro import PomodoroRst, PomodoroListRst
-# Dashboard user / index
-from V.Dashboard.Dashboard import DashboardCtl
+from V.Pomodoro.Controller.PomodoroCtl import PomodoroCtl
+from V.Pomodoro.Rest.PomodoroRst import PomodoroRst, PomodoroListRst
 
-# Landing page / home / frontend
-from V.Home.Home import HomeCtl
+# Dashboard
+from V.Dashboard.Controller.DashboardCtl import DashboardCtl
+
+# Frontend index
+from V.Frontend.Controller.HomeCtl import HomeCtl
 
 app = Flask(__name__)
 
@@ -90,16 +90,7 @@ def open_db():
                 g.user = _rs['user']
 
 
-# @babel.localeselector
-# def get_locate():
-#     pass
-#
-#
-# @babel.timezoneselector
-# def get_timezone():
-#     pass
-
-# RESTful AOL
+# RESTful
 api_v1 = '/api/v1/'
 
 # Yourself
@@ -129,7 +120,7 @@ api.add_resource(ProjectIssueListRst, api_v1 + 'project/task/issue')
 api.add_resource(ProjectIssueRst, api_v1 + 'project/task/issue/<int:id>')
 
 # User
-api.add_resource(UserListRst, api_v1 + 'user')
+api.add_resource(AuthListRst, api_v1 + 'user')
 
 # Pomodoro
 api.add_resource(PomodoroListRst, api_v1 + 'pomodoro')
@@ -186,7 +177,6 @@ def logout():
     return redirect(url_for('/'))
 
 
-# Url Admin
 @app.route(prefix_admin + '/dashboard', endpoint=startpoint_admin + '/dashboard')
 @is_login
 def dashboard():
@@ -199,7 +189,6 @@ def yourself():
     return YourselfCtl.index()
 
 
-# start - Projects
 @app.route(prefix_admin + '/project', endpoint=startpoint_admin + '/project')
 @is_login
 def project():
@@ -224,10 +213,6 @@ def issue():
     return ProjectCtl.bug()
 
 
-# end - Projects
-
-
-# start - Projects
 @app.route(prefix_admin + '/pomodoro', endpoint=startpoint_admin + '/pomodoro')
 @is_login
 def pomodoro():
@@ -242,15 +227,6 @@ def reset_password():
         return ResetPasswordCtl.token()
     elif request.method == 'POST':
         return ResetPasswordCtl.password_change()
-
-
-# Url testing
-@app.route('/test')
-def test():
-    return render_template('test.html')
-
-
-# Url testing
 
 if __name__ == '__main__':
     app.run()

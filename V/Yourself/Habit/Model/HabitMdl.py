@@ -13,14 +13,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from flask import render_template
 
-
-class YourselfCtl:
+class HabitMdl:
+    _fields = ['id', 'created_date', 'user_id', 'finished_date', 'closed_date', 'name']
+    _table = 'habits'
 
     def __init__(self):
         pass
-
-    @staticmethod
-    def index():
-        return render_template('UL/Yourself/index.html')

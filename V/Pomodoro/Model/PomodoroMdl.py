@@ -13,14 +13,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from flask import render_template
 
-
-class YourselfCtl:
+class PomodoroMdl:
+    _table = 'pomodoro_activities'
+    _fields = {
+        'name': {'required': True, 'typeof': 'str'},
+        'timer': {'required': True},
+        'start_datetime_at': {'typeof': 'datetime'},
+        'due_datetime_at': {'typeof': 'datetime'}
+    }
 
     def __init__(self):
         pass
-
-    @staticmethod
-    def index():
-        return render_template('UL/Yourself/index.html')

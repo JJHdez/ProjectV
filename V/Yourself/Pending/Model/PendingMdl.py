@@ -13,14 +13,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from flask import render_template
 
-
-class YourselfCtl:
+class PendingMdl:
+    _table = 'pendings'
+    _fields = {
+        'name': {'required': True, 'typeof': 'str', 'length': {'min': 3}},
+        'description': {'typeof': 'str', 'length': {'min': 3}},
+        'completed_at': {'typeof': 'datetime'}
+    }
 
     def __init__(self):
         pass
-
-    @staticmethod
-    def index():
-        return render_template('UL/Yourself/index.html')

@@ -13,14 +13,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from flask import render_template
 
-
-class YourselfCtl:
+class DreamMdl:
+    _table = 'dreams'
+    _fields = {
+        'name': {'required': True, 'length': {'min': 3}, 'typeof': 'str'},
+        'due_date_at': {'typeof': 'date'},
+        'completed_at': {'typeof': 'date'}
+    }
 
     def __init__(self):
         pass
-
-    @staticmethod
-    def index():
-        return render_template('UL/Yourself/index.html')

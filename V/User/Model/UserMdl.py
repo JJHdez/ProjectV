@@ -13,14 +13,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from flask import render_template
 
+class UserMdl(object):
 
-class YourselfCtl:
-
-    def __init__(self):
-        pass
-
-    @staticmethod
-    def index():
-        return render_template('UL/Yourself/index.html')
+    def __init__(self, id, email=None, name=None, last_name=None, cover=None, timezone=None):
+        self.id = id
+        self.email = email
+        self.name = name
+        self.last_name = last_name
+        self.cover = cover
+        self.timezone = timezone
