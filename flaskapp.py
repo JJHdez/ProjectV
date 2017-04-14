@@ -1,31 +1,57 @@
 # -*- coding: utf-8 -*-
-# ZERO 1/0 © 2016
-# Fask Core
-from flask import Flask, request, render_template, send_from_directory, g, session, url_for, redirect
+# Copyright 2017 ProjectV Authors. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+from flask import Flask, request, render_template, \
+    send_from_directory, g, session, url_for, redirect
 from flask_mail import Mail
 from flask_babel import Babel
-from AoL.Utils.Db import PsqlAoL
 from flask_restful import Api
-# AOL Core RESTFul
-from AoL.Auth.Auth import Auth
-from AoL.Auth.User import UserList
-from AoL.Habit.Habit import Habit, HabitList
-from AoL.Habit.HabitHistory import HistoryHabit, HistoryHabitList
-from AoL.Project.Project import Project, ProjectList
-from AoL.Project.ProjectTask import ProjectTask, ProjectTaskList
-from AoL.Project.ProjectTaskParticipated import ProjectParticipated, ProjectParticipatedList
-from AoL.Project.ProjectTaskIssue import ProjectIssue, ProjectIssueList
-from AoL.Wish.Wish import Wish, WishList
-from AoL.Dream.Dream import Dream, DreamList
-from AoL.Pending.Pending import Pending, PendingList
-from AoL.Pomodoro.Pomodoro import Pomodoro, PomodoroList
-# UL Core
-from UL.Dashboard.Dashboard import DashboardCtl
-from UL.Project.Project import ProjectCtl
-from UL.Yourself.Yourself import YourselfCtl
-from UL.Home.Home import HomeCtl
-from UL.Auth.ResetPassword import ResetPasswordCtl
-from UL.Pomodoro.Pomodoro import PomodoroCtl
+
+from V.Tools.Db import PsqlAoL
+
+# User
+from V.Auth.Controller.ResetPassword import ResetPasswordCtl
+from V.Auth.Rest.Auth import Auth
+from V.Auth.Rest.User import UserListRst
+
+# Project
+from V.Project.Controller.Project import ProjectCtl
+from V.Project.Rest.Project import ProjectRst, ProjectListRst
+from V.Project.Rest.ProjectTask import ProjectTaskRst, ProjectTaskListRst
+from V.Project.Rest.ProjectTaskParticipated import ProjectParticipatedRst, ProjectParticipatedListRst
+from V.Project.Rest.ProjectTaskIssue import ProjectIssueRst, ProjectIssueListRst
+
+# Wish list
+from V.Wish.Rest.Wish import WishRst, WishListRst
+
+# Yourself
+from V.Yourself.Controller.Yourself import YourselfCtl
+from V.Yourself.Habit.Rest.Habit import HabitRst, HabitListRst
+from V.Yourself.Habit.Rest.HabitHistory import HistoryHabitRst, HistoryHabitListRst
+from V.Yourself.Dream.Rest.Dream import DreamRst, DreamListRst
+from V.Yourself.Pending.Rest.Pending import PendingRst, PendingListRst
+
+# Pomodoro
+from V.Pomodoro.Controller.Pomodoro import PomodoroCtl
+from V.Pomodoro.Rest.Pomodoro import PomodoroRst, PomodoroListRst
+# Dashboard user / index
+from V.Dashboard.Dashboard import DashboardCtl
+
+# Landing page / home / frontend
+from V.Home.Home import HomeCtl
+
 app = Flask(__name__)
 
 app.config.from_pyfile('flaskapp.cfg')
@@ -75,34 +101,39 @@ def open_db():
 
 # RESTful AOL
 api_v1 = '/api/v1/'
+
+# Yourself
 # Habit
-api.add_resource(HabitList, api_v1 + 'habit')
-api.add_resource(Habit, api_v1 + 'habit/<int:habit_id>')
-api.add_resource(HistoryHabitList, api_v1 + 'habit/history')
-api.add_resource(HistoryHabit, api_v1 + 'habit/history/<int:history_habit_id>')
-# Project
-api.add_resource(ProjectList, api_v1 + 'project')
-api.add_resource(Project, api_v1 + 'project/<int:id>')
-api.add_resource(ProjectTaskList, api_v1 + 'project/task')
-api.add_resource(ProjectTask, api_v1 + 'project/task/<int:id>')
-api.add_resource(ProjectParticipatedList, api_v1 + 'project/task/participated')
-api.add_resource(ProjectParticipated, api_v1 + 'project/task/participated/<int:id>')
-api.add_resource(ProjectIssueList, api_v1 + 'project/task/issue')
-api.add_resource(ProjectIssue, api_v1 + 'project/task/issue/<int:id>')
+api.add_resource(HabitListRst, api_v1 + 'habit')
+api.add_resource(HabitRst, api_v1 + 'habit/<int:habit_id>')
+api.add_resource(HistoryHabitListRst, api_v1 + 'habit/history')
+api.add_resource(HistoryHabitRst, api_v1 + 'habit/history/<int:history_habit_id>')
 # wish
-api.add_resource(WishList, api_v1 + 'wish')
-api.add_resource(Wish, api_v1 + 'wish/<int:id>')
+api.add_resource(WishListRst, api_v1 + 'wish')
+api.add_resource(WishRst, api_v1 + 'wish/<int:id>')
 # dream
-api.add_resource(DreamList, api_v1 + 'dream')
-api.add_resource(Dream, api_v1 + 'dream/<int:id>')
+api.add_resource(DreamListRst, api_v1 + 'dream')
+api.add_resource(DreamRst, api_v1 + 'dream/<int:id>')
 # Pending
-api.add_resource(PendingList, api_v1 + 'pending')
-api.add_resource(Pending, api_v1 + 'pending/<int:id>')
+api.add_resource(PendingListRst, api_v1 + 'pending')
+api.add_resource(PendingRst, api_v1 + 'pending/<int:id>')
+
+# Project
+api.add_resource(ProjectListRst, api_v1 + 'project')
+api.add_resource(ProjectRst, api_v1 + 'project/<int:id>')
+api.add_resource(ProjectTaskListRst, api_v1 + 'project/task')
+api.add_resource(ProjectTaskRst, api_v1 + 'project/task/<int:id>')
+api.add_resource(ProjectParticipatedListRst, api_v1 + 'project/task/participated')
+api.add_resource(ProjectParticipatedRst, api_v1 + 'project/task/participated/<int:id>')
+api.add_resource(ProjectIssueListRst, api_v1 + 'project/task/issue')
+api.add_resource(ProjectIssueRst, api_v1 + 'project/task/issue/<int:id>')
+
 # User
-api.add_resource(UserList, api_v1+'user')
+api.add_resource(UserListRst, api_v1 + 'user')
+
 # Pomodoro
-api.add_resource(PomodoroList, api_v1 + 'pomodoro')
-api.add_resource(Pomodoro, api_v1 + 'pomodoro/<int:id>')
+api.add_resource(PomodoroListRst, api_v1 + 'pomodoro')
+api.add_resource(PomodoroRst, api_v1 + 'pomodoro/<int:id>')
 
 
 @app.route(api_v1 + 'login', methods=['POST'])
@@ -143,6 +174,7 @@ def is_login(func):
             return redirect(url_for('/'))
         else:
             return func()
+
     return func_wrapper
 
 
@@ -155,46 +187,48 @@ def logout():
 
 
 # Url Admin
-@app.route(prefix_admin+'/dashboard', endpoint=startpoint_admin+'/dashboard')
+@app.route(prefix_admin + '/dashboard', endpoint=startpoint_admin + '/dashboard')
 @is_login
 def dashboard():
     return DashboardCtl.index()
 
 
-@app.route(prefix_admin+'/yourself', endpoint=startpoint_admin+'/yourself')
+@app.route(prefix_admin + '/yourself', endpoint=startpoint_admin + '/yourself')
 @is_login
 def yourself():
     return YourselfCtl.index()
 
 
 # start - Projects
-@app.route(prefix_admin+'/project', endpoint=startpoint_admin+'/project')
+@app.route(prefix_admin + '/project', endpoint=startpoint_admin + '/project')
 @is_login
 def project():
     return ProjectCtl.index()
 
 
-@app.route(prefix_admin+'/project/task', endpoint=startpoint_admin+'/project/task')
+@app.route(prefix_admin + '/project/task', endpoint=startpoint_admin + '/project/task')
 @is_login
 def tasks():
     return ProjectCtl.task()
 
 
-@app.route(prefix_admin+'/project/task/subtask', endpoint=startpoint_admin+'/project/task/subtask')
+@app.route(prefix_admin + '/project/task/subtask', endpoint=startpoint_admin + '/project/task/subtask')
 @is_login
 def subtask():
     return ProjectCtl.subtask()
 
 
-@app.route(prefix_admin+'/project/task/issue', endpoint=startpoint_admin+'/project/task/issue')
+@app.route(prefix_admin + '/project/task/issue', endpoint=startpoint_admin + '/project/task/issue')
 @is_login
 def issue():
     return ProjectCtl.bug()
+
+
 # end - Projects
 
 
 # start - Projects
-@app.route(prefix_admin+'/pomodoro', endpoint=startpoint_admin+'/porodoro')
+@app.route(prefix_admin + '/pomodoro', endpoint=startpoint_admin + '/pomodoro')
 @is_login
 def pomodoro():
     return PomodoroCtl.index()
@@ -214,6 +248,7 @@ def reset_password():
 @app.route('/test')
 def test():
     return render_template('test.html')
+
 
 # Url testing
 
