@@ -13,44 +13,43 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from flask import Flask, request, \
-    send_from_directory, g, session, url_for, redirect
+from flask import Flask, request, send_from_directory, g, session, url_for, redirect
 from flask_mail import Mail
 from flask_babel import Babel
 from flask_restful import Api
 
-from V.Tools.Db import PsqlAoL
+from v.tools.db import PsqlAoL
 
 # User
-from V.Frontend.Controller.ResetPasswordCtl import ResetPasswordCtl
-from V.Auth.Rest.AuthRst import Auth, AuthListRst
+from v.auth.rest.authRst import Auth, AuthListRst
 
 # Project
-from V.Project.Controller.ProjectCtl import ProjectCtl
-from V.Project.Rest.ProjectRst import ProjectRst, ProjectListRst
-from V.Project.Rest.ProjectTaskRst import ProjectTaskRst, ProjectTaskListRst
-from V.Project.Rest.ProjectTaskParticipatedRst import ProjectParticipatedRst, ProjectParticipatedListRst
-from V.Project.Rest.ProjectTaskIssueRst import ProjectIssueRst, ProjectIssueListRst
+from v.project.controller.projectCtl import ProjectCtl
+from v.project.rest.projectRst import ProjectRst, ProjectListRst
+from v.project.rest.projectTaskRst import ProjectTaskRst, ProjectTaskListRst
+from v.project.rest.projectTaskParticipatedRst import ProjectParticipatedRst, ProjectParticipatedListRst
+from v.project.rest.projectTaskIssueRst import ProjectIssueRst, ProjectIssueListRst
 
 # Wish list
-from V.Wish.Rest.WishRst import WishRst, WishListRst
+from v.wish.rest.wishRst import WishRst, WishListRst
 
 # Yourself
-from V.Yourself.Controller.Yourself import YourselfCtl
-from V.Yourself.Habit.Rest.HabitRst import HabitRst, HabitListRst
-from V.Yourself.Habit.Rest.HistoryHabitRst import HistoryHabitRst, HistoryHabitListRst
-from V.Yourself.Dream.Rest.DreamRst import DreamRst, DreamListRst
-from V.Yourself.Pending.Rest.PendingRst import PendingRst, PendingListRst
+from v.yourself.controller.yourselfCtl import YourselfCtl
+from v.yourself.habit.rest.habitRst import HabitRst, HabitListRst
+from v.yourself.habit.rest.historyHabitRst import HistoryHabitRst, HistoryHabitListRst
+from v.yourself.dream.rest.dreamRst import DreamRst, DreamListRst
+from v.yourself.pending.rest.pendingRst import PendingRst, PendingListRst
 
 # Pomodoro
-from V.Pomodoro.Controller.PomodoroCtl import PomodoroCtl
-from V.Pomodoro.Rest.PomodoroRst import PomodoroRst, PomodoroListRst
+from v.pomodoro.controller.pomodoroCtl import PomodoroCtl
+from v.pomodoro.rest.pomodoroRst import PomodoroRst, PomodoroListRst
 
 # Dashboard
-from V.Dashboard.Controller.DashboardCtl import DashboardCtl
+from v.dashboard.controller.dashboardCtl import DashboardCtl
 
 # Frontend index
-from V.Frontend.Controller.HomeCtl import HomeCtl
+from v.frontend.controller.homeCtl import HomeCtl
+from v.frontend.controller.resetPasswordCtl import ResetPasswordCtl
 
 app = Flask(__name__)
 
