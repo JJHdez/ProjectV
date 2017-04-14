@@ -66,7 +66,7 @@ window.addEventListener('load', function ()
             },
 
             _done: function(data, index){
-                var _values = {'completed_at': getDateUtc(new Date(),'datetime')};
+                var _values = {'completed_at': libzr.getUtcDate(new Date()).format('yyyy-M-d h:m:s')};
                 this.dreamModel.index = index;
                 this._callback(_values, this.url+'/'+data.id, 'PUT','done');
             },
@@ -433,7 +433,7 @@ window.addEventListener('load', function ()
             },
 
             _done: function(data, index){
-                var _values = {'completed_at': getDateUtc(new Date(),'datetime')};
+                var _values = {'completed_at': libzr.getUtcDate(new Date()).format('yyyy-M-d h:m:s')};
                 this.pendingModel.index = index;
                 this._callback(_values, this.url+'/'+data.id, 'PUT','done');
             },

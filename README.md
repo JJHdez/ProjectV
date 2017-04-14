@@ -1,28 +1,26 @@
 # PROJECT V
 ---
-<p align="center">
-    <a href="https://vuejs.org" target="_blank">
-        <img width="100"src="https://vuejs.org/images/logo.png">
-    </a>
-     <a href="https://material.io/" target="_blank">
-		Material.io
-    </a>
-    <a href="http://flask.pocoo.org/" target="_blank">
-        <img width="200"src="http://flask.pocoo.org/static/logo/flask.svg">
-    </a>
-</p>
+
+[![Vue.js](https://vuejs.org/images/logo.png)](https://vuejs.org)
+[material.io](https://material.io/)
+[![flask](http://flask.pocoo.org/static/logo/flask.svg)](http://flask.pocoo.org/)
 
 ## Intro
 
 Project V(violet) is a project that join all applications of use common
 for everybody (end user, entrepreneur). One site, one app.
 
+![Vue.js](screenshot/Home.png)
+
 Now only include this modules:
-* [x] Goal manage
-* [x] Habits control
-* [x] Pending list
-* [x] Project manage
-* [x] Pomodoro
+
+* [Goal manage](screenshot/Objective.png)
+* [Habits control](screenshot/Habit.png)
+* [Pending list](screenshot/Pending.png)
+* [Project manage](screenshot/Project.png)
+    * [Sub task](screenshot/Project-sub-task.png)
+    * [Issue](screenshot/Project-issue.png)
+* [Pomodoro](screenshot/Pomodoro.png)
 
 ## Demo
 To check out living example, visit [Violet](http://art0flife-zero1zero.rhcloud.com)

@@ -5,6 +5,6 @@
 .idea/
 
 # X files
-#/tools/x-files
-#/tools/Bin
-/tools/
+/tools/x-files
+/tools/bin/*.sh
+/tools/bin/backup.py

@@ -13,7 +13,7 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 -->
-{% extends "UL/layout.html" %}
+{% extends "layout.html" %}
 
 {% block layout_title %}
     Se tu mismo
@@ -110,7 +110,7 @@
             <!-- Dialog dreams-->
             <dialog id="dream-dialog" class="mdl-dialog mdl-cell--4-col">
                 <h4 class="mdl-dialog__title">
-                    <i class="material-icons">gps_fixed</i>Objectivo
+                    <i class="material-icons">gps_fixed</i>Objetivo
                 </h4>
                 <div class="mdl-dialog__content">
                     <form action="#">
@@ -160,7 +160,7 @@
                         <input v-model="habitModel.name"
                                class="mdl-textfield__input" type="text"
                                id="quick-habit-name"/>
-                        <label class="mdl-textfield__label" for="quick-habit-name">Habito</label>
+                        <label class="mdl-textfield__label" for="quick-habit-name">Hábito</label>
                     </div>
                 </span>
                 <span class="mdl-list__item-secondary-action">
@@ -175,7 +175,7 @@
 
 
             <div class="mdl-grid mdl-cell mdl-cell--12-col">
-                <p v-if="!habits.length">No hay habitos registrados</p>
+                <p v-if="!habits.length">No hay hábitos registrados</p>
                 <div v-for="(habit, index) in habits">
                     <div v-bind:class="habitBackground(habit,index)">
                         <div class=" mdl-card__title">
@@ -213,7 +213,7 @@
             <!--Dialog box habit-->
             <dialog id="habit-dialog" class="mdl-dialog mdl-cell--4-col">
                 <h4 class="mdl-dialog__title">
-                    <i class="material-icons">gavel</i>Habito
+                    <i class="material-icons">gavel</i>Hábito
                 </h4>
                 <div class="mdl-dialog__content">
                     <form action="#">
