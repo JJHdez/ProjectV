@@ -1,9 +1,5 @@
-# PROJECT V
+# **PROJECT V** +  [Vuejs](https://vuejs.org) + [Material.io](https://material.io/) + [Flask](http://flask.pocoo.org/)
 ---
-
-[![Vue.js](https://vuejs.org/images/logo.png)](https://vuejs.org)
-[material.io](https://material.io/)
-[![flask](http://flask.pocoo.org/static/logo/flask.svg)](http://flask.pocoo.org/)
 
 ## Intro
 
