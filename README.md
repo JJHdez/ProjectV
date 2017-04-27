@@ -19,7 +19,7 @@ Now only include this modules:
 * [Pomodoro](screenshot/Pomodoro.png)
 
 ## Demo
-To check out living example, visit [Violet](http://art0flife-zero1zero.rhcloud.com)
+To check out living example, visit [Violet](http://violet-y0n.rhcloud.com/)
 
 user: demo@demo.demo
 
