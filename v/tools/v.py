@@ -137,3 +137,6 @@ def type_of_update_rest(fields, request):
                 else _typeof(request[field], _type_of)
             _vals = _vals + field + '=' + _val + ','
     return _vals[:-1]
+
+FORMAT_DATE ="%Y-%m-%d"
+FORMAT_DATETIME="%Y-%m-%d %H:%M:%S"

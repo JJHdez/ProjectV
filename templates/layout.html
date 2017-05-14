@@ -43,90 +43,69 @@
     </head>
     <body>
         <div class="demo-layout mdl-layout mdl-js-layout mdl-layout--fixed-header">
-            <header class="demo-header mdl-layout__header mdl-color" id="menu-header">
+            <header class="mdl-layout__header mdl-color" id="menu-header">
                 <div class="mdl-layout__header-row">
-                    <span class="android-title mdl-layout-title">
-                        <img class="android-logo-image" src="/images/logo.png">Violet
-                    </span>
-                    <div class="mdl-layout-spacer">
-                    </div>
-
                     <div class="dock center-elements">
                         <!--Pomodoro-->
-                        <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon" id="menu-dreams" v-on:click="redirect_index_dream">
-
+                        <button class="mdl-button mdl-js-button
+                            mdl-js-ripple-effect mdl-button--icon"
+                            id="menu-dreams" v-on:click="redirect_index_dream">
                             <i class="material-icons">show_chart</i>
                             <!--<a/>-->
-                            <div class="mdl-tooltip mdl-tooltip--bottom" for="menu-dreams">
+                            <div class="mdl-tooltip mdl-tooltip--bottom" f
+                                or="menu-dreams">
                                 Por hacer
                             </div>
                         </button>
                         <!--Yourself-->
-                        <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon"
-                                id="menu-pomodoro"
-                                v-on:click="redirect_index_pomodoro">
-                            <!--<a href="/ul/yourself">-->
+                        <button class="mdl-button mdl-js-button
+                            mdl-js-ripple-effect mdl-button--icon"
+                            id="menu-pomodoro" v-on:click="redirect_index_pomodoro">
                              <i class="material-icons">timer</i>
-                                <!--<a/>-->
-                            <div class="mdl-tooltip mdl-tooltip--bottom" for="menu-pomodoro">
+                            <div class="mdl-tooltip mdl-tooltip--bottom"
+                                for="menu-pomodoro">
                                 Pomodoro
                             </div>
                         </button>
                         <!--Dashboard-->
-                        <!--<button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button&#45;&#45;icon" id="menu-dashboard" v-on:click="redirect_index_dashboard">-->
-                            <!--<i class="material-icons">dashboard</i>-->
-                            <!--<div class="mdl-tooltip mdl-tooltip&#45;&#45;bottom" for="menu-dashboard">-->
-                                <!--Dashboard-->
-                            <!--</div>-->
-                        <!--</button>-->
-                    </div>
-                    <!--User profile-->
-                    <span class="mdl-chip mdl-chip--contact mdl-chip--deletable mdl-color--white" id="menu-user">
-                        <!--<img class="mdl-chip__contact"/>-->
-                        <i class="mdl-chip__contact material-icons">account_box</i>
-                        <span class="mdl-chip__text">{{session.user.name}}</span>
-                        <a class="mdl-chip__action" ><i class="material-icons">account_circle</i></a>
-                    </span>
-                    <ul class="mdl-menu mdl-js-menu mdl-js-ripple-effect mdl-menu--bottom-right" for="menu-user">
-                        <!--<li class="mdl-menu__item">-->
-                            <!--<i class="material-icons">perm_identity</i>-->
-                            <!--Perfil-->
-                        <!--</li>-->
-                        <li class="mdl-menu__item">
-                            <a href="{{url_for('/logout')}}">
-                                <i class="material-icons">lock</i>
-                                Cerrar
+                        <!-- <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button&#45;&#45;icon" id="menu-dashboard" v-on:click="redirect_index_dashboard">
+                            <i class="material-icons">dashboard</i>
+                            <div class="mdl-tooltip mdl-tooltip&#45;&#45;bottom" for="menu-dashboard">
+                                Dashboard
+                            </div>
+                        </button> -->
+                        <span class="mdl-chip mdl-chip--contact mdl-chip--deletable
+                            mdl-color--white" id="menu-user">
+                            <a class="mdl-chip__action" >
+                                <i class="material-icons">account_circle</i>
                             </a>
-                        </li>
-                    </ul>
-                    <div class="dock">
-                        <!--Projects-->
-                        <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon" id="menu-project" v-on:click="redirect_index_project">
+                            <span class="mdl-chip__text">
+                                {{session.user.name}}
+                            </span>
+                            <a class="mdl-chip__action" href="{{url_for('/logout')}}" >
+                                <i class="material-icons">lock</i>
+                            </a>
+                        </span>
+                        <button class="mdl-button mdl-js-button mdl-js-ripple-effect
+                            mdl-button--icon" id="menu-project"
+                            v-on:click="redirect_index_project">
                             <i class="material-icons">widgets</i>
-                            <div class="mdl-tooltip mdl-tooltip--bottom" for="menu-project">
+                            <div class="mdl-tooltip mdl-tooltip--bottom"
+                                for="menu-project">
                                 Proyectos
                             </div>
                         </button>
                         <!--Help-->
-                        <!--<button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button&#45;&#45;icon" id="menu-help">-->
-                            <!--<i class="material-icons">help</i>-->
-                            <!--<div class="mdl-tooltip mdl-tooltip&#45;&#45;bottom" for="menu-help">-->
-                                <!--Soporte-->
-                            <!--</div>-->
-                        <!--</button>-->
+                        <!-- <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button&#45;&#45;icon" id="menu-help">
+                            <i class="material-icons">help</i>
+                            <div class="mdl-tooltip mdl-tooltip&#45;&#45;bottom" for="menu-help">
+                                Soporte
+                            </div>
+                        </button> -->
                     </div>
-                    <div class="mdl-layout-spacer">
-
-                    </div>
-                    <!--<div class="mdl-textfield mdl-js-textfield mdl-textfield&#45;&#45;expandable">-->
-                    <!--<label class="mdl-button mdl-js-button mdl-button&#45;&#45;icon" for="search">-->
-                    <!--<i class="material-icons">search</i>-->
-                    <!--</label>-->
-                    <!--<div class="mdl-textfield__expandable-holder">-->
-                    <!--<input class="mdl-textfield__input" type="text" id="search">-->
-                    <!--<label class="mdl-textfield__label" for="search">Enter your query...</label>-->
-                    <!--</div>-->
-                    <!--</div>-->
+                    <span class="mdl-layout-title">
+                        <img src="/images/logo.png">Violet
+                    </span>
                 </div>
             </header>
             <main class="mdl-layout__content mdl-color--grey-100">
@@ -134,10 +113,8 @@
             </main>
         </div>
         <div id="notify-snackbar" class="mdl-js-snackbar mdl-snackbar">
-            <!--<div id="notify-snackbar-background" class="mdl-color&#45;&#45;red">-->
-                <div class="mdl-snackbar__text"></div>
-                <button class="mdl-snackbar__action" type="button"></button>
-            <!--</div>-->
+            <div class="mdl-snackbar__text"></div>
+            <button class="mdl-snackbar__action" type="button"></button>
         </div>
         {% block button_fab %}{% endblock %}
         <script type='text/javascript' src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
