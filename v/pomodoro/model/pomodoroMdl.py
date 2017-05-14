@@ -13,6 +13,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from flask import request, g, json
+from datetime import date, timedelta
+from v.tools.v import FORMAT_DATE, FORMAT_DATETIME
+import calendar
+import random
 
 class PomodoroMdl:
     _table = 'pomodoro_activities'
@@ -25,3 +30,128 @@ class PomodoroMdl:
 
     def __init__(self):
         pass
+
+    def get_statistic_of_the_week(self, timezone, user_id):
+        _today = date.today()
+        _start_date = _today - timedelta(days=_today.weekday())
+        _qrys_week = """
+        select
+            (start_datetime_at  at time zone '{0}')::date week_day,
+            sum (
+            	DateDiff(
+            	'minute',
+            		(start_datetime_at  at time zone '{0}')::timestamp,
+            		(due_datetime_at at time zone '{0}')::timestamp
+            	)
+            ) mimutes
+            from
+            pomodoro_activities
+            where start_datetime_at is not null and due_datetime_at is not null
+            and (start_datetime_at at time zone '{0}')::date>='{1}'
+            and (due_datetime_at at time zone '{0}')::date<='{2}'
+            and create_id = {3}
+            group by (start_datetime_at  at time zone '{0}')::date
+        """.format(timezone, _start_date.strftime(FORMAT_DATE),
+                   _today.strftime(FORMAT_DATE), user_id)
+        g.db_conn.execute(_qrys_week)
+        _colletion_of_the_week = []
+        if g.db_conn.count() > 0:
+            _colletion_of_the_week = [row for row in g.db_conn.fetch()]
+        _statistic = []
+        _statistic.append(["Minutes", "Minutes", { 'role': 'style' } ])
+        for y in range(0,(_today.weekday()+1)):
+            _start_date = _start_date + timedelta(days=(0 if y==0 else 1))
+            _day=[]
+            _day.append(calendar.day_name[y]+' '+ _start_date.strftime(FORMAT_DATE))
+            _minutes = 0
+            for week_day, minutes in _colletion_of_the_week:
+                if _start_date.strftime(FORMAT_DATE) == week_day.strftime(FORMAT_DATE):
+                    _minutes = minutes
+            _day.append(_minutes)
+            if (y) == _today.weekday():
+                _day.append("#4BAF4F")
+            else:
+                _day.append("#8BC349")
+            _statistic.append(_day)
+        return _statistic
+
+    def get_statistic_of_the_month(self, timezone, user_id):
+        _today = date.today()
+        _start_date = _today -timedelta(days=(_today.day-1))
+        _qrys_month = """
+        select
+            (start_datetime_at  at time zone '{0}')::date month_day,
+            sum (
+            	DateDiff(
+            	'minute',
+            		(start_datetime_at  at time zone '{0}')::timestamp,
+            		(due_datetime_at at time zone '{0}')::timestamp
+            	)
+            ) mimutes
+            from
+            pomodoro_activities
+            where start_datetime_at is not null and due_datetime_at is not null
+            and (start_datetime_at at time zone '{0}')::date>='{1}'
+            and (due_datetime_at at time zone '{0}')::date<='{2}'
+            and create_id = {3}
+            group by (start_datetime_at  at time zone '{0}')::date
+        """.format(timezone, _start_date.strftime(FORMAT_DATE),
+                   _today.strftime(FORMAT_DATE), user_id)
+        g.db_conn.execute(_qrys_month)
+        _colletion_of_the_month = []
+        if g.db_conn.count() > 0:
+            _colletion_of_the_month = [row for row in g.db_conn.fetch()]
+        _statistic = []
+        _statistic.append([0,0])
+        _minutes_tmp = 2
+        for i in range(0,_today.day):
+            _start_date = _start_date + timedelta(days=(0 if i==0 else 1))
+            _day=[]
+            _minutes = 0
+            for month_day, minutes in _colletion_of_the_month:
+                if _start_date.strftime(FORMAT_DATE) == month_day.strftime(FORMAT_DATE):
+                    _minutes = float(minutes)
+            _day.append((i+1))
+            _day.append(_minutes)
+            _statistic.append(_day)
+        return _statistic
+
+    def get_statistic_of_the_year(self, timezone, user_id):
+        _today = date.today()
+        _qrys_year = """
+        select
+            to_char((start_datetime_at  at time zone '{0}')::date,'YYYY-MM') month_year,
+            sum (
+            	DateDiff(
+            	'minute',
+            		(start_datetime_at  at time zone '{0}')::timestamp,
+            		(due_datetime_at at time zone '{0}')::timestamp
+            	)
+            ) mimutes
+            from
+            pomodoro_activities
+            where start_datetime_at is not null and due_datetime_at is not null
+            and (start_datetime_at at time zone '{0}')::date>='{1}'
+            and (due_datetime_at at time zone '{0}')::date<='{2}'
+            and create_id = {3}
+            group by to_char((start_datetime_at  at time zone '{0}')::date,'YYYY-MM')
+        """.format(timezone, (_today.strftime("%Y")+'-01-01'),
+                   _today.strftime(FORMAT_DATE), user_id)
+        g.db_conn.execute(_qrys_year)
+        _colletion_of_the_year = []
+        if g.db_conn.count() > 0:
+            _colletion_of_the_year = [row for row in g.db_conn.fetch()]
+        _statistic = []
+        _statistic.append(['Minutes', 'Minutes per Month'])
+        for i in range(0,_today.month):
+            _day=[]
+            _minutes = 0
+            for month_year, minutes in _colletion_of_the_year:
+                _month = '0' + str(i+1) if i <=9 else i
+                _month = str(_today.year)+'-' + _month
+                if _month == month_year:
+                    _minutes = float(minutes)
+            _day.append(calendar.month_name[(i+1)])
+            _day.append(_minutes)
+            _statistic.append(_day)
+        return _statistic

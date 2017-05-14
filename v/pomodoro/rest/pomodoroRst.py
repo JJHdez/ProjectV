@@ -14,7 +14,7 @@
 # limitations under the License.
 
 from flask_restful import Resource
-from flask import request, g
+from flask import request, g, json
 from v.tools.exception import ExceptionRest
 from v.tools.v import processing_rest_exception, processing_rest_success, type_of_insert_rest, type_of_update_rest
 from v.tools.validate import validate_rest
@@ -25,19 +25,21 @@ class PomodoroListRst(Resource, PomodoroMdl):
     def get(self):
         try:
             _qry_params = ''
+            _data = None
             _by = request.args.get("date", False)
-            _qrg = """
-                SELECT array_to_json(array_agg(row_to_json(t) )) as collection
-                FROM ( SELECT * FROM %s WHERE deleted_at IS NULL AND create_id=%s  %s )t;
-                """ % (self._table, g.user.id, _qry_params)
-            g.db_conn.execute(_qrg)
-            if g.db_conn.count() > 0:
-                _collection = g.db_conn.one()[0]
-                if _collection:
-                    _data = {self._table: _collection}
-                    _get = processing_rest_success(data=_data)
-                else:
-                    raise ExceptionRest(status_code=404, message="No se han encontrado resultados")
+            _statistic = request.args.get('statistic', False)
+            if _statistic:
+                if _statistic == 'week':
+                    _data = self.get_statistic_of_the_week(timezone=g.user.timezone,
+                                                           user_id=g.user.id)
+                elif _statistic == 'month':
+                    _data = self.get_statistic_of_the_month(timezone=g.user.timezone,
+                                                            user_id=g.user.id)
+                elif _statistic =='year':
+                    _data = self.get_statistic_of_the_year(timezone=g.user.timezone,
+                                                            user_id=g.user.id)
+            if _data:
+                _get = processing_rest_success(data=_data, status_code=200)
             else:
                 raise ExceptionRest(status_code=404, message="No se han encontrado resultados")
         except (Exception, ExceptionRest), e:
