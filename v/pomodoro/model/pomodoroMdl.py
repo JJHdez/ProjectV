@@ -15,7 +15,7 @@
 
 from flask import request, g, json
 from datetime import date, timedelta
-from v.tools.v import FORMAT_DATE, FORMAT_DATETIME
+from v.tools.v import FORMAT_DATE, FORMAT_DATETIME,FORMAT_TIME
 import calendar
 import random
 
@@ -155,3 +155,25 @@ class PomodoroMdl:
             _day.append(_minutes)
             _statistic.append(_day)
         return _statistic
+
+    def get_activities_registred(self, user_id):
+        qrys_activities = """
+        select
+            id,name, timer, start_datetime_at, due_datetime_at
+        from pomodoro_activities
+        where
+            create_id = {} and deleted_at is null and
+            start_datetime_at is null and due_datetime_at is null
+        """.format(user_id)
+        g.db_conn.execute(qrys_activities)
+        _colletion = []
+        if g.db_conn.count() > 0:
+            for _id,name,_timer,start_datetime_at,due_datetime_at in g.db_conn.fetch():
+                _colletion.append({
+                    'id': _id,
+                    'name': name,
+                    'timer': _timer.strftime(FORMAT_TIME),
+                    'start_datetime_at': start_datetime_at,
+                    'due_datetime_at': due_datetime_at
+                })
+        return {self._table:_colletion}

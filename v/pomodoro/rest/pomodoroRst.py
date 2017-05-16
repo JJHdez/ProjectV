@@ -26,7 +26,7 @@ class PomodoroListRst(Resource, PomodoroMdl):
         try:
             _qry_params = ''
             _data = None
-            _by = request.args.get("date", False)
+            _activities = request.args.get("activities", False)
             _statistic = request.args.get('statistic', False)
             if _statistic:
                 if _statistic == 'week':
@@ -38,6 +38,9 @@ class PomodoroListRst(Resource, PomodoroMdl):
                 elif _statistic =='year':
                     _data = self.get_statistic_of_the_year(timezone=g.user.timezone,
                                                             user_id=g.user.id)
+            elif _activities:
+                if _activities == 'registered':
+                    _data = self.get_activities_registred(user_id=g.user.id)
             if _data:
                 _get = processing_rest_success(data=_data, status_code=200)
             else:

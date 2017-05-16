@@ -140,3 +140,4 @@ def type_of_update_rest(fields, request):
 
 FORMAT_DATE ="%Y-%m-%d"
 FORMAT_DATETIME="%Y-%m-%d %H:%M:%S"
+FORMAT_TIME="%H:%M:%S"

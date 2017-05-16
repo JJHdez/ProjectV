@@ -50,6 +50,7 @@ window.addEventListener('load', function ()
                 this.getStatisticOfTheWeek()
                 this.getStatisticOfTheMonth()
                 this.getStatisticOfTheYear()
+                this._callback(null,this.url+'?activities=registered','GET','init')
             },
             add:function () {
                 var _timer_tmp = this.activity.timer.split(':');
@@ -324,8 +325,9 @@ window.addEventListener('load', function ()
                     if (response.status_code == 200 || response.status_code == 201) {
                         switch (_action) {
                             case 'init':
-                                for (var c = 0; c < response.data.project_task_issues.length; c++) {
-                                    self.issues.push(response.data.project_task_issues[c])
+                                console.log(response.data);
+                                for (var c = 0; c < response.data.pomodoro_activities.length; c++) {
+                                    self.activities.push(response.data.pomodoro_activities[c])
                                 }
                                 break;
                             case 'done':
@@ -336,7 +338,7 @@ window.addEventListener('load', function ()
                                 break;
                             case 'new':
                                 _data['id'] = response.data.pomodoro_activities[0].id;
-                                self.activities.push(_data);
+                                self.activities.unshift(_data);
                                 self._clean(['activity']);
                                 break;
                             case 'statistic_of_the_week':
