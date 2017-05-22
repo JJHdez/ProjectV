@@ -14,597 +14,271 @@
     limitations under the License.
 -->
 {% extends "layout.html" %}
-{% block layout_title %} Proyectos {% endblock %}
-{% block css %}
-<style>
-    .project-card-wide > .mdl-card__title {
-        /*color: #fff;*/
-        height: 100px;
-        background: url('http://pre07.deviantart.net/e38e/th/pre/i/2004/250/0/b/_hypnotized_by_sc3l.jpg') center / cover;
-    }
-</style>
-{% endblock%}
-
+{% block layout_title %}
+    Proyectos
+{% endblock %}
 {% block body %}
-<div class="mdl-grid">
+    <div class="mdl-grid">
+        <div id="projects-panel"
+             class="mdl-cell mdl-cell--12-col mdl-grid mdl-grid--no-spacing">
 
-    <div id="projects-panel" class="mdl-cell mdl-cell--12-col mdl-grid">
-        <p v-if="!projects.length">
-            Registra un proyecto
-        </p>
-
-        <div v-for="(project, index) in projects"
-             class="mdl-cell">
-
-            <div class="project-card-wide mdl-card mdl-shadow--4dp">
-                <div class="mdl-card__title mdl-card--expand">
-                    <h2 class="mdl-card__title-text">${project.name}</h2>
-                </div>
-                <div  class="mdl-card__supporting-text">
-                    <!--<i-->
-                        <!--class="material-icons mdl-list__item-avatar -->
-                        <!--mdl-badge mdl-badge&#45;&#45;overlap mdl-badge&#45;&#45;no-background" data-badge="1">-->
-                        <!--format_list_numbered-->
-                    <!--</i>-->
-                </div>
-                <div class="mdl-card__actions mdl-card--border">
-                    <button v-on:click="_edit(project,index)"
-                        class="mdl-button mdl-js-button mdl-button--raised
-                                mdl-js-ripple-effect mdl-button--accent">
-                        <i class="material-icons">edit</i>
-                        Editar
-                    </button>
-                    <button v-on:click="viewTask(project,index)"
-                       class="mdl-button mdl-js-button mdl-js-ripple-effect
-                                mdl-button--raised mdl-button--colored">
-                        <i class="material-icons">format_list_numbered</i>
-                        Ver tareas
-                    </button>
-                </div>
-                <div v-if="project.team" class="mdl-card__menu">
-                    <span  class="mdl-chip mdl-chip--contact mdl-chip--deletable">
-                        <i class="mdl-chip__contact material-icons">people</i>
-                        <span class="mdl-chip__text">${project.team}</span>
-                    </span>
-                </div>
+            <div class="mdl-cell
+                mdl-cell--4-col
+                mdl-cell--4-col-tablet mdl-cell--4-col-desktop
+                mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                <input v-model="workspaceModelQuickAdd.name"
+                       @keyup.enter="accept(true)"
+                       class="mdl-textfield__input" type="text" id="workspace-name-quick">
+                <label class="mdl-textfield__label" for="workspace-name-quick">Workspace</label>
             </div>
-            <div class="mdl-layout-spacer"></div>
-        </div>
 
-        <dialog
-                id="project-dialog" class="mdl-dialog mdl-cell--4-col">
-            <h4 class="mdl-dialog__title">
-                <button v-show="validationProjectModel.remove"
+            <div class="mdl-cell mdl-cell--4-col mdl-cell--4-col-tablet mdl-cell--8-col-desktop">
+                <span v-for="(project, index) in projects"
+                        v-bind:class="activeWorkspace(project, index)">
+                    <img v-on:click="viewTask(project,index)"
+                         class="mdl-chip__contact" src="https://getmdl.io/templates/dashboard/images/user.jpg"/>
+                    <span v-on:click="viewTask(project,index)" class="mdl-chip__text">
+                        ${project.name}
+                    </span>
+                    <a class="mdl-chip__action" v-on:click="edit(project,index)">
+                        <i class="material-icons">edit</i>
+                    </a>
+                </span>
+            </div>
+
+            <dialog id="project-dialog" class="mdl-dialog mdl-cell--4-col">
+                <div class="mdl-card__menu">
+                    <button v-show="validation.workspaceRemove"
                         v-on:click="remove()"
                         class="mdl-button mdl-js-button mdl-button--icon">
                     <i class="material-icons mdl-color-text--red">
                         delete_forever
                     </i>
-                </button>
-                <i class="material-icons">widgets</i>
-                Proyecto
-            </h4>
-            <div class="mdl-dialog__content">
-                <form action="#">
+                    </button>
+                        <button
+                            v-on:click="done()"
+                            class="mdl-button mdl-js-button mdl-button--icon">
+                        <i class="material-icons mdl-color-text--light-green">
+                            done
+                        </i>
+                    </button>
+                </div>
+                <h4 class="mdl-dialog__title">
+                    <i class="material-icons">widgets</i>
+                    Proyecto
+                </h4>
+
+                <div class="mdl-dialog__content">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input class="mdl-textfield__input" type="text" id="project-name"
                                v-model="projectModel.name" required>
                         <label class="mdl-textfield__label" for="project-name">Nombre</label>
                     </div>
-                </form>
-            </div>
-            <div class="mdl-dialog__actions">
-                <button v-show="validationProjectModel.accept"
-                        v-on:click="_accept()"
-                        class="mdl-button mdl-js-button mdl-button--raised
-                            mdl-js-ripple-effect mdl-button--colored">
-                    <i class="material-icons">check_circle</i>Aceptar
-                </button>
-                <button
-                        v-on:click="closeDialog()"
-                        class="mdl-button mdl-js-button mdl-button--raised
-                        mdl-js-ripple-effect mdl-button--accent"
-                        id="project-dialog-cancel">
-                    <i class="material-icons">cancel</i>Cancelar
-                </button>
-            </div>
-        </dialog>
-    </div>
+                </div>
 
-    <div id="project-tasks-panel" class="mdl-cell mdl-cell--12-col mdl-grid">
+                <div class="mdl-dialog__actions">
+                    <button v-show="validation.workspaceEdit"
+                            v-on:click="accept(false)"
+                            class="mdl-button mdl-js-button mdl-button--raised
+                                mdl-js-ripple-effect mdl-button--colored">
+                        <i class="material-icons">check_circle</i>Aceptar
+                    </button>
+                    <button
+                            v-on:click="closeDialog()"
+                            class="mdl-button mdl-js-button mdl-button--raised
+                            mdl-js-ripple-effect mdl-button--accent"
+                            id="project-dialog-cancel">
+                        <i class="material-icons">cancel</i>Cancelar
+                    </button>
+                </div>
+            </dialog>
 
-        <ul class="mdl-cell mdl-cell--8-col mdl-color--white mdl-shadow--4dp mdl-list center-elements">
+        </div>
 
-            <li class="mdl-list__item mdl-list__item--three-line mdl-shadow--4dp">
-                <span class="mdl-list__item-primary-content">
-                    <i v-on:click="backProject()"
-                        class="material-icons mdl-list__item-avatar
-                            mdl-button--fab mdl-button--mini-fab mdl-button--colored">
-                        arrow_back
-                    </i>
-                    <span v-if="tasks.length">
-                        ${project_name}
-                    </span>
-                    <span class="mdl-list__item-text-body">
-                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                            <input
-                                    v-model="taskModel.name"
-                                    class="mdl-textfield__input"
-                                    type="text" id="quick-task-name"/>
-                            <label class="mdl-textfield__label" for="quick-task-name">
-                                Nombre de la tarea
-                            </label>
-                        </div>
-                    </span>
-                </span>
-                <span class="mdl-list__item-secondary-content">
-                    <span class="mdl-list__item-secondary-action">
-                        <button v-show="validationTaskModel.accept"
-                                v-on:click="quickAddTask()"
-                                class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab
-                                mdl-button--colored mdl-button-raised mdl-js-ripple-effect">
-                            <i class="material-icons">playlist_add</i>
-                        </button>
-                    </span>
-                </span>
-            </li>
+        <div id="project-tasks-panel" class="mdl-cell mdl-cell--12-col mdl-grid mdl-grid--no-spacing">
 
-            <li v-for="(task, index) in tasks" class="mdl-list__item mdl-list__item--three-line mdl-shadow--2dp">
-                <span class="mdl-list__item-primary-content">
-                    <i v-on:click="_view_sub_task_issues(task,index)"
-                        class="material-icons mdl-color-text--green mdl-badge mdl-badge--overlap"
-                        data-badge="1">
-                        format_list_bulleted
-                    </i>
-                    <span>${task.name}</span>
-                    <span class="mdl-list__item-text-body">
-                        <i v-on:click="_view_sub_task_issues(task,index)"
-                            class="material-icons mdl-color-text--red mdl-badge mdl-badge--overlap"
-                            data-badge="1">
-                            bug_report
-                        </i>
-                        ${task.description}
-                    </span>
-                </span>
-                <span class="mdl-list__item-secondary-content">
-                    <a class="mdl-list__item-secondary-action" href="#">
-                        <span v-bind:class="getColorDueDate(task.due_date_at)">
-                            <button type="button" class="mdl-chip__action">
-                                <i class="material-icons">
-                                    play_arrow
-                                </i>
-                            </button>
-                            <span class="mdl-chip__text">${task.start_date_at}</span>
-                            <button type="button" class="mdl-chip__action">
-                                <i class="material-icons">
-                                    stop
-                                </i>
-                            </button>
-                            <span class="mdl-chip__text">${task.due_date_at}</span>
+            <ul class="mdl-list mdl-cell mdl-cell--3-col">
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input @keyup.enter="acceptSubTask(getGroupTaskByName('Today'), -1, true)"
+                           v-model="taskTodayModel.name"
+                           class="mdl-textfield__input" type="text" id="sub-task-name-today-quick">
+                    <label class="mdl-textfield__label" for="sub-task-name-today-quick">Today</label>
+                </div>
+                <draggable v-model="tasksToday" :options="{group:'task'}">
+                    <li  v-for="(task, index) in tasksToday"
+                          v-on:click="openDialogTask(task,index,'Today')"
+                         class="mdl-list__item mdl-shadow--2dp">
+                        <span class="mdl-list__item-primary-content">
+                            <img class="mdl-chip__contact"
+                                 src="https://getmdl.io/templates/dashboard/images/user.jpg"/>
+                            ${task.name}
                         </span>
-                         <button v-on:click="doneTask(task,index)"
-                                 class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab
-                                mdl-button--colored mdl-button-raised mdl-js-ripple-effect">
-                            <i class="material-icons">assignment_turned_in</i>
-                        </button>
-                         <button v-on:click="editTask(task,index)"
-                                 class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab
-                                mdl-button--colored mdl-button-raised mdl-js-ripple-effect">
-                            <i class="material-icons">view_list</i>
-                        </button>
-                    </a>
-                </span>
-            </li>
+                        <span class="mdl-list__item-secondary-content">
+                            <div>
+                                <a class="mdl-list__item-secondary-action" href="#">
+                                    <i v-bind:class="getTaskIconColourByName('Today')">${getTaskIconByName('Today')}</i>
+                                </a>
+                            </div>
+                        </span>
+                    </li>
+                </draggable>
+            </ul>
 
-        </ul>
+            <ul class="mdl-list mdl-cell mdl-cell--3-col">
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input @keyup.enter="acceptSubTask(getGroupTaskByName('Tomorrow'), -1,true)"
+                           v-model="taskTomorrowModel.name"
+                           class="mdl-textfield__input" type="text" id="sub-task-name-tomorrow-quick">
+                    <label class="mdl-textfield__label" for="sub-task-name-tomorrow-quick">Tomorrow</label>
+                </div>
+                <draggable v-model="tasksTomorrow" :options="{group:'task'}">
+                    <li  v-for="task in tasksTomorrow" class="mdl-list__item mdl-shadow--2dp">
+                        <span class="mdl-list__item-primary-content">
+                             <img class="mdl-chip__contact" src="https://getmdl.io/templates/dashboard/images/user.jpg"/>
+                            ${task.name}
+                        </span>
+                        <span class="mdl-list__item-secondary-content">
+                            <div>
+                                <a class="mdl-list__item-secondary-action" href="#">
+                                    <i v-bind:class="getTaskIconColourByName('Tomorrow')">${getTaskIconByName('Tomorrow')}</i>
+                                </a>
+                            </div>
+                        </span>
+                    </li>
+                </draggable>
+            </ul>
 
-        <dialog id="task-dialog" class="mdl-dialog mdl-cell--8-col">
-            <div class="mdl-dialog__title">
-                <button v-show="validationTaskModel.remove"
-                        v-on:click="removeTask()"
-                        class="mdl-button mdl-js-button mdl-button--icon">
-                    <i class="material-icons mdl-color-text--red">
-                        delete_forever
-                    </i>
-                </button>
-                ${taskModel.name}
-            </div>
-            <div class="mdl-dialog__content">
+            <ul class="mdl-list mdl-cell mdl-cell--3-col">
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input @keyup.enter="acceptSubTask(getGroupTaskByName('Upcoming'), -1, true)"
+                           v-model="taskUpcomingModel.name"
+                           class="mdl-textfield__input" type="text" id="sub-task-name-upcoming-quick">
+                    <label class="mdl-textfield__label" for="sub-task-name-upcoming-quick">Upcoming</label>
+                </div>
+                <draggable v-model="tasksUpcoming" :options="{group:'task'}">
+                    <li  v-for="task in tasksUpcoming" class="mdl-list__item mdl-shadow--2dp">
+                        <span class="mdl-list__item-primary-content">
+                             <img class="mdl-chip__contact" src="https://getmdl.io/templates/dashboard/images/user.jpg"/>
+                            ${task.name}
+                        </span>
+                        <span class="mdl-list__item-secondary-content">
+                            <div>
+                                <a class="mdl-list__item-secondary-action" href="#">
+                                    <i v-bind:class="getTaskIconColourByName('Upcoming')">${getTaskIconByName('Upcoming')}</i>
+                                </a>
+                            </div>
+                        </span>
+                    </li>
+                </draggable>
+            </ul>
 
-                <div class="mdl-grid">
-                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--8-col">
-                        <input v-model="taskModel.name"
+            <ul class="mdl-list mdl-cell mdl-cell--3-col">
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input @keyup.enter="acceptSubTask(getGroupTaskByName('Someday'), -1, true)"
+                           v-model="taskSomedayModel.name"
+                           class="mdl-textfield__input" type="text" id="sub-task-name-someday-quick">
+                    <label class="mdl-textfield__label" for="sub-task-name-someday-quick">Someday</label>
+                </div>
+                <draggable v-model="tasksSomeday" :options="{group:'task'}">
+                    <li v-for="task in tasksSomeday"  class="mdl-list__item mdl-shadow--2dp">
+                        <span class="mdl-list__item-primary-content">
+                             <img class="mdl-chip__contact" src="https://getmdl.io/templates/dashboard/images/user.jpg"/>
+                            ${task.name}
+                        </span>
+                        <span class="mdl-list__item-secondary-content">
+                            <div>
+                                <a class="mdl-list__item-secondary-action" href="#">
+                                    <i v-bind:class="getTaskIconColourByName('Someday')">${getTaskIconByName('Someday')}</i>
+                                </a>
+                            </div>
+                        </span>
+                    </li>
+                </draggable>
+            </ul>
+
+            <dialog id="task-dialog" class="mdl-dialog mdl-cell--8-col">
+                <div class="mdl-card__menu">
+                    <button v-on:click="removeSubTask()"
+                            class="mdl-button mdl-js-button mdl-button--icon">
+                        <i class="material-icons mdl-color-text--red">
+                            delete_forever
+                        </i>
+                    </button>
+                    <button v-on:click="doneSubTask()"
+                            class="mdl-button mdl-js-button mdl-button--icon">
+                        <i class="material-icons mdl-color-text--light-green">
+                            done
+                        </i>
+                    </button>
+                    <button v-show="validation.subTaskEdit"
+                            v-on:click="acceptSubTask(null, null, false)"
+                            class="mdl-button mdl-js-button mdl-button--icon">
+                        <i class="material-icons">
+                            save
+                        </i>
+                    </button>
+                </div>
+                <div class="mdl-dialog__title">
+                    <i class="material-icons">list</i>
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label
+                        mdl-cell mdl-cell--6-col">
+                        <input v-model="subTaskModel.name"
                                class="mdl-textfield__input" type="text" id="task-name">
                         <label class="mdl-textfield__label" for="task-name">Nombre</label>
                     </div>
-                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--4-col">
-                        <input v-model="taskModel.start_date_at"
-                               class="mdl-textfield__input" type="date" id="task-start-date-at">
-                        <label class="mdl-textfield__label" for="task-start-date-at">Fecha de inicio</label>
-                    </div>
-                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell  mdl-cell--8-col">
-                            <textarea v-model="taskModel.description"
-                                  class="mdl-textfield__input" type="text" rows="2" id="note">
-                            </textarea>
-                        <label class="mdl-textfield__label" for="note">Descripción</label>
-                    </div>
-                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--4-col">
-                        <input v-model="taskModel.due_date_at"
+
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label
+                        mdl-cell mdl-cell--3-col">
+                        <input v-model="subTaskModel.due_date_at"
                                class="mdl-textfield__input" type="date" id="task-due-date-at">
                         <label class="mdl-textfield__label" for="task-due-date-at">Fecha a finalizar</label>
                     </div>
                 </div>
+                <div class="mdl-dialog__content">
 
-                <!--div tab -->
-                <div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect mdl-shadow--2dp">
-
-                    <!--Tabs controller-->
-                    <div class="mdl-tabs__tab-bar">
-                        <a href="#sub-task-panel" class="mdl-tabs__tab is-active mdl-color-text--green">
-                            <i class="material-icons">format_list_bulleted</i>
+                    <span class="mdl-list__item-primary-content">
+                        <div class="mdl-textfield mdl-js-textfield
+                            mdl-textfield--floating-label mdl-cell mdl-cell--4-col">
+                            <input  @keyup.enter="acceptIssue(true)"
+                                    v-model="issueModel.name"
+                                   class="mdl-textfield__input" type="text" id="quick-bug-name">
+                            <label class="mdl-textfield__label" for="quick-bug-name">Actividad</label>
+                        </div>
+                    </span>
+                    <div v-for="(issue, index) in issues" class="mdl-list__item">
+                        <span class="mdl-list__item-primary-content">
+                            <button v-on:click="removeIssue(issue,index)"
+                            class="mdl-button mdl-js-button mdl-button--icon">
+                                <i class="material-icons mdl-color-text--red">
+                                    delete_forever
+                                </i>
+                            </button>
+                          <span>${issue.name}</span>
+                        </span>
+                        <a class="mdl-list__item-secondary-action" href="#">
+                            <button v-on:click="doneIssue(issue,index)"
+                            class="mdl-button mdl-js-button mdl-button--icon">
+                                <i class="material-icons mdl-color-text--light-green">
+                                    done
+                                </i>
+                            </button>
                         </a>
-                        <a href="#issue-panel" class="mdl-tabs__tab mdl-color-text--red">
-                            <i class="material-icons">bug_report</i>
-                        </a>
                     </div>
-                    <!--Tabs controller end-->
-
-                    <!--Tab panel sub task-->
-                    <div class="mdl-tabs__panel is-active" id="sub-task-panel">
-                        <!--Quick create subTask-->
-                        <li class="mdl-list__item mdl-list__item--three-line mdl-shadow--4dp">
-                                <span class="mdl-list__item-primary-content">
-                                <i class="material-icons mdl-list__item-avatar">format_list_bulleted</i>
-                                <span>
-                                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--6-col">
-                                        <input v-model="subTaskModel.name"
-                                                class="mdl-textfield__input" type="text" id="quick-sub-task-name">
-                                        <label class="mdl-textfield__label" for="quick-sub-task-name">Nombre de la subtarea</label>
-                                    </div>
-                                    <!--</span>-->
-                                    <!--<span class="mdl-list__item-text-body">-->
-                                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label
-                                            mdl-cell mdl-cell--4-col">
-                                        <select v-model="subTaskModel.assigned_user_id"
-                                                class="mdl-textfield__input" id="quick-sub-task-assigned-user">
-                                            <option  v-for="user in users" v-bind:value="user.id"
-                                                     v-bind:selected="user.id == subTaskModel.assigned_user_id ? 'true' : 'false'">
-                                                ${user.name} ${user.last_name}
-                                            </option>
-                                        </select>
-                                        <label class="mdl-textfield__label" for="quick-sub-task-assigned-user">
-                                            Usuario a asignar
-                                        </label>
-                                    </div>
-                                </span>
-                                </span>
-                            <span class="mdl-list__item-secondary-content">
-                                    <span class="mdl-list__item-secondary-action">
-                                        <button v-show="validationSubTaskModel.accept"
-                                                v-on:click="quickAddSubTask()"
-                                                class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab
-                                                        mdl-button--colored mdl-button-raised mdl-js-ripple-effect">
-                                        <i class="material-icons">add</i>
-                                        </button>
-                                    </span>
-                                </span>
-                        </li>
-                        <!--Quick create subTask end-->
-
-                        <ul class="mdl-list">
-                            <li v-for="(subTask, index) in subTasks"
-                                class="mdl-list__item mdl-list__item--three-line">
-                                <span class="mdl-list__item-primary-content">
-                                    <!--<i class="material-icons  mdl-list__item-avatar">person</i>-->
-                                    <button
-                                            v-on:click="doneSubTask(subTask, index)"
-                                            class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab
-                                                mdl-button--colored mdl-button-raised mdl-js-ripple-effect mdl-list__item-avatar">
-                                            <i class="material-icons">assignment_turned_in</i>
-                                        </button>
-
-                                    <span>${subTask.name}</span>
-                                    <span class="mdl-list__item-text-body">
-                                        <span class="mdl-chip mdl-chip--contact mdl-chip--deletable">
-                                            <!--<img class="mdl-chip__contact" -->
-                                        <!--src="https://getmdl.io/templates/dashboard/images/user.jpg"></img>-->
-                                            <i class="material-icons mdl-chip__contact">person</i>
-                                            <span class="mdl-chip__text">${getAssignedUser(subTask.assigned_user_id)}</span>
-                                        </span>
-                                        <!---->
-                                        <span v-bind:class="getColorDueDate(subTask.due_date_at)">
-                                            <button type="button" class="mdl-chip__action">
-                                                <i class="material-icons">
-                                                    play_arrow
-                                                </i>
-                                            </button>
-                                            <span class="mdl-chip__text">${subTask.start_date_at}</span>
-
-                                            <button type="button" class="mdl-chip__action">
-                                                <i class="material-icons">
-                                                    stop
-                                                </i>
-                                            </button>
-                                            <span class="mdl-chip__text">${subTask.due_date_at}</span>
-                                        </span>
-                                    </span>
-                                </span>
-                                <span class="mdl-list__item-secondary-content">
-                                    <span class="mdl-list__item-secondary-action">
-                                         <button v-on:click="editSubTask(subTask, index)"
-                                                 class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab
-                                                mdl-button--colored mdl-button-raised mdl-js-ripple-effect">
-                                            <i class="material-icons">view_carousel</i>
-                                        </button>
-                                    </span>
-                                </span>
-                            </li>
-                        </ul>
-                    </div>
-                    <!--Tab panel sub task end-->
-
-                    <!--Tab panel issue-->
-                    <div class="mdl-tabs__panel" id="issue-panel">
-                        <li class="mdl-list__item mdl-list__item--three-line mdl-shadow--4dp">
-                            <span class="mdl-list__item-primary-content">
-                                <i class="material-icons mdl-list__item-avatar">bug_report</i>
-                                <span>
-                                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--4-col">
-                                        <input v-model="issueModel.name"
-                                               class="mdl-textfield__input" type="text" id="quick-bug-name">
-                                        <label class="mdl-textfield__label" for="quick-bug-name">Nombre del problema</label>
-                                    </div>
-                                    <!--</span>-->
-                                    <!--<span class="mdl-list__item-text-body">-->
-                                    <div
-                                            class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label
-                                            mdl-cell mdl-cell--2-col">
-                                        <select v-model="issueModel.assigned_user_id"
-                                                class="mdl-textfield__input" id="quick-bug-assigned-user">
-                                            <option v-for="user in users" v-bind:value="user.id"
-                                                    v-bind:selected="user.id == issueModel.assigned_user_id ? 'true' : 'false'">
-                                                ${user.name} ${user.last_name}
-                                            </option>
-                                        </select>
-                                        <label class="mdl-textfield__label" for="quick-bug-assigned-user">
-                                            Usuario
-                                        </label>
-                                    </div>
-                                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--2-col">
-                                        <select v-model="issueModel.kind"
-                                                class="mdl-textfield__input" id="issue-kind">
-                                            <option v-for="kind in kinds" v-bind:value="kind.value"
-                                                    v-bind:selected="kind.value == issueModel.kind? 'true' : 'false'">
-                                                    ${kind.text}
-                                            </option>
-
-                                        </select>
-                                        <label class="mdl-textfield__label" for="issue-kind">Tipo</label>
-                                    </div>
-                                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-cell mdl-cell--2-col">
-                                        <select v-model="issueModel.priority"
-                                                class="mdl-textfield__input" id="issue-priority">
-                                            <option v-for="priority in priorities" v-bind:value="priority.value"
-                                                    v-bind:selected="priority.value == issueModel.priority ? 'true' : 'false'">
-                                                ${priority.text}
-                                            </option>
-                                        </select>
-                                        <label class="mdl-textfield__label" for="issue-priority">Prioridad</label>
-                                    </div>
-
-                                </span>
-                            </span>
-                            <span class="mdl-list__item-secondary-content">
-                                <span class="mdl-list__item-secondary-action">
-                                    <button v-show="validationIssueModel.accept"
-                                            v-on:click="quickAddIssue()"
-                                        class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab
-                                            mdl-button--colored mdl-button-raised mdl-js-ripple-effect">
-                                        <i class="material-icons">add</i>
-                                    </button>
-                                </span>
-                            </span>
-                        </li>
-                        <ul class="mdl-list">
-                            <li v-for="(issue, index) in issues"
-                                class="mdl-list__item mdl-list__item--three-line">
-                                <span class="mdl-list__item-primary-content">
-                                    <!--<i class="material-icons  mdl-list__item-avatar">person</i>-->
-                                    <button v-on:click="doneIssue(issue,index)"
-                                        class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab
-                                            mdl-button--colored mdl-button-raised mdl-js-ripple-effect
-                                            mdl-list__item-avatar">
-                                        <i class="material-icons">assignment_turned_in</i>
-                                    </button>
-                                    <span>${issue.name}</span>
-                                    <span class="mdl-list__item-text-body">
-                                        <span class="mdl-chip mdl-chip--contact mdl-chip--deletable">
-                                            <!--<img class="mdl-chip__contact" -->
-                                            <!--src="https://getmdl.io/templates/dashboard/images/user.jpg"></img>-->
-                                            <i class="material-icons mdl-chip__contact">person</i>
-                                            <span class="mdl-chip__text">${getAssignedUser(issue.assigned_user_id)}</span>
-                                        </span>
-                                        <span v-bind:class="getKindColor(issue.kind)">
-                                            <span class="mdl-chip__text">${getKind(issue.kind)}</span>
-                                        </span>
-                                        <span v-bind:class="getPriorityColor(issue.priority)">
-                                            <span class="mdl-chip__text">${getPriority(issue.priority)}</span>
-                                        </span>
-                                    </span>
-                                </span>
-                                <span class="mdl-list__item-secondary-content">
-                                    <span class="mdl-list__item-secondary-action">
-                                         <button
-                                                 class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab
-                                                mdl-button--colored mdl-button-raised mdl-js-ripple-effect">
-                                            <i class="material-icons">view_carousel</i>
-                                        </button>
-                                    </span>
-                                </span>
-                            </li>
-                        </ul>
-                    </div>
-                    <!--Tab panel sub task end-->
                 </div>
-                <!--div tab end-->
 
-                <!--<div class="mdl-card__menu">-->
-                    <!--<i class="material-icons">cancel</i>-->
-                <!--</div>-->
-            </div>
             <div class="mdl-dialog__actions">
-                <button v-on:click="acceptTask()"
-                        v-show="validationTaskModel.accept"
-                        class="mdl-button mdl-js-button mdl-button--raised
-                        mdl-js-ripple-effect mdl-button--colored">
-                    <i class="material-icons">check_circle</i>Aceptar
-                </button>
-                <button v-on:click="closeDialogTask()"
-                        class="mdl-button mdl-js-button mdl-button--raised
-                        mdl-js-ripple-effect mdl-button--accent">
-                    <i class="material-icons">cancel</i>Cancelar
-                </button>
-
             </div>
-        </dialog>
+            </dialog>
+
+        </div>
     </div>
-
-    <!--<dialog id="sub-task-dialog" class="mdl-dialog mdl-cell&#45;&#45;6-col">-->
-        <!--<h4 class="mdl-dialog__title">-->
-            <!--<i class="material-icons">format_list_bulleted</i>Subtarea-->
-        <!--</h4>-->
-        <!--<div class="mdl-dialog__content">-->
-            <!--<form action="#">-->
-                <!--<div class="mdl-textfield mdl-js-textfield mdl-textfield&#45;&#45;floating-label">-->
-                    <!--<input v-model="subTaskModel.name"-->
-                           <!--class="mdl-textfield__input" type="text" id="sub-task-name" required>-->
-                    <!--<label class="mdl-textfield__label" for="sub-task-name">Nombre</label>-->
-                <!--</div>-->
-                <!--<div class="mdl-textfield mdl-js-textfield mdl-textfield&#45;&#45;floating-label">-->
-                    <!--<select v-model="subTaskModel.assigned_user_id"-->
-                            <!--class="mdl-textfield__input" id="sub-task-assigned-user" required>-->
-                        <!--<option v-for="user in assigned_users" v-bind:value="user.id"-->
-                                <!--v-bind:selected="user.id == subTaskModel.assigned_user_id ? 'true' : 'false'">-->
-                            <!--${user.name} ${user.last_name} ${user.email}-->
-                        <!--</option>-->
-                    <!--</select>-->
-
-                    <!--<label class="mdl-textfield__label" for="sub-task-assigned-user">Usuario a asignar</label>-->
-                <!--</div>-->
-                <!--<div class="mdl-textfield mdl-js-textfield mdl-textfield&#45;&#45;floating-label">-->
-                    <!--<input v-model="subTaskModel.start_date_at"-->
-                           <!--class="mdl-textfield__input" type="date" id="sub-task-start-date">-->
-                    <!--<label class="mdl-textfield__label" for="sub-task-start-date">Fecha de inicio</label>-->
-                <!--</div>-->
-                <!--<div class="mdl-textfield mdl-js-textfield mdl-textfield&#45;&#45;floating-label">-->
-                    <!--<input v-model="subTaskModel.due_date_at"-->
-                           <!--class="mdl-textfield__input" type="date" id="sub-task-due-date">-->
-                    <!--<label class="mdl-textfield__label" for="sub-task-due-date">Fecha a finalizar</label>-->
-                <!--</div>-->
-
-                <!--<div class="mdl-textfield mdl-js-textfield mdl-textfield&#45;&#45;floating-label">-->
-                            <!--<textarea v-model="subTaskModel.description"-->
-                                      <!--class="mdl-textfield__input" rows="4" id="sub-task-description"></textarea>-->
-                    <!--<label class="mdl-textfield__label" for="sub-task-description">Descripción</label>-->
-                <!--</div>-->
-            <!--</form>-->
-        <!--</div>-->
-        <!--<div class="mdl-dialog__actions">-->
-            <!--<button v-show="validationSubTaskModel.accept"-->
-                    <!--class="mdl-button mdl-js-button mdl-button&#45;&#45;raised mdl-js-ripple-effect mdl-button&#45;&#45;colored"-->
-                    <!--id="sub-task-dialog-accept">-->
-                <!--<i class="material-icons">check_circle</i>Aceptar-->
-            <!--</button>-->
-            <!--<button v-show="validationSubTaskModel.remove" class="mdl-button mdl-js-button mdl-button&#45;&#45;raised mdl-js-ripple-effect"-->
-                    <!--id="sub-task-dialog-remove">-->
-                <!--<i class="material-icons">delete_forever</i>Eliminar-->
-            <!--</button>-->
-            <!--<button class="mdl-button mdl-js-button mdl-button&#45;&#45;raised mdl-js-ripple-effect mdl-button&#45;&#45;accent"-->
-                    <!--id="sub-task-dialog-cancel">-->
-                <!--<i class="material-icons">cancel</i>Cancelar-->
-            <!--</button>-->
-        <!--</div>-->
-    <!--</dialog>-->
-    <!--<dialog id="issue-dialog" class="mdl-dialog mdl-cell&#45;&#45;6-col">-->
-        <!--<h4 class="mdl-dialog__title">-->
-            <!--<i class="material-icons">bug_report</i>Problema-->
-        <!--</h4>-->
-        <!--<div class="mdl-dialog__content">-->
-            <!--<form action="#">-->
-                <!--<div class="mdl-textfield mdl-js-textfield mdl-textfield&#45;&#45;floating-label">-->
-                    <!--<input  v-model="issueModel.name" required-->
-                            <!--class="mdl-textfield__input" type="text" id="issue-name">-->
-                    <!--<label class="mdl-textfield__label" for="issue-name">Nombre</label>-->
-                <!--</div>-->
-                <!--<div class="mdl-textfield mdl-js-textfield mdl-textfield&#45;&#45;floating-label">-->
-                    <!--<select v-model="issueModel.assigned_user_id" required-->
-                            <!--class="mdl-textfield__input" id="issue-assigned-user-id">-->
-                        <!--<option v-for="user in assigned_users" v-bind:value="user.id"-->
-                                <!--v-bind:selected="user.id == issueModel.assigned_user_id ? 'true' : 'false'">-->
-                            <!--${user.name} ${user.last_name} ${user.email}-->
-                        <!--</option>-->
-                    <!--</select>-->
-                    <!--<label class="mdl-textfield__label" for="issue-assigned-user-id">Usuario a asignar</label>-->
-                <!--</div>-->
-                <!--<div class="mdl-textfield mdl-js-textfield mdl-textfield&#45;&#45;floating-label">-->
-                    <!--<select v-model="issueModel.kind" required-->
-                            <!--class="mdl-textfield__input" id="issue-kind">-->
-                        <!--<option v-for="kind in kinds" v-bind:value="kind.value"-->
-                                <!--v-bind:selected="kind.value == issueModel.kind? 'true' : 'false'">-->
-                            <!--${kind.text}-->
-                        <!--</option>-->
-
-                    <!--</select>-->
-                    <!--<label class="mdl-textfield__label" for="issue-kind">Tipo</label>-->
-                <!--</div>-->
-                <!--<div class="mdl-textfield mdl-js-textfield mdl-textfield&#45;&#45;floating-label">-->
-                    <!--<select v-model="issueModel.priority" required-->
-                            <!--class="mdl-textfield__input" id="issue-priority">-->
-                        <!--<option v-for="priority in priorities" v-bind:value="priority.value"-->
-                                <!--v-bind:selected="priority.value == issueModel.priority ? 'true' : 'false'">-->
-                            <!--${priority.text}-->
-                        <!--</option>-->
-                    <!--</select>-->
-                    <!--<label class="mdl-textfield__label" for="issue-priority">Prioridad</label>-->
-                <!--</div>-->
-
-                <!--<div class="mdl-textfield mdl-js-textfield mdl-textfield&#45;&#45;floating-label">-->
-                            <!--<textarea v-model="issueModel.description" required-->
-                                      <!--class="mdl-textfield__input" rows="4" id="issue-description"></textarea>-->
-                    <!--<label class="mdl-textfield__label" for="issue-description">Descripción</label>-->
-                <!--</div>-->
-            <!--</form>-->
-        <!--</div>-->
-        <!--<div class="mdl-dialog__actions">-->
-            <!--<button v-show="validationIssueModel.accept"-->
-                    <!--class="mdl-button mdl-js-button mdl-button&#45;&#45;raised mdl-js-ripple-effect mdl-button&#45;&#45;colored"-->
-                    <!--id="issue-dialog-accept">-->
-                <!--<i class="material-icons">check_circle</i>Aceptar-->
-            <!--</button>-->
-            <!--<button v-show="validationIssueModel.remove" class="mdl-button mdl-js-button mdl-button&#45;&#45;raised mdl-js-ripple-effect"-->
-                    <!--id="issue-dialog-remove">-->
-                <!--<i class="material-icons">delete_forever</i>Eliminar-->
-            <!--</button>-->
-            <!--<button class="mdl-button mdl-js-button mdl-button&#45;&#45;raised mdl-js-ripple-effect mdl-button&#45;&#45;accent"-->
-                    <!--id="issue-dialog-cancel">-->
-                <!--<i class="material-icons">cancel</i>Cancelar-->
-            <!--</button>-->
-        <!--</div>-->
-<!--</dialog>-->
-
-
-</div>
-
-{% endblock %}
-
-{% block button_fab %}
-<!--start project  fab-->
-<button id="show-project-dialog" class="mdl-button mdl-button--colored mdl-color-text--white mdl-button--fab zr-button-fab">
-    <i class="material-icons">widgets</i>
-</button>
-<!--end project fab-->
 {% endblock %}
 
 {% block js %}
-<script src="/js/project.js" type="application/javascript"></script>
+    <script src="/js/project.js" type="application/javascript">
+    </script>
+    <script src="https://cdn.jsdelivr.net/sortable/1.4.2/Sortable.min.js">
+    </script>
+    <script src="https://cdn.rawgit.com/David-Desmaisons/Vue.Draggable/master/dist/vuedraggable.min.js">
+    </script>
 {% endblock %}

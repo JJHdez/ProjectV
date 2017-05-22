@@ -63,7 +63,15 @@ class ProjectListRst(Resource, ProjectMdl):
                 """ % (self._table, _col, g.user.id, _val)
                 g.db_conn.execute(_qrp)
                 if g.db_conn.count() > 0:
-                    _data = {self._table: g.db_conn.one()}
+                    _data = g.db_conn.one()
+                    # add default 4 columns
+                    for _column in ['Today', 'Tomorrow', 'Upcoming', 'Someday']:
+                        qryIprojectTask = """
+                          INSERT INTO project_tasks (create_id, name, project_id) VALUES ({}, '{}',{})
+                        """.format(g.user.id, _column, _data[0]['id'])
+                        g.db_conn.execute(qryIprojectTask)
+
+                    _data = {self._table: _data}
                     _post = processing_rest_success(data=_data, message='El proyecto fue creado correctamente',
                                                     status_code=201)
                 else:

@@ -59,6 +59,13 @@ class ProjectIssueListRst(Resource, ProjectIssueMdl):
     def post(self):
         _request = request.json
         try:
+            if 'priority' not in _request:
+                _request['priority'] = 'minor'
+            if 'kind' not in _request:
+                _request['kind'] = 'bug'
+            if 'assigned_user_id' not in _request:
+                _request['assigned_user_id'] = g.user.id
+
             _errors = validate_rest(fields=self._fields, request=_request)
             if not _errors:
                 _col, _val = type_of_insert_rest(self._fields, _request)
