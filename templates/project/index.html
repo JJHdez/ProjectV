@@ -106,7 +106,7 @@
                 </div>
                 <draggable v-model="tasksToday" :options="{group:'task'}">
                     <li  v-for="(task, index) in tasksToday"
-                          v-on:click="openDialogTask(task,index,'Today')"
+                          v-on:click="openDialogSubTask(task,index,'Today')"
                          class="mdl-list__item mdl-shadow--2dp">
                         <span class="mdl-list__item-primary-content">
                             <img class="mdl-chip__contact"
@@ -116,7 +116,7 @@
                         <span class="mdl-list__item-secondary-content">
                             <div>
                                 <a class="mdl-list__item-secondary-action" href="#">
-                                    <i v-bind:class="getTaskIconColourByName('Today')">${getTaskIconByName('Today')}</i>
+                                    <i v-bind:class="getSubTaskIconColourByName('Today')">${getSubTaskIconByName('Today')}</i>
                                 </a>
                             </div>
                         </span>
@@ -132,7 +132,9 @@
                     <label class="mdl-textfield__label" for="sub-task-name-tomorrow-quick">Tomorrow</label>
                 </div>
                 <draggable v-model="tasksTomorrow" :options="{group:'task'}">
-                    <li  v-for="task in tasksTomorrow" class="mdl-list__item mdl-shadow--2dp">
+                    <li  v-for="(task, index) in tasksTomorrow"
+                         v-on:click="openDialogSubTask(task,index,'Tomorrow')"
+                         class="mdl-list__item mdl-shadow--2dp">
                         <span class="mdl-list__item-primary-content">
                              <img class="mdl-chip__contact" src="https://getmdl.io/templates/dashboard/images/user.jpg"/>
                             ${task.name}
@@ -140,7 +142,7 @@
                         <span class="mdl-list__item-secondary-content">
                             <div>
                                 <a class="mdl-list__item-secondary-action" href="#">
-                                    <i v-bind:class="getTaskIconColourByName('Tomorrow')">${getTaskIconByName('Tomorrow')}</i>
+                                    <i v-bind:class="getSubTaskIconColourByName('Tomorrow')">${getSubTaskIconByName('Tomorrow')}</i>
                                 </a>
                             </div>
                         </span>
@@ -156,7 +158,9 @@
                     <label class="mdl-textfield__label" for="sub-task-name-upcoming-quick">Upcoming</label>
                 </div>
                 <draggable v-model="tasksUpcoming" :options="{group:'task'}">
-                    <li  v-for="task in tasksUpcoming" class="mdl-list__item mdl-shadow--2dp">
+                    <li  v-for="(task, index) in tasksUpcoming"
+                         v-on:click="openDialogSubTask(task,index,'Upcoming')"
+                         class="mdl-list__item mdl-shadow--2dp">
                         <span class="mdl-list__item-primary-content">
                              <img class="mdl-chip__contact" src="https://getmdl.io/templates/dashboard/images/user.jpg"/>
                             ${task.name}
@@ -164,7 +168,7 @@
                         <span class="mdl-list__item-secondary-content">
                             <div>
                                 <a class="mdl-list__item-secondary-action" href="#">
-                                    <i v-bind:class="getTaskIconColourByName('Upcoming')">${getTaskIconByName('Upcoming')}</i>
+                                    <i v-bind:class="getSubTaskIconColourByName('Upcoming')">${getSubTaskIconByName('Upcoming')}</i>
                                 </a>
                             </div>
                         </span>
@@ -180,7 +184,9 @@
                     <label class="mdl-textfield__label" for="sub-task-name-someday-quick">Someday</label>
                 </div>
                 <draggable v-model="tasksSomeday" :options="{group:'task'}">
-                    <li v-for="task in tasksSomeday"  class="mdl-list__item mdl-shadow--2dp">
+                    <li v-for="(task, index) in tasksSomeday"
+                        v-on:click="openDialogSubTask(task,index,'Someday')"
+                        class="mdl-list__item mdl-shadow--2dp">
                         <span class="mdl-list__item-primary-content">
                              <img class="mdl-chip__contact" src="https://getmdl.io/templates/dashboard/images/user.jpg"/>
                             ${task.name}
@@ -188,7 +194,7 @@
                         <span class="mdl-list__item-secondary-content">
                             <div>
                                 <a class="mdl-list__item-secondary-action" href="#">
-                                    <i v-bind:class="getTaskIconColourByName('Someday')">${getTaskIconByName('Someday')}</i>
+                                    <i v-bind:class="getSubTaskIconColourByName('Someday')">${getSubTaskIconByName('Someday')}</i>
                                 </a>
                             </div>
                         </span>

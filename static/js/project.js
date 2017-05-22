@@ -74,7 +74,7 @@ window.addEventListener('load', function ()
                 name: '',
                 kind: '',
                 priority: '',
-                project_task_id:'',
+                project_task_participed_id:'',
                 description:'',
                 assigned_user_id:-1
             },
@@ -215,7 +215,6 @@ window.addEventListener('load', function ()
                     url: _url,
                     type: _method,
                     data: _json,
-                    async: false,
                     contentType: 'application/json'
                 }).done(function (response) {
                    // console.log(response)
@@ -242,7 +241,7 @@ window.addEventListener('load', function ()
                                             self.tasksSomeday.splice(self.subTaskModel.index, 1);
                                             break;
                                     }
-                                self.closeDialogTask();
+                                self.closeDialogSubTask();
                                 break;
                             case 'new':
                                 _data['id'] = response.data.project_task_participed[0].id;
@@ -268,7 +267,7 @@ window.addEventListener('load', function ()
                                 // _data['created_at'] = self.subTaskModel.created_at;
                                 // _data['due_date_at'] = self.subTaskModel.due_date_at;
                                 self.subTasks.splice(self.subTaskModel.index, 1, _data);
-                                self.closeDialogTask();
+                                self.closeDialogSubTask();
                                 break;
                             case  'loadSubTaskById':
                                 for (var c = 0; c < response.data.project_task_participed.length; c++) {
@@ -321,8 +320,45 @@ window.addEventListener('load', function ()
                     }
                 }
             },
+            
+            getSubTaskIconByName: function (_name) {
+                var _icon = '';
+                switch (_name){
+                    case  'Today':
+                        _icon = 'star';
+                        break;
+                    case  'Tomorrow':
+                        _icon = 'star_half';
+                        break;
+                    case  'Upcoming':
+                    case  'Someday':
+                        _icon = 'star_border';
+                        break;
 
-            openDialogTask: function (subTask, index, groupTask) {
+                }
+                return _icon
+            },
+            
+            getSubTaskIconColourByName: function (_name) {
+                var _icon_colour = 'material-icons';
+                switch (_name){
+                    case  'Today':
+                        _icon_colour = _icon_colour + ' mdl-color-text--red';
+                        break;
+                    case  'Tomorrow':
+                        _icon_colour = _icon_colour + ' mdl-color-text--light-green';
+                        break;
+                    case  'Upcoming':
+                        _icon_colour = _icon_colour + '';
+                        break;
+                    case  'Someday':
+                        _icon_colour = _icon_colour + ' mdl-color-text--blue';
+                        break;
+
+                }
+                return _icon_colour;
+            },
+            openDialogSubTask: function (subTask, index, groupTask) {
                 this.subTaskModel =  subTask;
                 this.subTaskModel.index =  index;
                 this.currentGroupTask = this.getGroupTaskByName(groupTask);
@@ -331,33 +367,38 @@ window.addEventListener('load', function ()
                     this.initIssue(subTask, index)
             },
 
-            closeDialogTask: function () {
+            closeDialogSubTask: function () {
                 if (taskDialog){
                     taskDialog.close();
                 }
             },
 
-
         //  Controller Issue
 
             initIssue: function (task, index) {
                 this.issues = [];
-                var _url = this.urlIssue+"?completed=False&by=project_task_id&project_task_id="+task.project_task_id;
+                var _url = this.urlIssue+"?completed=False&by=project_task_participed_id&project_task_participed_id="+task.id;
                 this._requestIssue(null, _url, 'GET', 'init');
             },
 
             acceptIssue: function (flagNewIssue) {
                 this.flagNewIssue = flagNewIssue;
-                if (this.validationIssueModel.accept ){
-                    var _action = this.flagNewIssue ? 'new' : 'edit';
-                    var _method = this.flagNewIssue ? 'POST' : 'PUT';
-                    var _url = this.flagNewIssue ? this.urlIssue : this.urlIssue + '/' + this.issueModel.id;
+                if (this.flagNewIssue){
+                    if (this.validation.issueQuickAdd){
+                        var _action = this.flagNewIssue ? 'new' : 'edit';
+                        var _method = this.flagNewIssue ? 'POST' : 'PUT';
+                        var _url = this.flagNewIssue ? this.urlIssue : this.urlIssue + '/' + this.issueModel.id;
 
-                    var new_project_task_issue = {
-                        name: this.issueModel.name,
-                        project_task_id: this.subTaskModel.project_task_id
-                    };
-                    this._requestIssue(new_project_task_issue, _url, _method, _action);
+                        var new_project_task_issue = {
+                            name: this.issueModel.name,
+                            project_task_participed_id: this.subTaskModel.id
+                        };
+                        this._requestIssue(new_project_task_issue, _url, _method, _action);
+                    }else{
+
+                    }
+                }else{
+
                 }
             },
 
@@ -384,7 +425,6 @@ window.addEventListener('load', function ()
                     data: _json,
                     contentType: 'application/json'
                 }).done(function (response) {
-                   // console.log(response);
                     if (response.status_code == 200 || response.status_code == 201) {
                         switch (_action) {
                             case 'init':
@@ -424,66 +464,7 @@ window.addEventListener('load', function ()
                     return false;
                 });
             },
-
-            getKind: function (kind) {
-                var _kind = '';
-                for (var i =0 ; i<this.kinds.length;i++){
-                    if (kind == this.kinds[i].value){
-                        _kind = this.kinds[i].text;
-                        break;
-                    }
-                }
-                return _kind;
-            },
-
-            getKindColor: function (kind) {
-                var _colorClass = "mdl-chip";
-                switch (kind){
-                    case 'enhancement':
-                        _colorClass = _colorClass+' mdl-color--cyan';
-                        break;
-                    case 'proposal':
-                        _colorClass = _colorClass+' mdl-color--blue';
-                        break;
-                    case 'bug':
-                        _colorClass = _colorClass+' mdl-color--red';
-                        break;
-                    case 'research':
-                        _colorClass = _colorClass+' mdl-color--light-green';
-                        break;
-                }
-                return _colorClass;
-            },
-            getPriority: function (priority) {
-                var _priority= '';
-                for (var i =0 ; i<this.priorities.length;i++){
-                    if (priority == this.priorities[i].value){
-                        _priority = this.priorities[i].text;
-                        break;
-                    }
-                }
-                return _priority;
-            },
-
-            getPriorityColor: function (priority) {
-                var _colorClass = "mdl-chip";
-                switch (priority){
-                    case 'trivial' || 'minor':
-                        _colorClass = _colorClass+' mdl-color--lime';
-                        break;
-                    case 'major':
-                        _colorClass = _colorClass+' mdl-color--yellow';
-                        break;
-                    case 'critical':
-                        _colorClass = _colorClass+' mdl-color--red';
-                        break;
-                    case 'blocker':
-                        _colorClass = _colorClass+' mdl-color--indigo';
-                        break;
-                }
-                return _colorClass;
-            },
-
+            
             cleanIssue: function () {
                 this.issueModel.index = -1;
                 this.issueModel.id = -1;
@@ -495,30 +476,7 @@ window.addEventListener('load', function ()
                 this.issueModel.user_assigned_id = -1;
             },
 
-
-
-            editIssue: function (issue, index) {
-                this.flagNewIssue = false;
-                this.issueModel.index = index;
-                this.issueModel.id = issue.id;
-                this.issueModel.name = issue.name;
-                this.issueModel.kind = issue.kind;
-                this.issueModel.priority = issue.priority;
-                this.issueModel.description= issue.description;
-                this.issueModel.assigned_user_id = issue.assigned_user_id;
-                // issue_dialog_open();
-            },
-
-
-        //    Columns workspace
-            getIdWorkspace: function (task, index) {
-                var _id_workspace="quick-add-task-"+task.id;
-                // console.log(_id_workspace)
-                return _id_workspace;
-            },
-
             getGroupTaskByName: function (_name) {
-
                 var _task = null;
                 for (var i =0; i < this.groupTasks.length; i++){
                   if (this.groupTasks[i]['name'] == _name){
@@ -527,44 +485,9 @@ window.addEventListener('load', function ()
                   }
                 }
                 return _task;
-            },
-
-            getTaskIconByName: function (_name) {
-                var _icon = '';
-                switch (_name){
-                    case  'Today':
-                        _icon = 'star';
-                        break;
-                    case  'Tomorrow':
-                        _icon = 'star_half';
-                        break;
-                    case  'Upcoming':
-                    case  'Someday':
-                        _icon = 'star_border';
-                        break;
-
-                }
-                return _icon
-            },
-            getTaskIconColourByName: function (_name) {
-                var _icon_colour = 'material-icons';
-                switch (_name){
-                    case  'Today':
-                        _icon_colour = _icon_colour + ' mdl-color-text--red';
-                        break;
-                    case  'Tomorrow':
-                        _icon_colour = _icon_colour + ' mdl-color-text--light-green';
-                        break;
-                    case  'Upcoming':
-                        _icon_colour = _icon_colour + '';
-                        break;
-                    case  'Someday':
-                        _icon_colour = _icon_colour + ' mdl-color-text--blue';
-                        break;
-
-                }
-                return _icon_colour;
             }
+
+            
         }, // end methods
 
         computed: {
@@ -572,42 +495,10 @@ window.addEventListener('load', function ()
             validation: function () {
                 return {
                     subTaskEdit: this.subTaskModel.name.trim().length >= 3,
+                    issueQuickAdd: this.issueModel.name.trim().length > 3
                 }
-            },
-
-            validationIssueModel: function () {
-                return {
-                    accept: this.issueModel.name.trim().length > 3,
-                    remove: !this.flagNewIssue
-                }
-            },
-
-            project_name: function () {
-                var _title = '';
-                if (projectV!= null)
-                    if(projectV.current_project!= null)
-                        _title = projectV.current_project.name;
-                return _title
-            }
-        },
-        watch: {
-            'issueModel.assigned_user_id': function(val) {
-                this.issueModel.assigned_user_id = val;
-            },
-
-            'issueModel.kind': function(val) {
-                this.issueModel.kind = val;
-            },
-
-            'issueModel.priority': function(val) {
-                this.issueModel.priority = val;
-            },
-
-            'subTaskModel.assigned_user_id': function(val) {
-                this.subTaskModel.assigned_user_id = val;
             }
         }
-
     });
 
     taskDialog = document.querySelector('#task-dialog');
@@ -752,14 +643,10 @@ window.addEventListener('load', function ()
                                 break;
                             case 'new':
                                 _data['id'] = response.data.projects[0].id;
-                                // _data['created_at'] = new Date().toJSON().slice(0, 10).replace(/-/g, '/');
                                 self.projects.push(_data);
-                                self.closeDialog();
                                 break;
                             case 'edit':
                                 _data['id'] = self.projectModel.id;
-                                // _data['created_at'] = self.projectModel.created_at;
-                                // _data['due_date_at'] = self.projectModel.due_date_at;
                                 self.projects.splice(self.projectModel.index, 1, _data);
                                 self.closeDialog();
                                 break;
