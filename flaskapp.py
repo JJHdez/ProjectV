@@ -188,12 +188,12 @@ def yourself():
     return YourselfCtl.index()
 
 
-@app.route(prefix_admin + '/project', endpoint=startpoint_admin + '/project')
+@app.route(prefix_admin + '/quick-list', endpoint=startpoint_admin + '/quick-list')
 @is_login
-def project():
+def quick_list():
     return ProjectCtl.index()
 
-
+"""
 @app.route(prefix_admin + '/project/task', endpoint=startpoint_admin + '/project/task')
 @is_login
 def tasks():
@@ -210,7 +210,7 @@ def subtask():
 @is_login
 def issue():
     return ProjectCtl.bug()
-
+"""
 
 @app.route(prefix_admin + '/pomodoro', endpoint=startpoint_admin + '/pomodoro')
 @is_login

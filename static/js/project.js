@@ -292,12 +292,14 @@ window.addEventListener('load', function ()
                             notify({message: response.message});
                         return true;
                     } else {
-                        if (response.message)
-                            notify({message: response.message});
+                        if (response.status_code != 404){
+                            if (response.message)
+                                notify({message: response.message});
+                        }
                         return false;
                     }
                 }).fail(function () {
-                    // notify({message: 'Error al generar la peticion, favor interntar mas tarde! :('});
+                    notify({message: 'Error al generar la peticion, favor interntar mas tarde! :('});
                     return false;
                 });
             },
@@ -455,8 +457,10 @@ window.addEventListener('load', function ()
                         self.cleanIssue();
                         return true;
                     } else {
-                        if (response.message)
-                            notify({message: response.message});
+                        if (response.status_code != 404 ){
+                            if (response.message)
+                                notify({message: response.message});
+                        }
                         return false;
                     }
                 }).fail(function () {

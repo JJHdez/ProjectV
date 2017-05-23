@@ -18,7 +18,7 @@
     Proyectos
 {% endblock %}
 {% block body %}
-    <div class="mdl-grid">
+    <div class="mdl-grid" xmlns="http://www.w3.org/1999/html">
         <div id="projects-panel"
              class="mdl-cell mdl-cell--12-col mdl-grid mdl-grid--no-spacing">
 
@@ -35,12 +35,13 @@
             <div class="mdl-cell mdl-cell--4-col mdl-cell--4-col-tablet mdl-cell--8-col-desktop">
                 <span v-for="(project, index) in projects"
                         v-bind:class="activeWorkspace(project, index)">
-                    <img v-on:click="viewTask(project,index)"
-                         class="mdl-chip__contact" src="https://getmdl.io/templates/dashboard/images/user.jpg"/>
-                    <span v-on:click="viewTask(project,index)" class="mdl-chip__text">
+                    <!--<img v-on:click="viewTask(project,index)"
+                         class="mdl-chip__contact" src="https://getmdl.io/templates/dashboard/images/user.jpg"/>-->
+                    <i class="material-icons mdl-chip__contact">group_work</i>
+                    <span v-on:click="viewTask(project,index)" class="mdl-chip__text zr-pointer">
                         ${project.name}
                     </span>
-                    <a class="mdl-chip__action" v-on:click="edit(project,index)">
+                    <a class="mdl-chip__action zr-pointer" v-on:click="edit(project,index)">
                         <i class="material-icons">edit</i>
                     </a>
                 </span>
@@ -50,21 +51,46 @@
                 <div class="mdl-card__menu">
                     <button v-show="validation.workspaceRemove"
                         v-on:click="remove()"
-                        class="mdl-button mdl-js-button mdl-button--icon">
-                    <i class="material-icons mdl-color-text--red">
-                        delete_forever
-                    </i>
+                        class="mdl-button mdl-js-button mdl-button--icon"
+                        id="workspace-dialog-delete">
+                        <i class="material-icons mdl-color-text--red">
+                            delete_forever
+                        </i>
                     </button>
-                        <button
-                            v-on:click="done()"
-                            class="mdl-button mdl-js-button mdl-button--icon">
+                    <div class="mdl-tooltip" for="workspace-dialog-delete">
+                        Delete forever
+                    </div>
+                    <button v-on:click="done()"
+                            class="mdl-button mdl-js-button mdl-button--icon"
+                            id="workspace-dialog-done">
                         <i class="material-icons mdl-color-text--light-green">
                             done
                         </i>
                     </button>
+                    <div class="mdl-tooltip" for="workspace-dialog-done">
+                        Ending workspace
+                    </div>
+                    <button v-show="validation.workspaceEdit"
+                            v-on:click="accept(false)"
+                            class="mdl-button mdl-js-button mdl-button--icon"
+                            id="workspace-dialog-save">
+                        <i class="material-icons mdl-color-text--purple">save</i>
+                    </button>
+                    <div class="mdl-tooltip" for="workspace-dialog-save">
+                        Save
+                    </div>
+                    <button v-on:click="closeDialog()"
+                            class="mdl-button mdl-js-button mdl-button--icon"
+                            id="workspace-dialog-cancel">
+                        <i class="material-icons">cancel</i>
+                    </button>
+                    <div class="mdl-tooltip" for="workspace-dialog-cancel">
+                        Cancel & Close window
+                    </div>
                 </div>
+
                 <h4 class="mdl-dialog__title">
-                    <i class="material-icons">widgets</i>
+                    <i class="material-icons">group_work</i>
                     Proyecto
                 </h4>
 
@@ -76,12 +102,12 @@
                     </div>
                 </div>
 
-                <div class="mdl-dialog__actions">
+                <!--<div class="mdl-dialog__actions">
                     <button v-show="validation.workspaceEdit"
                             v-on:click="accept(false)"
                             class="mdl-button mdl-js-button mdl-button--raised
                                 mdl-js-ripple-effect mdl-button--colored">
-                        <i class="material-icons">check_circle</i>Aceptar
+                        <i class="material-icons">save</i>Guardar
                     </button>
                     <button
                             v-on:click="closeDialog()"
@@ -90,7 +116,7 @@
                             id="project-dialog-cancel">
                         <i class="material-icons">cancel</i>Cancelar
                     </button>
-                </div>
+                </div>-->
             </dialog>
 
         </div>
@@ -107,7 +133,7 @@
                 <draggable v-model="tasksToday" :options="{group:'task'}">
                     <li  v-for="(task, index) in tasksToday"
                           v-on:click="openDialogSubTask(task,index,'Today')"
-                         class="mdl-list__item mdl-shadow--2dp">
+                         class="mdl-list__item mdl-shadow--2dp zr-pointer">
                         <span class="mdl-list__item-primary-content">
                             <img class="mdl-chip__contact"
                                  src="https://getmdl.io/templates/dashboard/images/user.jpg"/>
@@ -134,7 +160,7 @@
                 <draggable v-model="tasksTomorrow" :options="{group:'task'}">
                     <li  v-for="(task, index) in tasksTomorrow"
                          v-on:click="openDialogSubTask(task,index,'Tomorrow')"
-                         class="mdl-list__item mdl-shadow--2dp">
+                         class="mdl-list__item mdl-shadow--2dp zr-pointer">
                         <span class="mdl-list__item-primary-content">
                              <img class="mdl-chip__contact" src="https://getmdl.io/templates/dashboard/images/user.jpg"/>
                             ${task.name}
@@ -160,7 +186,7 @@
                 <draggable v-model="tasksUpcoming" :options="{group:'task'}">
                     <li  v-for="(task, index) in tasksUpcoming"
                          v-on:click="openDialogSubTask(task,index,'Upcoming')"
-                         class="mdl-list__item mdl-shadow--2dp">
+                         class="mdl-list__item mdl-shadow--2dp zr-pointer">
                         <span class="mdl-list__item-primary-content">
                              <img class="mdl-chip__contact" src="https://getmdl.io/templates/dashboard/images/user.jpg"/>
                             ${task.name}
@@ -186,7 +212,7 @@
                 <draggable v-model="tasksSomeday" :options="{group:'task'}">
                     <li v-for="(task, index) in tasksSomeday"
                         v-on:click="openDialogSubTask(task,index,'Someday')"
-                        class="mdl-list__item mdl-shadow--2dp">
+                        class="mdl-list__item mdl-shadow--2dp zr-pointer">
                         <span class="mdl-list__item-primary-content">
                              <img class="mdl-chip__contact" src="https://getmdl.io/templates/dashboard/images/user.jpg"/>
                             ${task.name}
@@ -205,24 +231,44 @@
             <dialog id="task-dialog" class="mdl-dialog mdl-cell--8-col">
                 <div class="mdl-card__menu">
                     <button v-on:click="removeSubTask()"
-                            class="mdl-button mdl-js-button mdl-button--icon">
+                            class="mdl-button mdl-js-button mdl-button--icon"
+                            id="sub-task-dialog-delete">
                         <i class="material-icons mdl-color-text--red">
                             delete_forever
                         </i>
                     </button>
+                    <div class="mdl-tooltip" for="sub-task-dialog-delete">
+                        Delete forever
+                    </div>
                     <button v-on:click="doneSubTask()"
-                            class="mdl-button mdl-js-button mdl-button--icon">
+                            class="mdl-button mdl-js-button mdl-button--icon"
+                            id="sub-task-dialog-done">
                         <i class="material-icons mdl-color-text--light-green">
                             done
                         </i>
                     </button>
+                    <div class="mdl-tooltip" for="sub-task-dialog-done">
+                        Done sub-task
+                    </div>
                     <button v-show="validation.subTaskEdit"
                             v-on:click="acceptSubTask(null, null, false)"
-                            class="mdl-button mdl-js-button mdl-button--icon">
-                        <i class="material-icons">
+                            class="mdl-button mdl-js-button mdl-button--icon"
+                            id="sub-task-dialog-save">
+                        <i class="material-icons mdl-color-text--purple">
                             save
                         </i>
                     </button>
+                    <div class="mdl-tooltip" for="sub-task-dialog-save">
+                        Save
+                    </div>
+                    <button v-on:click="closeDialogSubTask()"
+                            class="mdl-button mdl-js-button mdl-button--icon"
+                            id="sub-task-dialog-cancel">
+                        <i class="material-icons">cancel</i>
+                    </button>
+                    <div class="mdl-tooltip" for="sub-task-dialog-cancel">
+                        Cancel & Close window
+                    </div>
                 </div>
                 <div class="mdl-dialog__title">
                     <i class="material-icons">list</i>

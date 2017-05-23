@@ -327,3 +327,6 @@ _:-ms-input-placeholder, :root .demo-graph {
 /*.zr-pending-background-4{*/
     /*background: url('/images/pending/4.jpg') center;*/
 /*}*/
+.zr-pointer  {
+    cursor: pointer;
+}
