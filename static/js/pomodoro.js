@@ -53,19 +53,23 @@ window.addEventListener('load', function ()
                 this._callback(null,this.url+'?activities=registered','GET','init')
             },
             add:function () {
-                var _timer_tmp = this.activity.timer.split(':');
-                var _timer  = '00:25:00';
-                var _data = {};
-                _data['name'] = this.activity.name;
-                if (_timer_tmp.length ==1) {
-                    _timer = '00:'+_timer_tmp[0]+":00";
-                }else if (_timer_tmp.length ==2){
-                    _timer = this.activity.timer+":00";
+                if (this.validationActivityModel.add || this.validationActivityModel.quickAdd25){
+                    var _timer_tmp = [];
+                    if (this.activity.timer.trim().length>0)
+                        _timer_tmp = this.activity.timer.trim().split(':');
+                    var _timer  = '00:25:00';
+                    var _data = {};
+                    _data['name'] = this.activity.name;
+                    if (_timer_tmp.length ==1) {
+                        _timer = '00:'+_timer_tmp[0]+":00";
+                    }else if (_timer_tmp.length ==2){
+                        _timer = this.activity.timer+":00";
+                    }
+                    _data['timer'] = _timer;
+                    var _action = 'new';
+                    var _method = 'POST';
+                    this._callback(_data, this.url, _method, _action);
                 }
-                _data['timer'] = _timer;
-                var _action = 'new';
-                var _method = 'POST';
-                this._callback(_data, this.url, _method, _action);
             },
             // clean model
             _clean: function (clean) {
@@ -370,7 +374,12 @@ window.addEventListener('load', function ()
         computed: {
             validationActivityModel: function () {
                 return {
-                    add: this.activity.name.trim().length > 3 && timerRE.test(this.activity.timer)
+                    add: this.activity.name.trim().length > 3 &&
+                        timerRE.test(this.activity.timer) &&
+                        parseInt(this.activity.timer) < 60,
+                    quickAdd25: this.activity.name.trim().length > 3 &&
+                        !timerRE.test(this.activity.timer) &&
+                        this.activity.timer.trim().length == 0
                 }
             }
         }
