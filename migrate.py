@@ -13,16 +13,26 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
 
-from flask_migrate import Migrate, MigrateCommand
-from flask_script import Manager
-from migrate import app, db
+app = Flask(__name__)
+app.config.from_pyfile('flaskapp.cfg')
 
+db = SQLAlchemy(app)
 
-migrate = Migrate(app, db)
-manager = Manager(app)
-manager.add_command('db', MigrateCommand)
+# Template model
+""" 
+from migrate import db
 
+class User(db.Model):
+    __tablename__ = 'users'
 
-if __name__ == '__main__':
-    manager.run()
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(128))
+    
+"""
+# This section import model to migrate, example:
+"""
+    from v.user.model.userMdl import User
+"""
