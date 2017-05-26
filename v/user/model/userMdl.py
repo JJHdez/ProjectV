@@ -12,6 +12,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+from migrate import db
 
 
 class UserMdl(object):
@@ -23,3 +24,18 @@ class UserMdl(object):
         self.last_name = last_name
         self.cover = cover
         self.timezone = timezone
+
+
+class User(db.Model):
+    __tablename__ = 'users'
+
+    id = db.Column(db.Integer, primary_key=True)
+    create_date = db.Column(db.DateTime, default="timezone('UTC'::text, now())", nullable=False)
+    facebook = db.Column(db.VARCHAR, default='NULL')
+    google_plus = db.Column(db.VARCHAR, default='NULL')
+    email = db.Column(db.VARCHAR, nullable=False)
+    name = db.Column(db.VARCHAR, nullable=False)
+    last_name = db.Column(db.VARCHAR, nullable=True)
+    cover = db.Column(db.Text, nullable=True)
+    timezone = db.Column(db.VARCHAR, default='UTC')
+    password = db.Column(db.VARCHAR, nullable=True)

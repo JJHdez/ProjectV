@@ -36,3 +36,4 @@ class User(db.Model):
 """
     from v.user.model.userMdl import User
 """
+from v.user.model.userMdl import User
