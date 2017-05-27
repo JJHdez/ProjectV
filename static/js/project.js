@@ -79,7 +79,14 @@ window.addEventListener('load', function ()
                 assigned_user_id:-1
             },
             urlIssue: libzr.getApi() + 'project/task/issue',
-            flagNewIssue: true
+            flagNewIssue: true,
+        // Model comments
+            comments: [],
+            commentModel: {
+                'comment': '',
+                'id': -1
+            },
+            urlComment:libzr.getApi() + 'project/comment'
         },
 
         methods: {
@@ -366,7 +373,8 @@ window.addEventListener('load', function ()
                 this.currentGroupTask = this.getGroupTaskByName(groupTask);
                 if (taskDialog)
                     taskDialog.showModal();
-                    this.initIssue(subTask, index)
+                    this.initIssue(subTask, index);
+                    this.initComment(subTask, index);
             },
 
             closeDialogSubTask: function () {
@@ -442,7 +450,7 @@ window.addEventListener('load', function ()
                                 break;
                             case 'new':
                                 _data['id'] = response.data.project_task_issues[0].id;
-                                self.issues.push(_data);
+                                self.issues.unshift(_data);
                                 break;
                             case 'edit':
                                 _data['id'] = self.issueModel.id;
@@ -480,6 +488,101 @@ window.addEventListener('load', function ()
                 this.issueModel.user_assigned_id = -1;
             },
 
+            initComment: function (task, index) {
+                this.comments = [];
+                var _url = this.urlComment+"?by=resource&resource=project.task.participed&resource_id="+task.id;
+                this._requestComment(null, _url, 'GET', 'init');
+            },
+
+            acceptComment: function (isNew) {
+
+                if (isNew){
+                    if (this.validation.commentQuickAdd){
+                        var _action = isNew ? 'new' : 'edit';
+                        var _method = isNew ? 'POST' : 'PUT';
+                        var _url = isNew ? this.urlComment : this.urlComment + '/' + this.commentModel.id;
+
+                        var _new_comment = {
+                            'comment': this.commentModel.comment,
+                            'resource': 'project.task.participed',
+                            'resource_id': this.subTaskModel.id,
+                            // 'user_name': '',
+                            // 'user_cover': ''
+                        };
+                        this._requestComment(_new_comment, _url, _method, _action);
+                    }else{
+
+                    }
+                }else{
+
+                }
+            },
+
+            _requestComment: function (_data, _url, _method, _action) {
+                var self = this;
+                var _json = null;
+                if (_data)
+                    _json = JSON.stringify(_data);
+                $.ajax({
+                    url: _url,
+                    type: _method,
+                    data: _json,
+                    contentType: 'application/json'
+                }).done(function (response) {
+                    if (response.status_code == 200 || response.status_code == 201) {
+                        switch (_action) {
+                            case 'init':
+                                for (var c = 0; c < response.data.project_comments.length; c++) {
+                                    self.comments.push(response.data.project_comments[c])
+                                }
+                                break;
+                            // case 'done':
+                            //     self.issues.splice(self.issueModel.index, 1);
+                            //     break;
+                            // case 'remove':
+                            //     self.issues.splice(self.issueModel.index, 1);
+                            //     break;
+                            case 'new':
+                                _data['id'] = response.data.project_comments[0].id;
+                                self.comments.unshift(_data);
+                                self.cleanBy({'model':'comment'});
+                                break;
+                            // case 'edit':
+                            //     _data['id'] = self.issueModel.id;
+                            //     // _data['created_at'] = self.issueModel.created_at;
+                            //     // _data['due_date_at'] = self.issueModel.due_date_at;
+                            //     self.issues.splice(self.issueModel.index, 1, _data);
+                            //     issue_dialog_close();
+                            //     break;
+                        }
+                        if (response.message)
+                            notify({message: response.message});
+                        // self.cleanIssue();
+                        return true;
+                    } else {
+                        if (response.status_code != 404 ){
+                            if (response.message)
+                                notify({message: response.message});
+                        }
+                        return false;
+                    }
+                }).fail(function () {
+                    notify({message: 'Error al generar la peticion, favor interntar mas tarde! :('});
+                    return false;
+                });
+            },
+
+            compiledMarkdown: function (comment) {
+                  return marked(comment, { sanitize: true })
+            },
+
+            cleanBy: function (object) {
+                if (object.model == 'comment'){
+                    this.commentModel.comment = '';
+                    this.commentModel.id = -1;
+                }
+            },
+
             getGroupTaskByName: function (_name) {
                 var _task = null;
                 for (var i =0; i < this.groupTasks.length; i++){
@@ -499,7 +602,8 @@ window.addEventListener('load', function ()
             validation: function () {
                 return {
                     subTaskEdit: this.subTaskModel.name.trim().length >= 3,
-                    issueQuickAdd: this.issueModel.name.trim().length > 3
+                    issueQuickAdd: this.issueModel.name.trim().length > 3,
+                    commentQuickAdd: this.commentModel.comment.trim().length > 3
                 }
             }
         }

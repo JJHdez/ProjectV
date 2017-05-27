@@ -271,7 +271,7 @@
                     </div>
                 </div>
                 <div class="mdl-dialog__title">
-                    <i class="material-icons">list</i>
+                    <!--<i class="material-icons">list</i> -->
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label
                         mdl-cell mdl-cell--6-col">
                         <input v-model="subTaskModel.name"
@@ -288,34 +288,126 @@
                 </div>
                 <div class="mdl-dialog__content">
 
-                    <span class="mdl-list__item-primary-content">
-                        <div class="mdl-textfield mdl-js-textfield
-                            mdl-textfield--floating-label mdl-cell mdl-cell--4-col">
-                            <input  @keyup.enter="acceptIssue(true)"
-                                    v-model="issueModel.name"
-                                   class="mdl-textfield__input" type="text" id="quick-bug-name">
-                            <label class="mdl-textfield__label" for="quick-bug-name">Actividad</label>
+                    <div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
+                        <div class="mdl-tabs__tab-bar">
+                            <a href="#comments-panel" class="mdl-tabs__tab is-active">
+                                <i class="material-icons">
+                                    comment
+                                </i>
+                            </a>
+                            <a href="#issues-panel" class="mdl-tabs__tab">
+                                <i class="material-icons">
+                                    format_list_bulleted
+                                </i>
+                            </a>
                         </div>
-                    </span>
-                    <div v-for="(issue, index) in issues" class="mdl-list__item">
-                        <span class="mdl-list__item-primary-content">
-                            <button v-on:click="removeIssue(issue,index)"
-                            class="mdl-button mdl-js-button mdl-button--icon">
-                                <i class="material-icons mdl-color-text--red">
-                                    delete_forever
-                                </i>
-                            </button>
-                          <span>${issue.name}</span>
-                        </span>
-                        <a class="mdl-list__item-secondary-action" href="#">
-                            <button v-on:click="doneIssue(issue,index)"
-                            class="mdl-button mdl-js-button mdl-button--icon">
-                                <i class="material-icons mdl-color-text--light-green">
-                                    done
-                                </i>
-                            </button>
-                        </a>
-                    </div>
+
+                        <div class="mdl-tabs__panel is-active" id="comments-panel">
+                            <div class="mdl-textfield mdl-js-textfield  mdl-textfield--floating-label mdl-cell--12-col">
+                                <textarea v-model="commentModel.comment"
+                                        class="mdl-textfield__input"
+                                    type="text" rows= "2" id="quick-sub-task-comment">
+
+                                </textarea>
+                                <label class="mdl-textfield__label" for="quick-sub-task-comment">
+                                    Escriba una nota!!
+                                </label>
+                                <div class="mdl-card__menu">
+                                        <button v-show="validation.commentQuickAdd" v-on:click="acceptComment(true)"
+                                                class="mdl-button mdl-js-button mdl-button--icon"
+                                                id="task-comment-dialog-save">
+                                            <i class="material-icons mdl-color-text--purple">
+                                                save
+                                            </i>
+                                        </button>
+                                        <div class="mdl-tooltip" for="task-comment-dialog-save">
+                                            Save
+                                        </div>
+                                    </div>
+                            </div>
+
+
+
+                            <div class="comments">
+                                <div v-for="(comment, index) in comments" class="comment  mdl-shadow--2dp">
+                                    <header class="comment__header">
+                                        <img v-if="comment.user_cover"
+                                             v-bind:src="comment.user_cover"
+                                             class="comment__avatar">
+                                        <div class="comment__author">
+                                            <strong>${comment.user_name}</strong>
+                                            <span>${comment.created_at}</span>
+                                        </div>
+                                    </header>
+                                    <div class="comment__text">
+                                        <div v-html="compiledMarkdown(comment.comment)">
+
+                                        </div>
+                                    </div>
+                                    <!--<nav class="comment__actions">
+                                        <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon">
+                                            <i class="material-icons" role="presentation">thumb_up</i>
+                                            <span class="visuallyhidden">like comment</span>
+                                        </button>
+                                        <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon">
+                                            <i class="material-icons" role="presentation">thumb_down</i>
+                                            <span class="visuallyhidden">dislike comment</span>
+                                        </button>
+                                        <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon">
+                                            <i class="material-icons" role="presentation">share</i>
+                                            <span class="visuallyhidden">share comment</span>
+                                        </button>
+                                    </nav> -->
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="mdl-tabs__panel" id="issues-panel">
+                            <span class="mdl-list__item-primary-content">
+                                <div class="mdl-textfield mdl-js-textfield
+                                    mdl-textfield--floating-label mdl-cell mdl-cell--6-col">
+                                    <input  @keyup.enter="acceptIssue(true)"
+                                            v-model="issueModel.name"
+                                           class="mdl-textfield__input" type="text" id="quick-bug-name">
+                                    <label class="mdl-textfield__label" for="quick-bug-name">Actividad</label>
+                                    <!--<div class="mdl-card__menu">
+                                        <button v-show="validation.issueQuickAdd" v-on:click="acceptIssue(true)"
+                                                class="mdl-button mdl-js-button mdl-button--icon"
+                                                id="sub-task-bug-dialog-save">
+                                            <i class="material-icons mdl-color-text--purple">
+                                                save
+                                            </i>
+                                        </button>
+                                        <div class="mdl-tooltip" for="sub-task-bug-dialog-save">
+                                            Save
+                                        </div>
+                                    </div> -->
+                                </div>
+                            </span>
+                            <div v-for="(issue, index) in issues" class="mdl-list__item mdl-shadow--2dp">
+                            <span class="mdl-list__item-primary-content">
+                                <button v-on:click="removeIssue(issue,index)"
+                                class="mdl-button mdl-js-button mdl-button--icon">
+                                    <i class="material-icons mdl-color-text--red">
+                                        delete_forever
+                                    </i>
+                                </button>
+                              <span>${issue.name}</span>
+                            </span>
+                            <a class="mdl-list__item-secondary-action" href="#">
+                                <button v-on:click="doneIssue(issue,index)"
+                                class="mdl-button mdl-js-button mdl-button--icon">
+                                    <i class="material-icons mdl-color-text--light-green">
+                                        done
+                                    </i>
+                                </button>
+                            </a>
+                        </div>
+                        </div>
+{#                    </div>#}
+
+
                 </div>
 
             <div class="mdl-dialog__actions">
@@ -329,8 +421,11 @@
 {% block js %}
     <script src="/js/project.js" type="application/javascript">
     </script>
+    <script src="https://unpkg.com/marked@0.3.6">
+    </script>
     <script src="https://cdn.jsdelivr.net/sortable/1.4.2/Sortable.min.js">
     </script>
     <script src="https://cdn.rawgit.com/David-Desmaisons/Vue.Draggable/master/dist/vuedraggable.min.js">
     </script>
+
 {% endblock %}

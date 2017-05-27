@@ -330,3 +330,79 @@ _:-ms-input-placeholder, :root .demo-graph {
 .zr-pointer  {
     cursor: pointer;
 }
+.comments .comment > .comment__header > .comment__avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 24px;
+    margin-right: 16px;
+}
+.comments .comment {
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-flex-direction: column;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -webkit-align-items: stretch;
+    -ms-flex-align: stretch;
+    align-items: stretch;
+}
+.comment > .comment__header {
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-flex-direction: row;
+    -ms-flex-direction: row;
+    flex-direction: row;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+    margin-bottom: 16px;
+}
+.comments .comment > .comment__header > .comment__author {
+    -webkit-flex-grow: 1;
+    -ms-flex-positive: 1;
+    flex-grow: 1;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-flex-direction: column;
+    -ms-flex-direction: column;
+    flex-direction: column;
+}
+.comments .comment > .comment__text {
+    line-height: 1.5em;
+}
+.comments .comment > .comment__actions {
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-flex-direction: row;
+    -ms-flex-direction: row;
+    flex-direction: row;
+    -webkit-justify-content: flex-start;
+    -ms-flex-pack: start;
+    justify-content: flex-start;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+    font-size: 0.8em;
+    margin-top: 16px;
+}
+.comments .comment > .comment__answers {
+    padding-top: 32px;
+    padding-left: 48px;
+}
+.zr-user-cover {
+  /*display: inline-block;*/
+  /*width: 45px;*/
+  /*height: 45px;*/
+  /*border-radius: 50%;*/
+  /*background-repeat: no-repeat;*/
+  /*background-position: center center;*/
+  /*background-size: cover;*/
+     width: 48px;
+    height: 48px;
+    border-radius: 24px;
+    margin-right: 16px;
+}
