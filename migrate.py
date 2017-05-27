@@ -220,3 +220,14 @@ class Tags(db.Model):
     type = db.Column(db.VARCHAR, nullable=False)
 
 
+class ProjectComment(db.Model):
+
+    __tablename__ = 'project_comments'
+
+    id = db.Column(db.Integer, primary_key=True)
+    created_at = db.Column(db.TIMESTAMP, default="now()")
+    deleted_at = db.Column(db.TIMESTAMP, nullable=True, default='NULL')
+    create_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    resource = db.Column(db.String, nullable=False)
+    resource_id = db.Column(db.Integer, nullable=False)
+    comment = db.Column(db.Text, nullable=False)
