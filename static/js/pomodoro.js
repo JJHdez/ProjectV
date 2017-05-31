@@ -52,8 +52,20 @@ window.addEventListener('load', function ()
                 this.getStatisticOfTheYear()
                 this._callback(null,this.url+'?activities=registered','GET','init')
             },
+            add25: function () {
+                if ( this.validationActivityModel.quickAdd25or05) {
+                    this.activity.timer = '25'
+                }
+                this.add();
+            },
+            add05: function () {
+                if ( this.validationActivityModel.quickAdd25or05) {
+                    this.activity.timer = '05'
+                }
+                this.add();
+            },
             add:function () {
-                if (this.validationActivityModel.add || this.validationActivityModel.quickAdd25){
+                if (this.validationActivityModel.add ){
                     var _timer_tmp = [];
                     if (this.activity.timer.trim().length>0)
                         _timer_tmp = this.activity.timer.trim().split(':');
@@ -377,7 +389,7 @@ window.addEventListener('load', function ()
                     add: this.activity.name.trim().length > 3 &&
                         timerRE.test(this.activity.timer) &&
                         parseInt(this.activity.timer) < 60,
-                    quickAdd25: this.activity.name.trim().length > 3 &&
+                    quickAdd25or05: this.activity.name.trim().length > 3 &&
                         !timerRE.test(this.activity.timer) &&
                         this.activity.timer.trim().length == 0
                 }
