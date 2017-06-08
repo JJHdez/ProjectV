@@ -31,9 +31,9 @@
             <a id="tab-habits-panel" href="#habits-panel" class="mdl-tabs__tab">
                 <i class="material-icons">gavel</i>
             </a>
-            <a id="tab-pending-panel" href="#pending-panel" class="mdl-tabs__tab">
+            <!--<a id="tab-pending-panel" href="#pending-panel" class="mdl-tabs__tab">
                 <i class="material-icons">subject</i>
-            </a>
+            </a>-->
         </div>
 
         <!--Panel dream-->
@@ -246,109 +246,109 @@
         <!--End habit panel-->
 
         <!--Panel pending-->
-        <div class="mdl-tabs__panel" id="pending-panel">
-            <!--<p v-if="!pendings.length">No hay pendientes registrados</p>-->
-            <li
-                class="mdl-list__item mdl-list__item--two-line
-                    mdl-shadow--4dp mdl-cell mdl-cell--6-col center-elements">
-                <span class="mdl-list__item-primary-content">
-                    <i class="material-icons  mdl-list__item-avatar">subject</i>
-                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-
-                        <input
-                                v-model="pendingModel.name"
-                                class="mdl-textfield__input" type="text"
-                                id="quick-pending-name"/>
-                        <label class="mdl-textfield__label" for="quick-pending-name">Pendiente</label>
-                    </div>
-                </span>
-                <span class="mdl-list__item-secondary-action">
-
-                        <button
-                                v-show="validationPendingModel.accept"
-                                v-on:click="add()"
-                                class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab
-                                    mdl-button--accent mdl-button-raised mdl-js-ripple-effect">
-                            <i class="material-icons">add</i>
-                        </button>
-                    </span>
-            </li>
-
-            <ul class="mdl-list">
-                <li v-for="(pending, index) in pendings"
-                    v-bind:class="pendingBackground(pending,index)">
-                    <span class="mdl-list__item-primary-content">
-                        <i class="material-icons mdl-list__item-avatar">subject</i>
-                        <span>
-                            ${pending.name}
-                        </span>
-                        <span class="mdl-list__item-text-body">
-                            ${pending.description}
-                        </span>
-                    </span>
-                    <span class="mdl-list__item-secondary-content">
-                        <a class="mdl-list__item-secondary-action">
-                            <button id="pending-button-done"
-                                    v-on:click="_done(pending,index)"
-                                    class=" mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab
-                                mdl-button--colored mdl-button-raised mdl-js-ripple-effect">
-                                <i class="material-icons">assignment_turned_in</i>
-                                <div class="mdl-tooltip" data-mdl-for="pending-button-done">
-                                    Hecho
-                                </div>
-                            </button>
-                            <button id="pending-button-edit"
-                                    v-on:click="_edit(pending,index)"
-                                    class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab
-                                    mdl-button--colored mdl-button-raised mdl-js-ripple-effect">
-                                <i class="material-icons">edit</i>
-                            </button>
-                            <div class="mdl-tooltip" data-mdl-for="pending-button-edit">
-                                Editar
-                            </div>
-                        </a>
-                    </span>
-                </li>
-            </ul>
-
-            <dialog id="pending-dialog" class="mdl-dialog mdl-cell--4-col">
-                <h4 class="mdl-dialog__title">
-                    <i class="material-icons">subject</i>Pendiente
-                </h4>
-                <div class="mdl-dialog__content">
-                    <form action="#">
-                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                            <input v-model="pendingModel.name" class="mdl-textfield__input"
-                                   type="text" id="pending-name" required>
-                            <label class="mdl-textfield__label" for="pending-name">Nombre</label>
-                        </div>
-                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                            <textarea v-model="pendingModel.description"
-                                      class="mdl-textfield__input" type="text"
-                                      rows="2" id="pending-description">
-                            </textarea>
-                            <label class="mdl-textfield__label" for="pending-description">Descripción</label>
-                        </div>
-                    </form>
-                </div>
-                <div class="mdl-dialog__actions">
-                    <button v-show="validationPendingModel.accept"
-                       class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored"
-                       id="pending-dialog-accept">
-                        <i class="material-icons">check_circle</i>Aceptar
-                    </button>
-                    <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent"
-                            id="pending-dialog-cancel">
-                        <i class="material-icons">cancel</i>Cancelar
-                    </button>
-                    <button v-show="validationPendingModel.remove"
-                       class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect"
-                       id="pending-dialog-remove">
-                        <i class="material-icons">delete_forever</i>Eliminar
-                    </button>
-                </div>
-            </dialog>
-        </div>
+{#        <div class="mdl-tabs__panel" id="pending-panel">#}
+{#            <!--<p v-if="!pendings.length">No hay pendientes registrados</p>-->#}
+{#            <li#}
+{#                class="mdl-list__item mdl-list__item--two-line#}
+{#                    mdl-shadow--4dp mdl-cell mdl-cell--6-col center-elements">#}
+{#                <span class="mdl-list__item-primary-content">#}
+{#                    <i class="material-icons  mdl-list__item-avatar">subject</i>#}
+{#                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">#}
+{##}
+{#                        <input#}
+{#                                v-model="pendingModel.name"#}
+{#                                class="mdl-textfield__input" type="text"#}
+{#                                id="quick-pending-name"/>#}
+{#                        <label class="mdl-textfield__label" for="quick-pending-name">Pendiente</label>#}
+{#                    </div>#}
+{#                </span>#}
+{#                <span class="mdl-list__item-secondary-action">#}
+{##}
+{#                        <button#}
+{#                                v-show="validationPendingModel.accept"#}
+{#                                v-on:click="add()"#}
+{#                                class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab#}
+{#                                    mdl-button--accent mdl-button-raised mdl-js-ripple-effect">#}
+{#                            <i class="material-icons">add</i>#}
+{#                        </button>#}
+{#                    </span>#}
+{#            </li>#}
+{##}
+{#            <ul class="mdl-list">#}
+{#                <li v-for="(pending, index) in pendings"#}
+{#                    v-bind:class="pendingBackground(pending,index)">#}
+{#                    <span class="mdl-list__item-primary-content">#}
+{#                        <i class="material-icons mdl-list__item-avatar">subject</i>#}
+{#                        <span>#}
+{#                            ${pending.name}#}
+{#                        </span>#}
+{#                        <span class="mdl-list__item-text-body">#}
+{#                            ${pending.description}#}
+{#                        </span>#}
+{#                    </span>#}
+{#                    <span class="mdl-list__item-secondary-content">#}
+{#                        <a class="mdl-list__item-secondary-action">#}
+{#                            <button id="pending-button-done"#}
+{#                                    v-on:click="_done(pending,index)"#}
+{#                                    class=" mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab#}
+{#                                mdl-button--colored mdl-button-raised mdl-js-ripple-effect">#}
+{#                                <i class="material-icons">assignment_turned_in</i>#}
+{#                                <div class="mdl-tooltip" data-mdl-for="pending-button-done">#}
+{#                                    Hecho#}
+{#                                </div>#}
+{#                            </button>#}
+{#                            <button id="pending-button-edit"#}
+{#                                    v-on:click="_edit(pending,index)"#}
+{#                                    class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab#}
+{#                                    mdl-button--colored mdl-button-raised mdl-js-ripple-effect">#}
+{#                                <i class="material-icons">edit</i>#}
+{#                            </button>#}
+{#                            <div class="mdl-tooltip" data-mdl-for="pending-button-edit">#}
+{#                                Editar#}
+{#                            </div>#}
+{#                        </a>#}
+{#                    </span>#}
+{#                </li>#}
+{#            </ul>#}
+{##}
+{#            <dialog id="pending-dialog" class="mdl-dialog mdl-cell--4-col">#}
+{#                <h4 class="mdl-dialog__title">#}
+{#                    <i class="material-icons">subject</i>Pendiente#}
+{#                </h4>#}
+{#                <div class="mdl-dialog__content">#}
+{#                    <form action="#">#}
+{#                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">#}
+{#                            <input v-model="pendingModel.name" class="mdl-textfield__input"#}
+{#                                   type="text" id="pending-name" required>#}
+{#                            <label class="mdl-textfield__label" for="pending-name">Nombre</label>#}
+{#                        </div>#}
+{#                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">#}
+{#                            <textarea v-model="pendingModel.description"#}
+{#                                      class="mdl-textfield__input" type="text"#}
+{#                                      rows="2" id="pending-description">#}
+{#                            </textarea>#}
+{#                            <label class="mdl-textfield__label" for="pending-description">Descripción</label>#}
+{#                        </div>#}
+{#                    </form>#}
+{#                </div>#}
+{#                <div class="mdl-dialog__actions">#}
+{#                    <button v-show="validationPendingModel.accept"#}
+{#                       class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored"#}
+{#                       id="pending-dialog-accept">#}
+{#                        <i class="material-icons">check_circle</i>Aceptar#}
+{#                    </button>#}
+{#                    <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent"#}
+{#                            id="pending-dialog-cancel">#}
+{#                        <i class="material-icons">cancel</i>Cancelar#}
+{#                    </button>#}
+{#                    <button v-show="validationPendingModel.remove"#}
+{#                       class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect"#}
+{#                       id="pending-dialog-remove">#}
+{#                        <i class="material-icons">delete_forever</i>Eliminar#}
+{#                    </button>#}
+{#                </div>#}
+{#            </dialog>#}
+{#        </div>#}
         <!--End panel pending-->
     </div>
 </div>

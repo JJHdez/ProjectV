@@ -36,6 +36,9 @@
                     },
                     redirect_index_pomodoro: function (event) {
                         window.location = '/ul/pomodoro';
+                    },
+                    redirect_index_to_buy: function (event) {
+                        window.location = '/ul/to-buy';
                     }
                 }
             }

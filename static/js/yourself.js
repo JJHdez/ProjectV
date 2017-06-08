@@ -382,7 +382,7 @@ window.addEventListener('load', function ()
         if(habitDialog)
             habitDialog.close();
     }
-
+/*
     /// Pending
     var pendingDialog = null;
     var showPendingDialogButton = null;
@@ -548,6 +548,6 @@ window.addEventListener('load', function ()
         if(pendingDialog)
             pendingDialog.close();
     }
-
+*/
 
 });

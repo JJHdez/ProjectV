@@ -48,6 +48,8 @@ from v.pomodoro.rest.pomodoroRst import PomodoroRst, PomodoroListRst
 # Dashboard
 from v.dashboard.controller.dashboardCtl import DashboardCtl
 
+# Buy
+from v.buy.controller.buyCtl import BuyCtl
 # Frontend index
 from v.frontend.controller.homeCtl import HomeCtl
 from v.frontend.controller.resetPasswordCtl import ResetPasswordCtl
@@ -212,6 +214,12 @@ def dashboard():
 @is_login
 def yourself():
     return YourselfCtl.index()
+
+
+@app.route(prefix_admin + '/to-buy', endpoint=startpoint_admin + '/to-buy')
+@is_login
+def to_buy():
+    return BuyCtl.index()
 
 
 @app.route(prefix_admin + '/quick-list', endpoint=startpoint_admin + '/quick-list')
