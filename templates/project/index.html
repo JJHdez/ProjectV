@@ -130,7 +130,7 @@
                            class="mdl-textfield__input" type="text" id="sub-task-name-today-quick">
                     <label class="mdl-textfield__label" for="sub-task-name-today-quick">Today</label>
                 </div>
-                <draggable v-model="tasksToday" :options="{group:'task'}">
+                <draggable v-model="tasksToday" :options="{group:'task'}" @add="onMoveToday">
                     <li  v-for="(task, index) in tasksToday"
                           v-on:click="openDialogSubTask(task,index,'Today')"
                          class="mdl-list__item mdl-shadow--2dp zr-pointer">
@@ -157,7 +157,7 @@
                            class="mdl-textfield__input" type="text" id="sub-task-name-tomorrow-quick">
                     <label class="mdl-textfield__label" for="sub-task-name-tomorrow-quick">Tomorrow</label>
                 </div>
-                <draggable v-model="tasksTomorrow" :options="{group:'task'}">
+                <draggable v-model="tasksTomorrow" :options="{group:'task'}" @add="onMoveTomorrow">
                     <li  v-for="(task, index) in tasksTomorrow"
                          v-on:click="openDialogSubTask(task,index,'Tomorrow')"
                          class="mdl-list__item mdl-shadow--2dp zr-pointer">
@@ -183,7 +183,7 @@
                            class="mdl-textfield__input" type="text" id="sub-task-name-upcoming-quick">
                     <label class="mdl-textfield__label" for="sub-task-name-upcoming-quick">Upcoming</label>
                 </div>
-                <draggable v-model="tasksUpcoming" :options="{group:'task'}">
+                <draggable v-model="tasksUpcoming" :options="{group:'task'}" @add="onMoveUpcoming">
                     <li  v-for="(task, index) in tasksUpcoming"
                          v-on:click="openDialogSubTask(task,index,'Upcoming')"
                          class="mdl-list__item mdl-shadow--2dp zr-pointer">
@@ -209,7 +209,7 @@
                            class="mdl-textfield__input" type="text" id="sub-task-name-someday-quick">
                     <label class="mdl-textfield__label" for="sub-task-name-someday-quick">Someday</label>
                 </div>
-                <draggable v-model="tasksSomeday" :options="{group:'task'}">
+                <draggable v-model="tasksSomeday" :options="{group:'task'}" @add="onMoveSomeday">
                     <li v-for="(task, index) in tasksSomeday"
                         v-on:click="openDialogSubTask(task,index,'Someday')"
                         class="mdl-list__item mdl-shadow--2dp zr-pointer">

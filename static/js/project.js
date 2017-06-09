@@ -592,6 +592,38 @@ window.addEventListener('load', function ()
                   }
                 }
                 return _task;
+            },
+            onMoveToday : function (relatedContext) {
+                this.changeGroup(this.getGroupTaskByName('Today'),
+                    relatedContext.item['_underlying_vm_'].id
+                );
+            },
+            onMoveTomorrow : function (relatedContext) {
+                this.changeGroup(this.getGroupTaskByName('Tomorrow'),
+                    relatedContext.item['_underlying_vm_'].id
+                );
+            },
+            onMoveUpcoming: function (relatedContext) {
+                this.changeGroup(this.getGroupTaskByName('Upcoming'),
+                    relatedContext.item['_underlying_vm_'].id
+                );
+
+            },
+            onMoveSomeday: function (relatedContext) {
+                this.changeGroup(
+                    this.getGroupTaskByName('Someday'),
+                    relatedContext.item['_underlying_vm_'].id
+                );
+            },
+            changeGroup: function (group, subTaskId) {
+                if (group){
+                    var groupId = group.id;
+                    this._requestSubTask(
+                        {'project_task_id':groupId},
+                        this.urlSubTask + '/' + subTaskId,
+                        'PUT', 'changeGroup', null
+                    );
+                }
             }
 
             
