@@ -58,6 +58,8 @@ class ProjectParticipatedListRst(Resource, ProjectParticipatedMdl):
     def post(self):
         _request = request.json
         try:
+            if 'assigned_user_id' not in _request:
+                _request['assigned_user_id'] = g.user.id
             print _request
             _errors = validate_rest(fields=self._fields, request=_request)
             if not _errors:

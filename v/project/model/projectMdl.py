@@ -50,6 +50,6 @@ class ProjectMdl:
             from
                 project_teams pt inner join project_teams_projects ptp on pt.id = ptp.team_id
                 inner join projects p on ptp.project_id = p.id
-            where pt.deleted_at is null and ptp.deleted_at is null %s
+            where pt.deleted_at is null  and p.deleted_at is null and ptp.deleted_at is null %s
         )t
     """

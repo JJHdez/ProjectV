@@ -12,8 +12,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-from flask import Flask, request, send_from_directory, g, session, url_for, redirect
+from flask import Flask, request, send_from_directory, g, session, url_for, redirect, abort
 from flask_mail import Mail
 from flask_babel import Babel
 from flask_restful import Api
@@ -23,22 +22,29 @@ from v.tools.db import PsqlAoL
 # User
 from v.auth.rest.authRst import Auth, AuthListRst
 
-# Project
+# Quick List
 from v.project.controller.projectCtl import ProjectCtl
 from v.project.rest.projectRst import ProjectRst, ProjectListRst
 from v.project.rest.projectTaskRst import ProjectTaskRst, ProjectTaskListRst
 from v.project.rest.projectTaskParticipatedRst import ProjectParticipatedRst, ProjectParticipatedListRst
 from v.project.rest.projectTaskIssueRst import ProjectIssueRst, ProjectIssueListRst
+from v.project.controller.projectCommentCtl import ProjectCommentCtl
 
 # Wish list
 from v.wish.rest.wishRst import WishRst, WishListRst
 
-# Yourself
-from v.yourself.controller.yourselfCtl import YourselfCtl
-from v.yourself.habit.rest.habitRst import HabitRst, HabitListRst
-from v.yourself.habit.rest.historyHabitRst import HistoryHabitRst, HistoryHabitListRst
-from v.yourself.dream.rest.dreamRst import DreamRst, DreamListRst
-from v.yourself.pending.rest.pendingRst import PendingRst, PendingListRst
+# Dream
+from v.dream.controller.dreamCtl import DreamCtl
+from v.dream.rest.dreamRst import DreamRst, DreamListRst
+
+# Habit
+from v.habit.controller.habitCtl import HabitCtl
+from v.habit.rest.habitRst import HabitRst, HabitListRst
+from v.habit.rest.historyHabitRst import HistoryHabitRst, HistoryHabitListRst
+
+# To buy
+from v.buy.controller.buyCtl import BuyCtl
+from v.buy.rest.pendingRst import PendingRst, PendingListRst
 
 # Pomodoro
 from v.pomodoro.controller.pomodoroCtl import PomodoroCtl
@@ -46,6 +52,7 @@ from v.pomodoro.rest.pomodoroRst import PomodoroRst, PomodoroListRst
 
 # Dashboard
 from v.dashboard.controller.dashboardCtl import DashboardCtl
+
 
 # Frontend index
 from v.frontend.controller.homeCtl import HomeCtl
@@ -117,6 +124,31 @@ api.add_resource(ProjectParticipatedListRst, api_v1 + 'project/task/participated
 api.add_resource(ProjectParticipatedRst, api_v1 + 'project/task/participated/<int:id>')
 api.add_resource(ProjectIssueListRst, api_v1 + 'project/task/issue')
 api.add_resource(ProjectIssueRst, api_v1 + 'project/task/issue/<int:id>')
+# Rest project commnet
+
+
+@app.route(ProjectCommentCtl.endpoint(api=api_v1, method='PUT'), methods=['PUT', 'GET', 'DELETE'])
+def project_comment_put_get_delete():
+    project_comment_object = ProjectCommentCtl()
+    if request.method == 'PUT':
+        return project_comment_object.put()
+    elif request.method == 'GET':
+         return project_comment_object.get()
+    elif request.method == 'DELETE':
+        return project_comment_object.delete()
+    else:
+        abort(500)
+
+
+@app.route(ProjectCommentCtl.endpoint(api=api_v1), methods=['GET', 'POST'])
+def project_comment_get_post():
+    project_comment_object = ProjectCommentCtl()
+    if request.method == 'POST':
+        return project_comment_object.post()
+    elif request.method == 'GET':
+        return project_comment_object.get_by()
+    else:
+        abort(500)
 
 # User
 api.add_resource(AuthListRst, api_v1 + 'user')
@@ -185,31 +217,25 @@ def dashboard():
 @app.route(prefix_admin + '/yourself', endpoint=startpoint_admin + '/yourself')
 @is_login
 def yourself():
-    return YourselfCtl.index()
+    return DreamCtl.index()
 
 
-@app.route(prefix_admin + '/project', endpoint=startpoint_admin + '/project')
+@app.route(prefix_admin + '/to-buy', endpoint=startpoint_admin + '/to-buy')
 @is_login
-def project():
+def to_buy():
+    return BuyCtl.index()
+
+
+@app.route(prefix_admin + '/habit', endpoint=startpoint_admin + '/habit')
+@is_login
+def habit():
+    return HabitCtl.index()
+
+
+@app.route(prefix_admin + '/quick-list', endpoint=startpoint_admin + '/quick-list')
+@is_login
+def quick_list():
     return ProjectCtl.index()
-
-
-@app.route(prefix_admin + '/project/task', endpoint=startpoint_admin + '/project/task')
-@is_login
-def tasks():
-    return ProjectCtl.task()
-
-
-@app.route(prefix_admin + '/project/task/subtask', endpoint=startpoint_admin + '/project/task/subtask')
-@is_login
-def subtask():
-    return ProjectCtl.subtask()
-
-
-@app.route(prefix_admin + '/project/task/issue', endpoint=startpoint_admin + '/project/task/issue')
-@is_login
-def issue():
-    return ProjectCtl.bug()
 
 
 @app.route(prefix_admin + '/pomodoro', endpoint=startpoint_admin + '/pomodoro')

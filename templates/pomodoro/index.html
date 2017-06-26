@@ -14,96 +14,122 @@
     limitations under the License.
 -->
 {% extends "layout.html" %}
+
 {% block layout_title %} Pomodoro {% endblock %}
-{% block css%}
-{% endblock %}
+
 {% block body %}
-<div class="mdl-grid " id="pomodoro-content">
 
-    <div class="mdl-cell mdl-cell--12-col zr-pomodoro-font-timer">
-        <!--<span>${timer.hour}</span>:-->
-        <span>${timer.minute}</span>:
-        <span>${timer.second}</span>
+<div class="mdl-grid" id="pomodoro-content">
+
+    <div class="mdl-card__supporting-text meta mdl-color-text--grey-600">
+      <div class="zr-pomodoro-font-timer">
+          <!--<span>${timer.hour}</span>:-->
+          <span>${timer.minute}</span>:
+          <span>${timer.second}</span>
+      </div>
     </div>
 
-    <div class="mdl-cell mdl-cell--12-col center-all-elements">
-        <div id="progress-pomodoro-timer" class="mdl-progress mdl-js-progress"></div>
+    <div class="mdl-card mdl-cell mdl-cell--8-col mdl-cell--6-col-desktop ">
+      <div class="mdl-card__media mdl-color--white">
+          <li class="mdl-list__item mdl-shadow--4dp">
+              <!-- <i class="material-icons  mdl-list__item-avatar">schedule</i>       -->
+          <div class="mdl-textfield mdl-js-textfield
+            mdl-textfield--floating-label mdl-cell--8-col">
+              <input @keyup.enter="add25()"
+                     v-model="activity.name"
+                class="mdl-textfield__input"
+                type="text" id="pomodoro-name"/>
+              <label class="mdl-textfield__label"
+                for="pomodoro-name">
+                  Actividad
+              </label>
+          </div>
+          <div class="mdl-textfield mdl-js-textfield
+            mdl-textfield--floating-label mdl-cell--2-col">
+              <input @keyup.enter="add05()"
+                     v-model="activity.timer"
+                class="mdl-textfield__input" type="text" id="pomodoro-timer">
+              <label class="mdl-textfield__label" for="pomodoro-timer">
+                  Minutos
+              </label>
+          </div>
+          <button v-show="validationActivityModel.add"
+            class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab
+                mdl-button--colored mdl-button-raised mdl-js-ripple-effect"
+            v-on:click="add()">
+          <i class="material-icons">alarm_add</i>
+          </button>
+      </li>
+      </div>
+      <div class="mdl-card__supporting-text meta meta--fill
+        mdl-color-text--grey-600">
+
+          <li v-for="(activity, index) in activities"
+          class="mdl-list__item mdl-list__item--two-line">
+              <span class="mdl-list__item-primary-content">
+                <i v-bind:class="getIcon(activity, index, 'class')">
+                    ${getIcon(activity, index, 'icon')}
+                </i>
+                <span>${activity.name}</span>
+              <span class="mdl-list__item-sub-title">${activity.timer}</span>
+              </span>
+              <span class="mdl-list__item-secondary-action">
+                  <button v-if="removeShow(activity, index)"
+                          v-on:click="remove(activity,index)"
+                          class="mdl-button mdl-js-button mdl-button--fab
+                            mdl-button--mini-fab mdl-button--colored
+                            mdl-button-raised mdl-js-ripple-effect">
+                      <i class="material-icons">delete_forever</i>
+                   </button>
+                   <button v-if="pauseOrStopShow(activity,index)"
+                           v-on:click="stop(activity, index)"
+                           class="mdl-button mdl-js-button mdl-button--fab
+                            mdl-button--mini-fab mdl-button--colored
+                            mdl-button-raised mdl-js-ripple-effect">
+                      <i class="material-icons">stop</i>
+                   </button>
+                   <button v-if="pauseOrStopShow(activity,index)"
+                           v-on:click="pause(activity,index)"
+                           class="mdl-button mdl-js-button mdl-button--fab
+                            mdl-button--mini-fab mdl-button--colored
+                            mdl-button-raised mdl-js-ripple-effect">
+                      <i class="material-icons">pause_circle_outline</i>
+                   </button>
+                  <button v-if="playShow(activity,index)"
+                          v-on:click="play(activity,index)"
+                          class="mdl-button mdl-js-button mdl-button--fab
+                            mdl-button--mini-fab mdl-button--colored
+                            mdl-button-raised mdl-js-ripple-effect">
+                      <i class="material-icons">play_circle_outline</i>
+                   </button>
+              </span>
+          </li>
+      </div>
     </div>
-    <ul class="mdl-cell mdl-cell--8-col mdl-color--white mdl-shadow--4dp mdl-list center-elements">
 
-        <li class="mdl-list__item mdl-list__item--two-line mdl-shadow--4dp">
-            <!--<form>-->
-                <span class="mdl-list__item-primary-content">
-                    <i class="material-icons  mdl-list__item-avatar">schedule</i>
-                    <!--<span>-->
-                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input v-model="activity.name" class="mdl-textfield__input" type="text" id="pomodoro-name"/>
-                        <label class="mdl-textfield__label" for="pomodoro-name">Actividad</label>
-                    </div>
-                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input v-model="activity.timer"
-                               class="mdl-textfield__input" type="text" id="pomodoro-timer">
-                        <label class="mdl-textfield__label" for="pomodoro-timer">Tiempo(mm)</label>
-                    </div>
-                    <!--</span>-->
-                </span>
-            <!--</form>-->
-            <span class="mdl-list__item-secondary-action">
-                <button v-show="validationActivityModel.add"
-                        class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab
-                                mdl-button--colored mdl-button-raised mdl-js-ripple-effect"
-                        v-on:click="add()">
-                <i class="material-icons">alarm_add</i>
-                </button>
-            </span>
-        </li>
+    <div class="mdl-card mdl-cell mdl-cell--8-col mdl-cell--6-col-desktop">
+        <div  id="statistic_week">
+        </div>
+    </div>
 
-        <li v-for="(activity, index) in activities" class="mdl-list__item mdl-list__item--two-line">
-            <span class="mdl-list__item-primary-content">
-              <i v-bind:class="getIcon(activity, index, 'class')">${getIcon(activity, index, 'icon')}</i>
-              <span>${activity.name}</span>
-            <span class="mdl-list__item-sub-title">${activity.timer}</span>
-            </span>
-            <span class="mdl-list__item-secondary-action">
-                <button v-if="removeShow(activity, index)"
-                        v-on:click="remove(activity,index)"
-                        class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab
-                                mdl-button--colored mdl-button-raised mdl-js-ripple-effect">
-                    <i class="material-icons">delete_forever</i>
-                 </button>
-                 <button v-if="pauseOrStopShow(activity,index)"
-                         v-on:click="stop(activity, index)"
-                         class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab
-                                mdl-button--colored mdl-button-raised mdl-js-ripple-effect">
-                    <i class="material-icons">stop</i>
-                 </button>
-                 <button v-if="pauseOrStopShow(activity,index)"
-                         v-on:click="pause(activity,index)"
-                         class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab
-                                mdl-button--colored mdl-button-raised mdl-js-ripple-effect">
-                    <i class="material-icons">pause_circle_outline</i>
-                 </button>
-                <button v-if="playShow(activity,index)"
-                        v-on:click="play(activity,index)"
-                        class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab
-                                mdl-button--colored mdl-button-raised mdl-js-ripple-effect">
-                    <i class="material-icons">play_circle_outline</i>
-                 </button>
-            </span>
-        </li>
-    </ul>
-    <!--</div>-->
+    <div class="mdl-card mdl-cell mdl-cell--8-col mdl-cell--6-col-desktop  mdl-shadow--4dp">
+        <div  id="statistic_month">
+        </div>
+    </div>
+    <div class="mdl-card mdl-cell mdl-cell--8-col mdl-cell--6-col-desktop  mdl-shadow--4dp">
+        <div  id="statistic_year">
+        </div>
+    </div>
+
 </div>
 
 {% endblock %}
 
 {% block js %}
-<!--<script type="text/javascript">-->
-    <!--document.querySelector('#progress-pomodoro-timer').addEventListener('mdl-componentupgraded', function() {-->
-        <!--console.log('hi');-->
-        <!--this.MaterialProgress.setProgress(80);-->
-        <!--this.MaterialProgress.setBuffer(90);-->
-    <!--});-->
-<!--</script>--->
-    <script src="/js/pomodoro.js" type="application/javascript"></script>
+    <script   type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script>
+    // var Libzr = (function Libzr() {}());
+    const gCharts = this.google;
+    </script>
+    <script src="/js/pomodoro.js" type="text/javascript"></script>
 {% endblock %}

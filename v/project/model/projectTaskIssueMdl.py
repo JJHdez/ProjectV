@@ -16,7 +16,7 @@
 
 class ProjectIssueMdl:
     _fields = {
-        u'project_task_id': {
+        u'project_task_participed_id': {
             'required': True,
             'typeof': 'str',
         },
@@ -49,6 +49,6 @@ class ProjectIssueMdl:
 
     _query_get = """
         SELECT array_to_json(array_agg(row_to_json(t) )) as collection
-                FROM ( SELECT id, project_task_id, assigned_user_id, name, description,kind, priority, completed_at
+                FROM ( SELECT id, project_task_participed_id, assigned_user_id, name, description,kind, priority, completed_at
                  FROM project_task_issues %s  )t;
     """

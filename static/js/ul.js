@@ -32,10 +32,16 @@
                         window.location = '/ul/dashboard';
                     },
                     redirect_index_project: function (event) {
-                        window.location = '/ul/project';
+                        window.location = '/ul/quick-list';
                     },
                     redirect_index_pomodoro: function (event) {
                         window.location = '/ul/pomodoro';
+                    },
+                    redirect_index_to_buy: function (event) {
+                        window.location = '/ul/to-buy';
+                    },
+                    redirect_index_habit: function (event) {
+                        window.location = '/ul/habit';
                     }
                 }
             }
