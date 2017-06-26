@@ -12,8 +12,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from distutils.sysconfig import project_base
-
 from flask import Flask, request, send_from_directory, g, session, url_for, redirect, abort
 from flask_mail import Mail
 from flask_babel import Babel
@@ -24,22 +22,29 @@ from v.tools.db import PsqlAoL
 # User
 from v.auth.rest.authRst import Auth, AuthListRst
 
-# Project
+# Quick List
 from v.project.controller.projectCtl import ProjectCtl
 from v.project.rest.projectRst import ProjectRst, ProjectListRst
 from v.project.rest.projectTaskRst import ProjectTaskRst, ProjectTaskListRst
 from v.project.rest.projectTaskParticipatedRst import ProjectParticipatedRst, ProjectParticipatedListRst
 from v.project.rest.projectTaskIssueRst import ProjectIssueRst, ProjectIssueListRst
 from v.project.controller.projectCommentCtl import ProjectCommentCtl
+
 # Wish list
 from v.wish.rest.wishRst import WishRst, WishListRst
 
-# Yourself
-from v.yourself.controller.yourselfCtl import YourselfCtl
-from v.yourself.habit.rest.habitRst import HabitRst, HabitListRst
-from v.yourself.habit.rest.historyHabitRst import HistoryHabitRst, HistoryHabitListRst
-from v.yourself.dream.rest.dreamRst import DreamRst, DreamListRst
-from v.yourself.pending.rest.pendingRst import PendingRst, PendingListRst
+# Dream
+from v.dream.controller.dreamCtl import DreamCtl
+from v.dream.rest.dreamRst import DreamRst, DreamListRst
+
+# Habit
+from v.habit.controller.habitCtl import HabitCtl
+from v.habit.rest.habitRst import HabitRst, HabitListRst
+from v.habit.rest.historyHabitRst import HistoryHabitRst, HistoryHabitListRst
+
+# To buy
+from v.buy.controller.buyCtl import BuyCtl
+from v.buy.rest.pendingRst import PendingRst, PendingListRst
 
 # Pomodoro
 from v.pomodoro.controller.pomodoroCtl import PomodoroCtl
@@ -48,8 +53,7 @@ from v.pomodoro.rest.pomodoroRst import PomodoroRst, PomodoroListRst
 # Dashboard
 from v.dashboard.controller.dashboardCtl import DashboardCtl
 
-# Buy
-from v.buy.controller.buyCtl import BuyCtl
+
 # Frontend index
 from v.frontend.controller.homeCtl import HomeCtl
 from v.frontend.controller.resetPasswordCtl import ResetPasswordCtl
@@ -213,13 +217,19 @@ def dashboard():
 @app.route(prefix_admin + '/yourself', endpoint=startpoint_admin + '/yourself')
 @is_login
 def yourself():
-    return YourselfCtl.index()
+    return DreamCtl.index()
 
 
 @app.route(prefix_admin + '/to-buy', endpoint=startpoint_admin + '/to-buy')
 @is_login
 def to_buy():
     return BuyCtl.index()
+
+
+@app.route(prefix_admin + '/habit', endpoint=startpoint_admin + '/habit')
+@is_login
+def habit():
+    return HabitCtl.index()
 
 
 @app.route(prefix_admin + '/quick-list', endpoint=startpoint_admin + '/quick-list')

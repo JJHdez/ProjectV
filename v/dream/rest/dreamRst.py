@@ -19,7 +19,7 @@ from v.tools.exception import ExceptionRest
 from v.tools.v import processing_rest_exception, processing_rest_success, \
     type_of_insert_rest, type_of_update_rest
 from v.tools.validate import validate_rest
-from v.yourself.dream.model.dreamMdl import DreamMdl
+from v.dream.model.dreamMdl import DreamMdl
 
 
 class DreamListRst(Resource, DreamMdl):

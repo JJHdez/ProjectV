@@ -17,7 +17,7 @@ from flask_restful import Resource
 from flask import request, g, jsonify
 from v.tools.v import tuple2list
 from v.tools.exception import ExceptionRest
-from v.yourself.habit.model.habitMdl import HabitMdl
+from v.habit.model.habitMdl import HabitMdl
 
 
 class HabitListRst(Resource, HabitMdl):

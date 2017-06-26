@@ -39,6 +39,9 @@
                     },
                     redirect_index_to_buy: function (event) {
                         window.location = '/ul/to-buy';
+                    },
+                    redirect_index_habit: function (event) {
+                        window.location = '/ul/habit';
                     }
                 }
             }
