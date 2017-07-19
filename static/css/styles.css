@@ -406,3 +406,40 @@ _:-ms-input-placeholder, :root .demo-graph {
     border-radius: 24px;
     margin-right: 16px;
 }
+
+.zr-google-sign-in{
+      position: relative;
+    /*background-image: url("/static/images/btn_google_light_focus_xxxhdpi.9.png");*/
+    border-radius: 7px;
+    border: solid 1px #d0d0d0;
+    font-size: 28px;
+    color: #6a6a6a;
+    padding: 20px;
+    /*margin-left: 50px;*/
+    /*width: 382px;*/
+    /*height: 92px;*/
+    text-align: center;
+    -webkit-transition-duration: 0.4s; /* Safari */
+    transition-duration: 0.4s;
+    text-decoration: none;
+    overflow: hidden;
+    cursor: pointer;
+}
+.zr-google-sign-in:after{
+        content: "";
+    background: rgb(156, 39, 176);
+    display: block;
+    position: absolute;
+    padding-top: 300%;
+    padding-left: 350%;
+    margin-left: -20px!important;
+    margin-top: -120%;
+    opacity: 0;
+    transition: all 0.8s
+}
+.zr-google-sign-in:active:after {
+    padding: 0;
+    margin: 0;
+    opacity: 1;
+    transition: 0s
+}
