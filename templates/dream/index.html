@@ -1,0 +1,360 @@
+<!--
+    Copyright 2017 ProjectV Authors. All Rights Reserved.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+{% extends "layout.html" %}
+
+{% block layout_title %}
+    Se tu mismo
+{% endblock %}
+
+{% block body %}
+<div class="mdl-grid demo-content">
+
+{#    <div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect">#}
+
+        <!--<div class="mdl-tabs__tab-bar">
+            <a id="tab-dreams-panel" href="#dreams-panel" class="mdl-tabs__tab is-active">
+                <i class="material-icons">gps_fixed</i>
+            </a>
+            <a id="tab-habits-panel" href="#habits-panel" class="mdl-tabs__tab">
+                <i class="material-icons">gavel</i>
+            </a>
+            <a id="tab-pending-panel" href="#pending-panel" class="mdl-tabs__tab">
+                <i class="material-icons">subject</i>
+            </a>
+        </div> -->
+
+        <!--Panel dream-->
+        <div class="mdl-tabs__panel is-active" id="dreams-panel">
+            <li
+                class="mdl-list__item mdl-list__item--two-line
+                    mdl-shadow--4dp mdl-cell mdl-cell--6-col center-elements">
+                <span class="mdl-list__item-primary-content">
+                    <i class="material-icons  mdl-list__item-avatar">gps_fixed</i>
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        <input v-model="dreamModel.name"
+                               class="mdl-textfield__input" type="text"
+                               id="quick-dream-name"/>
+                        <label class="mdl-textfield__label" for="quick-dream-name">Objetivo</label>
+                    </div>
+                </span>
+                <span class="mdl-list__item-secondary-action">
+                    <button v-show="validationDreamModel.accept" v-on:click="add()"
+                            class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab
+                                mdl-button--accent mdl-button-raised mdl-js-ripple-effect">
+                        <i class="material-icons">add</i>
+                    </button>
+                </span>
+            </li>
+
+            <div class="mdl-cell mdl-cell--12-col mdl-grid" >
+
+
+
+                <p v-if="!dreams.length">No hay objetivos registrados</p>
+                <div v-for="(dream, index) in dreams">
+                    <div v-bind:class="dreamBackground(dream,index)">
+                        <div class="mdl-card__title">
+                            <h2 class="mdl-card__title-text">
+                                ${dream.name}
+                            </h2>
+                        </div>
+                        <div class="mdl-card__supporting-text">
+                            <span class="mdl-chip mdl-chip--contact" v-if="dream.created_at">
+                                <i class="mdl-chip__contact material-icons">play_arrow</i>
+                                <span class="mdl-chip__text">${getDate(dream.created_at)}</span>
+                                <i class="mdl-chip__contact material-icons">stop</i>
+                                <span class="mdl-chip__text">${getDate(dream.due_date_at)}</span>
+                            </span>
+                        </div>
+                        <div class="mdl-card__actions mdl-card--border">
+                            <button v-on:click="_edit(dream,index)"
+                                    class="mdl-button mdl-js-button mdl-button--raised
+                                    mdl-js-ripple-effect mdl-button--accent">
+                                <i class="material-icons">edit</i>Editar
+                            </button>
+                            <button v-on:click="_done(dream,index)"
+                                    class="mdl-button mdl-js-button mdl-js-ripple-effect
+                                        mdl-button--raised mdl-button--colored">
+                                <i class="material-icons">assignment_turned_in</i>Realizado
+                            </button>
+                        </div>
+                        <!--<div class="mdl-card__menu">-->
+                            <!--<button v-on:click="_edit(dream,index)"-->
+                               <!--class="mdl-button mdl-button&#45;&#45;icon mdl-js-button mdl-js-ripple-effect mdl-button-raised">-->
+                                <!--<i class="material-icons">edit</i>-->
+
+                            <!--</button>-->
+                            <!--<button v-on:click="_edit(dream,index)"-->
+                                    <!--class="mdl-button mdl-button&#45;&#45;icon mdl-js-button mdl-js-ripple-effect mdl-button-raised">-->
+                                <!--<i class="material-icons">edit</i>-->
+
+                            <!--</button>-->
+                        <!--</div>-->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dialog dreams-->
+            <dialog id="dream-dialog" class="mdl-dialog mdl-cell--4-col">
+                <h4 class="mdl-dialog__title">
+                    <i class="material-icons">gps_fixed</i>Objetivo
+                </h4>
+                <div class="mdl-dialog__content">
+                    <form action="#">
+                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                            <input class="mdl-textfield__input" type="text" id="name"
+                                   v-model="dreamModel.name" required="True">
+                            <label class="mdl-textfield__label" for="name">Nombre</label>
+                        </div>
+                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                            <input class="mdl-textfield__input" type="date" id="due_date_at"
+                                   v-model="dreamModel.due_date_at">
+                            <label class="mdl-textfield__label" for="due_date_at">Fecha a finalizar</label>
+                        </div>
+                    </form>
+                </div>
+                <div class="mdl-dialog__actions">
+                    <button v-show="validationDreamModel.accept"
+                            class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored"
+                            id="dream-dialog-accept">
+                        <i class="material-icons">check_circle</i>Aceptar
+                    </button>
+                    <button
+                            class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent"
+                            id="dream-dialog-cancel">
+                        <i class="material-icons">cancel</i>Cancelar
+                    </button>
+                    <button v-show="validationDreamModel.remove"
+                            class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect"
+                            id="dream-dialog-remove">
+                        <i class="material-icons">delete_forever</i>Eliminar
+                    </button>
+
+                </div>
+            </dialog>
+        </div>
+        <!--End panel dream-->
+
+        <!--Panel habit-->
+{#        <div class="mdl-tabs__panel" id="habits-panel">#}
+{##}
+{#            <li#}
+{#                class="mdl-list__item mdl-list__item--two-line#}
+{#                    mdl-shadow--4dp mdl-cell mdl-cell--6-col center-elements">#}
+{#                <span class="mdl-list__item-primary-content">#}
+{#                    <i class="material-icons  mdl-list__item-avatar">gavel</i>#}
+{#                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">#}
+{#                        <input v-model="habitModel.name"#}
+{#                               class="mdl-textfield__input" type="text"#}
+{#                               id="quick-habit-name"/>#}
+{#                        <label class="mdl-textfield__label" for="quick-habit-name">Hábito</label>#}
+{#                    </div>#}
+{#                </span>#}
+{#                <span class="mdl-list__item-secondary-action">#}
+{#                    <button v-show="validationHabitModel.accept"#}
+{#                            v-on:click="add()"#}
+{#                            class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab#}
+{#                                mdl-button--accent mdl-button-raised mdl-js-ripple-effect">#}
+{#                        <i class="material-icons">add</i>#}
+{#                    </button>#}
+{#                </span>#}
+{#            </li>#}
+{##}
+{##}
+{#            <div class="mdl-grid mdl-cell mdl-cell--12-col">#}
+{#                <p v-if="!habits.length">No hay hábitos registrados</p>#}
+{#                <div v-for="(habit, index) in habits">#}
+{#                    <div v-bind:class="habitBackground(habit,index)">#}
+{#                        <div class=" mdl-card__title">#}
+{#                            <h2 class="mdl-card__title-text">#}
+{#                                ${habit.name}#}
+{#                            </h2>#}
+{#                       </div>#}
+{#                       <div class="mdl-card__supporting-text">#}
+{#                           <div class="material-icons mdl-badge mdl-badge--overlap"#}
+{#                                v-bind:data-badge="habit.success">done</div>#}
+{#                           <div class="material-icons mdl-badge mdl-badge--overlap"#}
+{#                                v-bind:data-badge="habit.fail">clear</div>#}
+{#                       </div>#}
+{#                       <div class="mdl-card__actions mdl-card--border">#}
+{#                           <button v-on:click="_edit(habit,index)"#}
+{#                                   class="mdl-button mdl-js-button mdl-button--raised#}
+{#                                    mdl-js-ripple-effect mdl-button--accent">#}
+{#                               <i class="material-icons">edit</i>#}
+{#                               Editar#}
+{#                           </button>#}
+{#                           <button v-on:click="_done(habit,index)"#}
+{#                                   class="mdl-button mdl-js-button mdl-js-ripple-effect#}
+{#                                        mdl-button--raised mdl-button--colored">#}
+{#                               <i class="material-icons">${_icon_done(habit.success, habit.fail)}</i>#}
+{#                               Realizado#}
+{#                           </button>#}
+{#                       </div>#}
+{#                       <div class="mdl-card__menu">#}
+{##}
+{#                       </div>#}
+{#                   </div>#}
+{#                    <div class="mdl-layout-spacer"></div>#}
+{#                </div>#}
+{#            </div>#}
+{#            <!--Dialog box habit-->#}
+{#            <dialog id="habit-dialog" class="mdl-dialog mdl-cell--4-col">#}
+{#                <h4 class="mdl-dialog__title">#}
+{#                    <i class="material-icons">gavel</i>Hábito#}
+{#                </h4>#}
+{#                <div class="mdl-dialog__content">#}
+{#                    <form action="#">#}
+{#                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">#}
+{#                            <input class="mdl-textfield__input" type="text"#}
+{#                                   id="habit-name" v-model="habitModel.name" required>#}
+{#                            <label class="mdl-textfield__label" for="habit-name">Nombre</label>#}
+{#                        </div>#}
+{#                    </form>#}
+{#                </div>#}
+{#                <div class="mdl-dialog__actions">#}
+{#                    <button v-show="validationHabitModel.accept"#}
+{#                            class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored"#}
+{#                            id="habit-dialog-accept">#}
+{#                        <i class="material-icons">check_circle</i>Aceptar#}
+{#                    </button>#}
+{#                    <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent"#}
+{#                            id="habit-dialog-cancel">#}
+{#                        <i class="material-icons">cancel</i>Cancelar#}
+{#                    </button>#}
+{#                    <button v-show="validationHabitModel.remove"#}
+{#                            class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect"#}
+{#                            id="habit-dialog-remove">#}
+{#                        <i class="material-icons">delete_forever</i>Eliminar#}
+{#                    </button>#}
+{#                </div>#}
+{#            </dialog>#}
+{##}
+{#        </div>#}
+        <!--End habit panel-->
+
+        <!--Panel pending-->
+{#        <div class="mdl-tabs__panel" id="pending-panel">#}
+{#            <!--<p v-if="!pendings.length">No hay pendientes registrados</p>-->#}
+{#            <li#}
+{#                class="mdl-list__item mdl-list__item--two-line#}
+{#                    mdl-shadow--4dp mdl-cell mdl-cell--6-col center-elements">#}
+{#                <span class="mdl-list__item-primary-content">#}
+{#                    <i class="material-icons  mdl-list__item-avatar">subject</i>#}
+{#                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">#}
+{##}
+{#                        <input#}
+{#                                v-model="pendingModel.name"#}
+{#                                class="mdl-textfield__input" type="text"#}
+{#                                id="quick-pending-name"/>#}
+{#                        <label class="mdl-textfield__label" for="quick-pending-name">Pendiente</label>#}
+{#                    </div>#}
+{#                </span>#}
+{#                <span class="mdl-list__item-secondary-action">#}
+{##}
+{#                        <button#}
+{#                                v-show="validationPendingModel.accept"#}
+{#                                v-on:click="add()"#}
+{#                                class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab#}
+{#                                    mdl-button--accent mdl-button-raised mdl-js-ripple-effect">#}
+{#                            <i class="material-icons">add</i>#}
+{#                        </button>#}
+{#                    </span>#}
+{#            </li>#}
+{##}
+{#            <ul class="mdl-list">#}
+{#                <li v-for="(pending, index) in pendings"#}
+{#                    v-bind:class="pendingBackground(pending,index)">#}
+{#                    <span class="mdl-list__item-primary-content">#}
+{#                        <i class="material-icons mdl-list__item-avatar">subject</i>#}
+{#                        <span>#}
+{#                            ${pending.name}#}
+{#                        </span>#}
+{#                        <span class="mdl-list__item-text-body">#}
+{#                            ${pending.description}#}
+{#                        </span>#}
+{#                    </span>#}
+{#                    <span class="mdl-list__item-secondary-content">#}
+{#                        <a class="mdl-list__item-secondary-action">#}
+{#                            <button id="pending-button-done"#}
+{#                                    v-on:click="_done(pending,index)"#}
+{#                                    class=" mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab#}
+{#                                mdl-button--colored mdl-button-raised mdl-js-ripple-effect">#}
+{#                                <i class="material-icons">assignment_turned_in</i>#}
+{#                                <div class="mdl-tooltip" data-mdl-for="pending-button-done">#}
+{#                                    Hecho#}
+{#                                </div>#}
+{#                            </button>#}
+{#                            <button id="pending-button-edit"#}
+{#                                    v-on:click="_edit(pending,index)"#}
+{#                                    class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab#}
+{#                                    mdl-button--colored mdl-button-raised mdl-js-ripple-effect">#}
+{#                                <i class="material-icons">edit</i>#}
+{#                            </button>#}
+{#                            <div class="mdl-tooltip" data-mdl-for="pending-button-edit">#}
+{#                                Editar#}
+{#                            </div>#}
+{#                        </a>#}
+{#                    </span>#}
+{#                </li>#}
+{#            </ul>#}
+{##}
+{#            <dialog id="pending-dialog" class="mdl-dialog mdl-cell--4-col">#}
+{#                <h4 class="mdl-dialog__title">#}
+{#                    <i class="material-icons">subject</i>Pendiente#}
+{#                </h4>#}
+{#                <div class="mdl-dialog__content">#}
+{#                    <form action="#">#}
+{#                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">#}
+{#                            <input v-model="pendingModel.name" class="mdl-textfield__input"#}
+{#                                   type="text" id="pending-name" required>#}
+{#                            <label class="mdl-textfield__label" for="pending-name">Nombre</label>#}
+{#                        </div>#}
+{#                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">#}
+{#                            <textarea v-model="pendingModel.description"#}
+{#                                      class="mdl-textfield__input" type="text"#}
+{#                                      rows="2" id="pending-description">#}
+{#                            </textarea>#}
+{#                            <label class="mdl-textfield__label" for="pending-description">Descripción</label>#}
+{#                        </div>#}
+{#                    </form>#}
+{#                </div>#}
+{#                <div class="mdl-dialog__actions">#}
+{#                    <button v-show="validationPendingModel.accept"#}
+{#                       class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored"#}
+{#                       id="pending-dialog-accept">#}
+{#                        <i class="material-icons">check_circle</i>Aceptar#}
+{#                    </button>#}
+{#                    <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent"#}
+{#                            id="pending-dialog-cancel">#}
+{#                        <i class="material-icons">cancel</i>Cancelar#}
+{#                    </button>#}
+{#                    <button v-show="validationPendingModel.remove"#}
+{#                       class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect"#}
+{#                       id="pending-dialog-remove">#}
+{#                        <i class="material-icons">delete_forever</i>Eliminar#}
+{#                    </button>#}
+{#                </div>#}
+{#            </dialog>#}
+{#        </div>#}
+        <!--End panel pending-->
+{#    </div>#}
+</div>
+
+{% endblock %}
+
+{% block js%}
+<script src="/js/dream.js" type="application/javascript"></script>
+{% endblock %}

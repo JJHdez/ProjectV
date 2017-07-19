@@ -15,7 +15,12 @@
 
 from datetime import datetime
 from flask import jsonify
+from dateutil import tz
 
+# Static Var
+FORMAT_DATE ="%Y-%m-%d"
+FORMAT_DATETIME="%Y-%m-%d %H:%M:%S"
+FORMAT_TIME="%H:%M:%S"
 
 def tuple2list(fields, tuple):
     _tl = []
@@ -137,3 +142,18 @@ def type_of_update_rest(fields, request):
                 else _typeof(request[field], _type_of)
             _vals = _vals + field + '=' + _val + ','
     return _vals[:-1]
+
+
+def convert_datetime_by_timezone(_datetime, _timezone_from='UTC',
+                                 _timezone_to='America/Mexico_city',
+                                 _datetime_format=FORMAT_DATETIME):
+    try:
+        from_zone = tz.gettz(_timezone_from)
+        to_zone = tz.gettz(_timezone_to)
+        utc = datetime.strptime(_datetime, _datetime_format)
+        utc = utc.replace(tzinfo=from_zone)
+        central = datetime.strftime(utc.astimezone(to_zone), FORMAT_DATETIME)
+    except (Exception,), ex:
+        print str(ex)
+    return central
+

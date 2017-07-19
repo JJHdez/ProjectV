@@ -27,9 +27,9 @@ class ProjectIssueListRst(Resource, ProjectIssueMdl):
             _where = " WHERE deleted_at is null "
             _by = request.args.get("by", False)
             if _by:
-                if _by == 'project_task_id':
-                    _project_task_id = request.args.get('project_task_id', False)
-                    _where = _where + " and project_task_id=%s " % (_project_task_id,)
+                if _by == 'project_task_participed_id':
+                    _project_task_id = request.args.get('project_task_participed_id', False)
+                    _where = _where + " and project_task_participed_id=%s " % (_project_task_id,)
                 else:
                     _where = _where + " and create_id =%s " % (g.user.id,)
             else:
@@ -59,6 +59,13 @@ class ProjectIssueListRst(Resource, ProjectIssueMdl):
     def post(self):
         _request = request.json
         try:
+            if 'priority' not in _request:
+                _request['priority'] = 'minor'
+            if 'kind' not in _request:
+                _request['kind'] = 'bug'
+            if 'assigned_user_id' not in _request:
+                _request['assigned_user_id'] = g.user.id
+
             _errors = validate_rest(fields=self._fields, request=_request)
             if not _errors:
                 _col, _val = type_of_insert_rest(self._fields, _request)
@@ -66,7 +73,6 @@ class ProjectIssueListRst(Resource, ProjectIssueMdl):
                     INSERT INTO %s (create_id , %s ) VALUES (%s, %s)
                     RETURNING (select row_to_json(collection) FROM (VALUES(id)) collection(id));
                 """ % (self._table, _col, g.user.id, _val)
-                # print _qrp
                 g.db_conn.execute(_qrp)
                 if g.db_conn.count() > 0:
                     _data = {self._table: g.db_conn.one()}

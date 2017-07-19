@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 class UserMdl(object):
 
     def __init__(self, id, email=None, name=None, last_name=None, cover=None, timezone=None):
@@ -23,3 +22,4 @@ class UserMdl(object):
         self.last_name = last_name
         self.cover = cover
         self.timezone = timezone
+

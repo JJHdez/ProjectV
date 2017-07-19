@@ -1,6 +1,20 @@
+CREATE TABLE users
+(
+    id SERIAL PRIMARY KEY NOT NULL,
+    create_date TIMESTAMP DEFAULT timezone('UTC'::text, now()) NOT NULL,
+    facebook VARCHAR(255) DEFAULT NULL::character varying,
+    google_plus VARCHAR(255) DEFAULT NULL::character varying,
+    email VARCHAR(100) NOT NULL,
+    name VARCHAR(100),
+    last_name VARCHAR(100),
+    cover TEXT,
+    timezone VARCHAR(100) DEFAULT 'UTC'::character varying,
+    password VARCHAR(100)
+);
+
 CREATE TABLE dreams
 (
-    id INTEGER DEFAULT nextval('dreams_id_seq'::regclass) PRIMARY KEY NOT NULL,
+    id SERIAL PRIMARY KEY NOT NULL,
     created_at TIMESTAMP DEFAULT now() NOT NULL,
     deleted_at TIMESTAMP,
     create_id INTEGER,
@@ -11,7 +25,7 @@ CREATE TABLE dreams
 );
 CREATE TABLE habits
 (
-    id INTEGER DEFAULT nextval('habits_id_seq'::regclass) PRIMARY KEY NOT NULL,
+    id SERIAL PRIMARY KEY NOT NULL,
     created_date TIMESTAMP DEFAULT timezone('UTC'::text, now()) NOT NULL,
     user_id INTEGER,
     finished_date TIMESTAMP,
@@ -21,7 +35,7 @@ CREATE TABLE habits
 );
 CREATE TABLE history_habits
 (
-    id INTEGER DEFAULT nextval('history_habits_id_seq'::regclass) PRIMARY KEY NOT NULL,
+    id SERIAL PRIMARY KEY NOT NULL,
     created_date TIMESTAMP DEFAULT timezone('UTC'::text, now()) NOT NULL,
     user_id INTEGER,
     habit_id INTEGER,
@@ -31,7 +45,7 @@ CREATE TABLE history_habits
 );
 CREATE TABLE pendings
 (
-    id INTEGER DEFAULT nextval('pendings_id_seq'::regclass) PRIMARY KEY NOT NULL,
+    id SERIAL PRIMARY KEY NOT NULL,
     created_at TIMESTAMP DEFAULT now() NOT NULL,
     deleted_at TIMESTAMP,
     create_id INTEGER,
@@ -42,7 +56,7 @@ CREATE TABLE pendings
 );
 CREATE TABLE pomodoro_activities
 (
-    id INTEGER DEFAULT nextval('pomodoro_activities_id_seq'::regclass) NOT NULL,
+    id SERIAL PRIMARY KEY NOT NULL,
     created_at TIMESTAMP DEFAULT now() NOT NULL,
     deleted_at TIMESTAMP,
     create_id INTEGER,
@@ -52,26 +66,36 @@ CREATE TABLE pomodoro_activities
     due_datetime_at TIMESTAMP,
     CONSTRAINT pomodoro_activities_create_id_fkey FOREIGN KEY (create_id) REFERENCES users (id)
 );
-CREATE TABLE project_task_issues
+CREATE TABLE projects
 (
-    id INTEGER DEFAULT nextval('project_task_issues_id_seq'::regclass) PRIMARY KEY NOT NULL,
+    id SERIAL PRIMARY KEY NOT NULL,
     created_at TIMESTAMP DEFAULT now() NOT NULL,
     deleted_at TIMESTAMP,
     create_id INTEGER,
-    project_task_id INTEGER,
-    assigned_user_id INTEGER,
+    name VARCHAR(255) NOT NULL,
+    completed_at TIMESTAMP,
+    CONSTRAINT projects_create_id_fkey FOREIGN KEY (create_id) REFERENCES users (id)
+);
+CREATE TABLE project_tasks
+(
+    id SERIAL PRIMARY KEY NOT NULL,
+    created_at TIMESTAMP DEFAULT now() NOT NULL,
+    deleted_at TIMESTAMP,
+    create_id INTEGER,
+    project_id INTEGER,
+    parent_id INTEGER,
     name VARCHAR(255) NOT NULL,
     description TEXT,
-    kind VARCHAR(100) DEFAULT 'bug'::character varying NOT NULL,
-    priority VARCHAR(100) DEFAULT 'major'::character varying NOT NULL,
+    start_date_at DATE,
+    due_date_at DATE,
     completed_at TIMESTAMP,
-    CONSTRAINT project_task_issues_create_id_fkey FOREIGN KEY (create_id) REFERENCES users (id),
-    CONSTRAINT project_task_issues_project_task_id_fkey FOREIGN KEY (project_task_id) REFERENCES project_tasks (id),
-    CONSTRAINT project_task_issues_assigned_user_id_fkey FOREIGN KEY (assigned_user_id) REFERENCES users (id)
+    CONSTRAINT project_tasks_create_id_fkey FOREIGN KEY (create_id) REFERENCES users (id),
+    CONSTRAINT project_tasks_project_id_fkey FOREIGN KEY (project_id) REFERENCES projects (id)
 );
+
 CREATE TABLE project_task_participed
 (
-    id INTEGER DEFAULT nextval('project_participated_id_seq'::regclass) PRIMARY KEY NOT NULL,
+    id SERIAL PRIMARY KEY NOT NULL,
     created_at TIMESTAMP DEFAULT now() NOT NULL,
     deleted_at TIMESTAMP,
     create_id INTEGER,
@@ -86,25 +110,10 @@ CREATE TABLE project_task_participed
     CONSTRAINT project_participated_project_task_id_fkey FOREIGN KEY (project_task_id) REFERENCES project_tasks (id),
     CONSTRAINT project_participated_assigned_user_id_fkey FOREIGN KEY (assigned_user_id) REFERENCES users (id)
 );
-CREATE TABLE project_tasks
-(
-    id INTEGER DEFAULT nextval('project_tasks_id_seq'::regclass) PRIMARY KEY NOT NULL,
-    created_at TIMESTAMP DEFAULT now() NOT NULL,
-    deleted_at TIMESTAMP,
-    create_id INTEGER,
-    project_id INTEGER,
-    parent_id INTEGER,
-    name VARCHAR(255) NOT NULL,
-    description TEXT,
-    start_date_at DATE,
-    due_date_at DATE,
-    completed_at TIMESTAMP,
-    CONSTRAINT project_tasks_create_id_fkey FOREIGN KEY (create_id) REFERENCES users (id),
-    CONSTRAINT project_tasks_project_id_fkey FOREIGN KEY (project_id) REFERENCES projects (id)
-);
+
 CREATE TABLE project_teams
 (
-    id INTEGER DEFAULT nextval('project_teams_id_seq'::regclass) PRIMARY KEY NOT NULL,
+    id SERIAL PRIMARY KEY NOT NULL,
     created_at TIMESTAMP DEFAULT now() NOT NULL,
     deleted_at TIMESTAMP,
     create_id INTEGER,
@@ -113,7 +122,7 @@ CREATE TABLE project_teams
 );
 CREATE TABLE project_teams_projects
 (
-    id INTEGER DEFAULT nextval('project_teams_projects_id_seq'::regclass) PRIMARY KEY NOT NULL,
+    id SERIAL PRIMARY KEY NOT NULL,
     created_at TIMESTAMP DEFAULT now() NOT NULL,
     deleted_at TIMESTAMP,
     create_id INTEGER,
@@ -125,19 +134,27 @@ CREATE TABLE project_teams_projects
     CONSTRAINT project_teams_projects_project_id_fkey FOREIGN KEY (project_id) REFERENCES projects (id),
     CONSTRAINT project_teams_projects_team_id_fkey FOREIGN KEY (team_id) REFERENCES project_teams (id)
 );
-CREATE TABLE projects
+CREATE TABLE project_task_issues
 (
-    id INTEGER DEFAULT nextval('projects_id_seq'::regclass) PRIMARY KEY NOT NULL,
+    id SERIAL PRIMARY KEY NOT NULL,
     created_at TIMESTAMP DEFAULT now() NOT NULL,
     deleted_at TIMESTAMP,
     create_id INTEGER,
+    project_task_id INTEGER,
+    assigned_user_id INTEGER,
     name VARCHAR(255) NOT NULL,
+    description TEXT,
+    kind VARCHAR(100) DEFAULT 'bug'::character varying NOT NULL,
+    priority VARCHAR(100) DEFAULT 'major'::character varying NOT NULL,
     completed_at TIMESTAMP,
-    CONSTRAINT projects_create_id_fkey FOREIGN KEY (create_id) REFERENCES users (id)
+    CONSTRAINT project_task_issues_create_id_fkey FOREIGN KEY (create_id) REFERENCES users (id),
+    CONSTRAINT project_task_issues_project_task_id_fkey FOREIGN KEY (project_task_id) REFERENCES project_tasks (id),
+    CONSTRAINT project_task_issues_assigned_user_id_fkey FOREIGN KEY (assigned_user_id) REFERENCES users (id)
 );
+
 CREATE TABLE tags
 (
-    id INTEGER DEFAULT nextval('tags_id_seq'::regclass) PRIMARY KEY NOT NULL,
+    id SERIAL PRIMARY KEY NOT NULL,
     created_at TIMESTAMP DEFAULT now() NOT NULL,
     deleted_at TIMESTAMP,
     create_id INTEGER,
@@ -147,7 +164,7 @@ CREATE TABLE tags
 );
 CREATE TABLE token
 (
-    id INTEGER DEFAULT nextval('token_id_seq'::regclass) PRIMARY KEY NOT NULL,
+    id SERIAL PRIMARY KEY NOT NULL,
     create_date TIMESTAMP DEFAULT timezone('UTC'::text, now()) NOT NULL,
     token VARCHAR(100),
     expired TIMESTAMP,
@@ -155,25 +172,13 @@ CREATE TABLE token
     kind VARCHAR(50) DEFAULT 'auth-app'::character varying,
     CONSTRAINT token_user_id_fkey FOREIGN KEY (user_id) REFERENCES users (id)
 );
-CREATE TABLE users
-(
-    id INTEGER DEFAULT nextval('users_id_seq'::regclass) PRIMARY KEY NOT NULL,
-    create_date TIMESTAMP DEFAULT timezone('UTC'::text, now()) NOT NULL,
-    facebook VARCHAR(255) DEFAULT NULL::character varying,
-    google_plus VARCHAR(255) DEFAULT NULL::character varying,
-    email VARCHAR(100) NOT NULL,
-    name VARCHAR(100),
-    last_name VARCHAR(100),
-    cover TEXT,
-    timezone VARCHAR(100) DEFAULT 'UTC'::character varying,
-    password VARCHAR(100)
-);
+
 CREATE UNIQUE INDEX users_facebook_key ON users (facebook);
 CREATE UNIQUE INDEX users_google_plus_key ON users (google_plus);
 CREATE UNIQUE INDEX users_email_key ON users (email);
 CREATE TABLE wishes
 (
-    id INTEGER DEFAULT nextval('wishes_id_seq'::regclass) PRIMARY KEY NOT NULL,
+    id SERIAL PRIMARY KEY NOT NULL,
     created_at TIMESTAMP DEFAULT now() NOT NULL,
     deleted_at TIMESTAMP,
     create_id INTEGER,

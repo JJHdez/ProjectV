@@ -17,10 +17,6 @@
 window.addEventListener('load', function ()
 {
     var timerRE = /([0-5][0-9])/;
-    // document.querySelector('#progress-pomodoro-timer').addEventListener('mdl-componentupgraded', function() {
-    //     this.MaterialProgress.setProgress(80);
-    //     this.MaterialProgress.setBuffer(90);
-    // });
 
     var Pomodoro = new Vue({
 
@@ -49,21 +45,43 @@ window.addEventListener('load', function ()
         },
 
         methods: {
-
-            add:function () {
-                var _timer_tmp = this.activity.timer.split(':');
-                var _timer  = '00:25:00';
-                var _data = {};
-                _data['name'] = this.activity.name;
-                if (_timer_tmp.length ==1) {
-                    _timer = '00:'+_timer_tmp[0]+":00";
-                }else if (_timer_tmp.length ==2){
-                    _timer = this.activity.timer+":00";
+            init : function () {
+                gCharts.charts.load("current", {packages:['corechart', 'line']});
+                this.getStatisticOfTheWeek()
+                this.getStatisticOfTheMonth()
+                this.getStatisticOfTheYear()
+                this._callback(null,this.url+'?activities=registered','GET','init')
+            },
+            add25: function () {
+                if ( this.validationActivityModel.quickAdd25or05) {
+                    this.activity.timer = '25'
                 }
-                _data['timer'] = _timer;
-                var _action = 'new';
-                var _method = 'POST';
-                this._callback(_data, this.url, _method, _action);
+                this.add();
+            },
+            add05: function () {
+                if ( this.validationActivityModel.quickAdd25or05) {
+                    this.activity.timer = '05'
+                }
+                this.add();
+            },
+            add:function () {
+                if (this.validationActivityModel.add ){
+                    var _timer_tmp = [];
+                    if (this.activity.timer.trim().length>0)
+                        _timer_tmp = this.activity.timer.trim().split(':');
+                    var _timer  = '00:25:00';
+                    var _data = {};
+                    _data['name'] = this.activity.name;
+                    if (_timer_tmp.length ==1) {
+                        _timer = '00:'+_timer_tmp[0]+":00";
+                    }else if (_timer_tmp.length ==2){
+                        _timer = this.activity.timer+":00";
+                    }
+                    _data['timer'] = _timer;
+                    var _action = 'new';
+                    var _method = 'POST';
+                    this._callback(_data, this.url, _method, _action);
+                }
             },
             // clean model
             _clean: function (clean) {
@@ -94,53 +112,6 @@ window.addEventListener('load', function ()
                 this._callback(_data, this.url + '/' + activity.id, 'DELETE', 'remove');
             },
 
-            _callback: function (_data, _url, _method, _action) {
-                var self = this;
-                var _json = null;
-                // console.log(_data);
-                if (_data)
-                    _json = JSON.stringify(_data);
-                $.ajax({
-                    url: _url,
-                    type: _method,
-                    data: _json,
-                    contentType: 'application/json'
-                }).done(function (response) {
-                    if (response.status_code == 200 || response.status_code == 201) {
-                        switch (_action) {
-                            case 'init':
-                                for (var c = 0; c < response.data.project_task_issues.length; c++) {
-                                    self.issues.push(response.data.project_task_issues[c])
-                                }
-                                break;
-                            case 'done':
-                                self.issues.splice(self.issueModel.index, 1);
-                                break;
-                            case 'remove':
-                                self.activities.splice(_data['index'], 1);
-                                break;
-                            case 'new':
-                                _data['id'] = response.data.pomodoro_activities[0].id;
-                                self.activities.push(_data);
-                                self._clean(['activity']);
-                                break;
-
-                        }
-                        if (response.message)
-                            notify({message: response.message});
-                        // self._clean();
-                        return true;
-                    } else {
-                        if (response.message)
-                            notify({message: response.message});
-                        return false;
-                    }
-                }).fail(function () {
-                    notify({message: 'Error al generar la peticion, favor interntar mas tarde! :('});
-                    return false;
-                });
-            },
-
             play: function (activity, index) {
                 var self = this;
                 if (self.interval == null &&
@@ -159,7 +130,7 @@ window.addEventListener('load', function ()
 
                                 self.timer.hour = self.getZero(parseInt(_timer_tmp[0]));
                                 self.timer.minute = self.getZero(parseInt(_timer_tmp[1]));
-                                self.timer.second = 59;
+                                self.timer.second = 60;
                                 self.timer.activity = activity;
                                 self.timer.index = index;
 
@@ -170,11 +141,11 @@ window.addEventListener('load', function ()
                                     if (!self.is_pause){
                                         self.timer.second = self.getZero(self.timer.second);
                                         if (self.timer.second == 0){
-                                            self.timer.second = self.timer.minute -1 < 0 ? 0 : 59;
+                                            self.timer.second = self.timer.minute -1 < 0 ? 0 : 60;
                                             self.timer.minute = self.getZero(self.timer.minute);
                                         }
                                         if (self.timer.minute == 0){
-                                            self.timer.minute = self.timer.hour -1 < 0 ? 0 : 59;
+                                            self.timer.minute = self.timer.hour -1 < 0 ? 0 : 60;
                                             self.timer.hour = self.getZero(self.timer.hour);
                                         }
                                         if (self.timer.hour == 0 &&  self.timer.minute == 0 && self.timer.second == 0){
@@ -196,16 +167,17 @@ window.addEventListener('load', function ()
                     }
                 }
             },
-          
+
             getZero: function (value) {
                 return ( value - 1 < 0 ? 0: value -1);
             },
-           
+
             stop:function (activity, index) {
                 var self = this;
                 clearInterval(self.interval);
                 self.interval = null;
                 self._clean(['timer']);
+                // wait(1000);
                 var now = libzr.getUtcDate(new Date()).format('yyyy-M-d h:m:s');
                 $.ajax({
                     url: self.url+"/"+activity.id,
@@ -220,24 +192,26 @@ window.addEventListener('load', function ()
                             activity['due_datetime_at']=now;
                             self.activities.splice(index, 1, activity);
                         }
+                        self.getStatisticOfTheWeek();
+                        self.getStatisticOfTheMonth();
+                        self.getStatisticOfTheYear();
                 });
+
 
             },
 
             pause: function (acivity, index) {
               this.is_pause = !this.is_pause;
             },
-            
+
             progress: function (_progress, _buffer) {
-                // 30 = 100%
-                console.log(_progress, _buffer);
                 document.querySelector('#progress-pomodoro-timer').
                 addEventListener('mdl-componentupgraded', function() {
                     this.MaterialProgress.setProgress(80);
                     this.MaterialProgress.setBuffer(90);
                 });
             },
-            
+
             playShow: function (activity, index) {
                 var isShow = false;
                 if (this.timer.index == -1 && this.timer.activity == null &&
@@ -282,15 +256,145 @@ window.addEventListener('load', function ()
                     return icon;
                 else
                     return classIcon;
+            },
+
+            getStatisticOfTheWeek: function () {
+                this._callback(null, this.url+'?statistic=week',
+                 'GET', 'statistic_of_the_week');
+
+            },
+
+            _drawChartStatisticWeek: function  ( _data ) {
+
+                var data = gCharts.visualization.arrayToDataTable(_data);
+                var view = new gCharts.visualization.DataView(data);
+                view.setColumns([0, 1,
+                              { calc: "stringify",
+                                sourceColumn: 1,
+                                type: "string",
+                                role: "annotation" },
+                              2]);
+                var options = {
+                    title: "Weekly statistic",
+                   bar: {groupWidth: "95%"},
+                   legend: { position: "none" },
+             };
+             var chart = new gCharts.visualization.ColumnChart(document.getElementById("statistic_week"));
+             chart.draw(view, options);
+            },
+
+            getStatisticOfTheMonth: function () {
+                this._callback(null, this.url+'?statistic=month',
+                 'GET', 'statistic_of_the_month');
+
+            },
+
+            _drawChartStatisticMonth: function  ( _data ) {
+                var data = new gCharts.visualization.DataTable();
+                    data.addColumn('number', 'X');
+                    data.addColumn('number', 'Minutes');
+                    data.addRows(_data);
+                    var options = {
+                        hAxis: {
+                            title: 'Days'
+                        },
+                        vAxis: {
+                            title: 'Minutes'
+                        },
+                        legend: {
+                            position: "none"
+                        },
+                        title: 'Monthly statistic',
+                    };
+                var chart = new gCharts.visualization.LineChart(document.getElementById("statistic_month"));
+                chart.draw(data, options);
+            },
+
+            getStatisticOfTheYear: function () {
+                this._callback(null, this.url+'?statistic=year',
+                 'GET', 'statistic_of_the_year');
+            },
+
+            _drawChartStatisticYear: function  ( _data ) {
+                var data = gCharts.visualization.arrayToDataTable(_data);
+
+                var options = {
+                    title: 'Yearly statistic',
+                    is3D: true,
+                };
+
+               var chart = new gCharts.visualization.PieChart(document.getElementById('statistic_year'));
+               chart.draw(data, options);
+
+           },
+            _callback: function (_data, _url, _method, _action) {
+                var self = this;
+                var _json = null;
+                if (_data)
+                    _json = JSON.stringify(_data);
+                $.ajax({
+                    url: _url,
+                    type: _method,
+                    data: _json,
+                    contentType: 'application/json'
+                }).done(function (response) {
+                    if (response.status_code == 200 || response.status_code == 201) {
+                        switch (_action) {
+                            case 'init':
+                                console.log(response.data);
+                                for (var c = 0; c < response.data.pomodoro_activities.length; c++) {
+                                    self.activities.push(response.data.pomodoro_activities[c])
+                                }
+                                break;
+                            case 'done':
+                                self.issues.splice(self.issueModel.index, 1);
+                                break;
+                            case 'remove':
+                                self.activities.splice(_data['index'], 1);
+                                break;
+                            case 'new':
+                                _data['id'] = response.data.pomodoro_activities[0].id;
+                                self.activities.unshift(_data);
+                                self._clean(['activity']);
+                                break;
+                            case 'statistic_of_the_week':
+                                gCharts.charts.setOnLoadCallback(function(){self._drawChartStatisticWeek(response.data) });
+                                break;
+                            case 'statistic_of_the_month':
+                                gCharts.charts.setOnLoadCallback(function(){self._drawChartStatisticMonth(response.data) });
+                                break;
+                            case 'statistic_of_the_year':
+                                gCharts.charts.setOnLoadCallback(function(){self._drawChartStatisticYear(response.data) });
+                                break;
+                        }
+                        if (response.message)
+                            notify({message: response.message});
+                        // self._clean();
+                        return true;
+                    } else {
+                        if (response.message)
+                            notify({message: response.message});
+                        return false;
+                    }
+                }).fail(function () {
+                    notify({message: 'Error al generar la peticion, favor interntar mas tarde! :('});
+                    return false;
+                });
             }
         }, // end methods
 
         computed: {
             validationActivityModel: function () {
                 return {
-                    add: this.activity.name.trim().length > 3 && timerRE.test(this.activity.timer)
+                    add: this.activity.name.trim().length > 3 &&
+                        timerRE.test(this.activity.timer) &&
+                        parseInt(this.activity.timer) < 60,
+                    quickAdd25or05: this.activity.name.trim().length > 3 &&
+                        !timerRE.test(this.activity.timer) &&
+                        this.activity.timer.trim().length == 0
                 }
             }
         }
     });
+    Pomodoro.init()
 });
