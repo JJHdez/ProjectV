@@ -75,6 +75,9 @@ window.addEventListener('load', function ()
 
                     });
 
+                },
+                google_login: function () {
+                    window.location = '/google/login';
                 }
             },
         });

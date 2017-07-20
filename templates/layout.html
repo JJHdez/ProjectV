@@ -86,15 +86,17 @@
                         </button> -->
                         <span class="mdl-chip mdl-chip--contact mdl-chip--deletable
                             mdl-color--white" id="menu-user">
-                            <a class="mdl-chip__action" >
-                                <i class="material-icons">account_circle</i>
-                            </a>
+                            <img class="mdl-chip__contact" src="{{session.user.cover}}"/>
                             <span class="mdl-chip__text">
                                 {{session.user.name}}
                             </span>
-                            <a class="mdl-chip__action" href="{{url_for('/logout')}}" >
+                            <a id="logout" class="mdl-chip__action" href="{{url_for('/logout')}}" >
                                 <i class="material-icons">lock</i>
                             </a>
+                            <div class="mdl-tooltip mdl-tooltip--bottom"
+                                for="logout">
+                                Cerrar sesión
+                            </div>
                         </span>
                         <!-- -->
                         <button class="mdl-button mdl-js-button

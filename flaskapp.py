@@ -16,12 +16,12 @@ from flask import Flask, request, send_from_directory, g, session, url_for, redi
 from flask_mail import Mail
 from flask_babel import Babel
 from flask_restful import Api
-
 from v.tools.db import PsqlAoL
+
 
 # User
 from v.auth.rest.authRst import Auth, AuthListRst
-
+from v.auth.controller.google import Google
 # Quick List
 from v.project.controller.projectCtl import ProjectCtl
 from v.project.rest.projectRst import ProjectRst, ProjectListRst
@@ -64,7 +64,10 @@ app.config.from_pyfile('flaskapp.cfg')
 api = Api(app)
 mail = Mail(app)
 babel = Babel(app)
-
+google = Google(
+    app.config.get('GOOGLE_CLIENT_ID'),
+    app.config.get('GOOGLE_CLIENT_SECRET')
+)
 
 @app.before_request
 def open_db():
@@ -150,6 +153,9 @@ def project_comment_get_post():
     else:
         abort(500)
 
+prefix_admin = app.config.get('APP_PREFIX_ADMIN')
+startpoint_admin = prefix_admin[1:]
+
 # User
 api.add_resource(AuthListRst, api_v1 + 'user')
 
@@ -158,6 +164,24 @@ api.add_resource(PomodoroListRst, api_v1 + 'pomodoro')
 api.add_resource(PomodoroRst, api_v1 + 'pomodoro/<int:id>')
 
 
+# Auth google
+@app.route('/google/login')
+def login_google():
+    callback = url_for('authorized_google', _external=True)
+    return google.g.authorize(callback=callback)
+
+
+@app.route('/google/oauth2callback')
+@google.g.authorized_handler
+def authorized_google(resp):
+    google.authorized = resp
+    if google.get_authorized('access_token'):
+        if google.get_user_info():
+            if google.start_session():
+                return redirect('/ul/yourself')
+    return redirect('/', 404)
+
+# Auth by Api
 @app.route(api_v1 + 'login', methods=['POST'])
 def login():
     _data = request.json
@@ -176,8 +200,7 @@ def serveStaticResource(resource):
     return send_from_directory('static/', resource)
 
 
-prefix_admin = app.config.get('APP_PREFIX_ADMIN')
-startpoint_admin = prefix_admin[1:]
+
 
 
 @app.context_processor

@@ -41,7 +41,7 @@
 {#            </form>#}
         </div>
         <div class="mdl-card__actions mdl-card--border">
-            <div id="sign-in-by-google" class="zr-google-sign-in">
+            <div id="sign-in-by-google" v-on:click="google_login" class="zr-google-sign-in">
                 <img width="50px" src="/static/images/google_G_logo.png">
                 Iniciar sesión con google
             </div>
@@ -78,4 +78,6 @@
     </div>
 </div>
 {% endblock %}
-
+{% block js %}
+    <script src="/js/index.js"></script>
+{% endblock %}

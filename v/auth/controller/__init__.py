@@ -12,15 +12,3 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-class UserMdl(object):
-
-    def __init__(self, id, email=None, name=None, last_name=None, cover=None, timezone=None, google_plus=None):
-        self.id = id
-        self.email = email
-        self.name = name
-        self.last_name = last_name
-        self.cover = cover
-        self.timezone = timezone
-        self.google_plus = google_plus
-
