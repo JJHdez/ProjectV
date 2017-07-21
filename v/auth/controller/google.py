@@ -56,10 +56,10 @@ class Google:
             res = urlopen(req)
             user = json.loads(res.read())
             self.user.google_plus = user.get('id', -1)
-            self.user.name = user.get('given_name', None)
-            self.user.email = user.get('email', None)
-            self.user.last_name = user.get('family_name', None)
-            self.user.cover = user.get('picture', None)
+            self.user.name = user.get('given_name', '').encode('utf-8')
+            self.user.email = user.get('email', '')
+            self.user.last_name = user.get('family_name', '').encode('utf-8')
+            self.user.cover = user.get('picture', '')
             # self.user.timezone = user.get('timezone', None)
 
         except URLError, e:
