@@ -203,6 +203,8 @@ _:-ms-input-placeholder, :root .demo-graph {
 .demo-options .material-icons {
   color: rgba(255, 255, 255, 0.89);
 }
+.android-footer.mdl-mega-footer { background-color:#000000; }
+
 .demo-options .mdl-card__actions {
   height: 64px;
   display: -webkit-flex;
@@ -406,18 +408,14 @@ _:-ms-input-placeholder, :root .demo-graph {
     border-radius: 24px;
     margin-right: 16px;
 }
-
+/* button login google index */
 .zr-google-sign-in{
       position: relative;
-    /*background-image: url("/static/images/btn_google_light_focus_xxxhdpi.9.png");*/
     border-radius: 7px;
     border: solid 1px #d0d0d0;
     font-size: 28px;
-    color: #6a6a6a;
-    padding: 8px;
-    /*margin-left: 50px;*/
-    /*width: 382px;*/
-    /*height: 92px;*/
+    color: #000;
+    padding: 5px;
     text-align: center;
     -webkit-transition-duration: 0.4s; /* Safari */
     transition-duration: 0.4s;
@@ -427,7 +425,7 @@ _:-ms-input-placeholder, :root .demo-graph {
 }
 .zr-google-sign-in:after{
         content: "";
-    background: rgb(156, 39, 176);
+    background: rgb(255, 193, 7);
     display: block;
     position: absolute;
     padding-top: 300%;
@@ -442,4 +440,20 @@ _:-ms-input-placeholder, :root .demo-graph {
     margin: 0;
     opacity: 1;
     transition: 0s
+}
+/**/
+.zr-help-add{
+    font-family: "Roboto";
+    font-weight: 400;
+    font-size: 34px;
+    line-height: 40px;
+}
+.zr-help-add:before{
+    content: '“';
+}
+.zr-help-add:after {
+    content: '”';
+}
+.zr-color-grey{
+    background-color: #f5f5f5;
 }

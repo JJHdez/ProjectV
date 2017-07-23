@@ -21,21 +21,17 @@
 
 {% block body %}
 <div class="mdl-grid demo-content">
-    <div class="center-elements" id="habits-panel">
+    <div id="habits-panel">
 
-        <li
-            class="mdl-list__item mdl-list__item--two-line
-                mdl-shadow--4dp mdl-cell mdl-cell--6-col center-elements">
+        <div class="mdl-cell mdl-cell--12-col mdl-grid">
             <span class="mdl-list__item-primary-content">
-                <i class="material-icons  mdl-list__item-avatar">gavel</i>
+                <i class="material-icons mdl-color-text--black md-24">gavel</i>
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                     <input v-model="habitModel.name"
                            class="mdl-textfield__input" type="text"
                            id="quick-habit-name"/>
-                    <label class="mdl-textfield__label" for="quick-habit-name">Hábito</label>
+                    <label class="mdl-textfield__label" for="quick-habit-name">Habit</label>
                 </div>
-            </span>
-            <span class="mdl-list__item-secondary-action">
                 <button v-show="validationHabitModel.accept"
                         v-on:click="add()"
                         class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab
@@ -43,11 +39,14 @@
                     <i class="material-icons">add</i>
                 </button>
             </span>
-        </li>
+        </div>
 
 
         <div class="mdl-grid mdl-cell mdl-cell--12-col">
-            <p v-if="!habits.length">No hay hábitos registrados</p>
+            <h3 class="zr-help-add" v-if="!habits.length">
+                Add a habit to complete
+                <a class="material-icons mdl-color-text--black md-36">sentiment_very_satisfied</a>
+            </h3>
             <div v-for="(habit, index) in habits">
                 <div v-bind:class="habitBackground(habit,index)">
                     <div class=" mdl-card__title">
