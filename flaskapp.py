@@ -237,7 +237,7 @@ def dashboard():
     return DashboardCtl.index()
 
 
-@app.route(prefix_admin + '/yourself', endpoint=startpoint_admin + '/yourself')
+@app.route(prefix_admin + '/goal', endpoint=startpoint_admin + '/goal')
 @is_login
 def yourself():
     return DreamCtl.index()
@@ -255,7 +255,7 @@ def habit():
     return HabitCtl.index()
 
 
-@app.route(prefix_admin + '/quick-list', endpoint=startpoint_admin + '/quick-list')
+@app.route(prefix_admin + '/quick-planning', endpoint=startpoint_admin + '/quick-planning')
 @is_login
 def quick_list():
     return ProjectCtl.index()
