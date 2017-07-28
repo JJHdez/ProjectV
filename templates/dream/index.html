@@ -88,8 +88,36 @@
 
             <!-- Dialog dreams-->
             <dialog id="dream-dialog" class="mdl-dialog mdl-cell--4-col">
+                <button v-show="validationDreamModel.remove"
+                            class="mdl-button mdl-js-button mdl-button--icon"
+                            id="dream-dialog-remove">
+                        <i class="material-icons mdl-color-text--red">delete_forever</i>
+                </button>
+                <div class="mdl-tooltip" for="dream-dialog-remove">
+                    Delete
+                </div>
+                <div class="mdl-card__menu">
+
+                    <button v-show="validationDreamModel.accept"
+                            class="mdl-button mdl-js-button mdl-button--icon"
+                            id="dream-dialog-accept">
+                        <i class="material-icons mdl-color-text--amber">save</i>
+                    </button>
+                    <div class="mdl-tooltip" for="dream-dialog-accept">
+                        Save
+                    </div>
+                    <button
+                            class="mdl-button mdl-js-button mdl-button--icon"
+                            id="dream-dialog-cancel">
+                        <i class="material-icons">cancel</i>
+                    </button>
+                    <div class="mdl-tooltip" for="dream-dialog-cancel">
+                        Cancel & Close window
+                    </div>
+
+                </div>
                 <h4 class="mdl-dialog__title">
-                    <i class="material-icons">gps_fixed</i>Objetivo
+                    <i class="material-icons">gps_fixed</i>Goal
                 </h4>
                 <div class="mdl-dialog__content">
                     <form action="#">
@@ -104,24 +132,6 @@
                             <label class="mdl-textfield__label" for="due_date_at">Fecha a finalizar</label>
                         </div>
                     </form>
-                </div>
-                <div class="mdl-dialog__actions">
-                    <button v-show="validationDreamModel.accept"
-                            class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored"
-                            id="dream-dialog-accept">
-                        <i class="material-icons">check_circle</i>Aceptar
-                    </button>
-                    <button
-                            class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent"
-                            id="dream-dialog-cancel">
-                        <i class="material-icons">cancel</i>Cancelar
-                    </button>
-                    <button v-show="validationDreamModel.remove"
-                            class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect"
-                            id="dream-dialog-remove">
-                        <i class="material-icons">delete_forever</i>Eliminar
-                    </button>
-
                 </div>
             </dialog>
         </div>

@@ -26,13 +26,13 @@
                  },
                 methods: {
                     redirect_index_dream: function (event) {
-                        window.location = '/ul/yourself';
+                        window.location = '/ul/goal';
                     },
                     redirect_index_dashboard: function (event) {
                         window.location = '/ul/dashboard';
                     },
                     redirect_index_project: function (event) {
-                        window.location = '/ul/quick-list';
+                        window.location = '/ul/quick-planning';
                     },
                     redirect_index_pomodoro: function (event) {
                         window.location = '/ul/pomodoro';

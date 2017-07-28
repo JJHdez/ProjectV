@@ -178,7 +178,7 @@ def authorized_google(resp):
     if google.get_authorized('access_token'):
         if google.get_user_info():
             if google.start_session():
-                return redirect('/ul/yourself')
+                return redirect('/ul/goal')
     return redirect('/', 404)
 
 # Auth by Api

@@ -61,12 +61,7 @@
                             v-bind:data-badge="habit.fail">clear</div>
                    </div>
                    <div class="mdl-card__actions mdl-card--border">
-                       <button v-on:click="_edit(habit,index)"
-                               class="mdl-button mdl-js-button mdl-button--raised
-                                mdl-js-ripple-effect mdl-button--accent">
-                           <i class="material-icons">edit</i>
-                           Editar
-                       </button>
+
                        <button v-on:click="_done(habit,index)"
                                class="mdl-button mdl-js-button mdl-js-ripple-effect
                                     mdl-button--raised mdl-button--colored">
@@ -75,7 +70,10 @@
                        </button>
                    </div>
                    <div class="mdl-card__menu">
-
+                        <button v-on:click="_edit(habit,index)"
+                               class="mdl-button mdl-js-button mdl-button--icon">
+                           <i class="material-icons">edit</i>
+                       </button>
                    </div>
                </div>
                 <div class="mdl-layout-spacer"></div>
@@ -83,6 +81,32 @@
         </div>
         <!--Dialog box habit-->
         <dialog id="habit-dialog" class="mdl-dialog mdl-cell--4-col">
+            <button v-show="validationHabitModel.remove"
+                        class="mdl-button mdl-js-button mdl-button--icon"
+                        id="habit-dialog-remove">
+                <i class="material-icons mdl-color-text--red">delete_forever</i>
+            </button>
+            <div class="mdl-tooltip" for="habit-dialog-remove">
+                    Delete
+            </div>
+            <div class="mdl-card__menu">
+                <button v-show="validationHabitModel.accept"
+                        class="mdl-button mdl-js-button mdl-button--icon"
+                        id="habit-dialog-accept">
+                    <i class="material-icons mdl-color-text--amber">save</i>
+                </button>
+                <div class="mdl-tooltip" for="habit-dialog-accept">
+                    Save
+                </div>
+                <button class="mdl-button mdl-js-button mdl-button--icon"
+                        id="habit-dialog-cancel">
+                    <i class="material-icons">cancel</i>
+                </button>
+                <div class="mdl-tooltip" for="habit-dialog-cancel">
+                    Cancel & Close window
+                </div>
+            </div>
+
             <h4 class="mdl-dialog__title">
                 <i class="material-icons">gavel</i>Hábito
             </h4>
@@ -95,22 +119,7 @@
                     </div>
                 </form>
             </div>
-            <div class="mdl-dialog__actions">
-                <button v-show="validationHabitModel.accept"
-                        class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored"
-                        id="habit-dialog-accept">
-                    <i class="material-icons">check_circle</i>Aceptar
-                </button>
-                <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent"
-                        id="habit-dialog-cancel">
-                    <i class="material-icons">cancel</i>Cancelar
-                </button>
-                <button v-show="validationHabitModel.remove"
-                        class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect"
-                        id="habit-dialog-remove">
-                    <i class="material-icons">delete_forever</i>Eliminar
-                </button>
-            </div>
+            <div class="mdl-dialog__actions"/>
         </dialog>
 
     </div>
