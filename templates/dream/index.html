@@ -16,7 +16,7 @@
 {% extends "layout.html" %}
 
 {% block layout_title %}
-    Goal
+   {{ _('Goal') }}
 {% endblock %}
 
 {% block body %}
@@ -27,9 +27,9 @@
                     <i class="material-icons mdl-color-text--black md-24">gps_fixed</i>
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input v-model="dreamModel.name"
-                               class="mdl-textfield__input" type="text"
+                               class="mdl-textfield__input"
                                id="quick-dream-name"/>
-                        <label class="mdl-textfield__label" for="quick-dream-name">Goal</label>
+                        <label class="mdl-textfield__label" for="quick-dream-name">{{ _('What do I want to accomplish?') }}</label>
                     </div>
                     <button v-show="validationDreamModel.accept" v-on:click="add()"
                             class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab
@@ -41,8 +41,9 @@
 
             <div class="mdl-cell mdl-cell--12-col mdl-grid">
                 <h3 v-if="!dreams.length" class="zr-help-add">
-                    Add a goal to complete
+                    {{ _('What do I want to accomplish?') }}
                     <a class="material-icons mdl-color-text--black md-36">sentiment_very_satisfied</a>
+
                 </h3>
                 <div v-for="(dream, index) in dreams">
                     <div v-bind:class="dreamBackground(dream,index)">
@@ -63,7 +64,7 @@
                             <button v-on:click="_done(dream,index)"
                                     class="mdl-button mdl-js-button mdl-js-ripple-effect
                                         mdl-button--raised mdl-button--colored">
-                                <i class="material-icons">assignment_turned_in</i>Realizado
+                                <i class="material-icons">assignment_turned_in</i>{{ _('Accomplished')}}
                             </button>
                         </div>
                         <div class="mdl-card__menu">
@@ -71,16 +72,6 @@
                                     class="mdl-button mdl-js-button mdl-button--icon">
                                 <i class="material-icons">edit</i>
                             </button>
-                            <!--<button v-on:click="_edit(dream,index)"-->
-                               <!--class="mdl-button mdl-button&#45;&#45;icon mdl-js-button mdl-js-ripple-effect mdl-button-raised">-->
-                                <!--<i class="material-icons">edit</i>-->
-
-                            <!--</button>-->
-                            <!--<button v-on:click="_edit(dream,index)"-->
-                                    <!--class="mdl-button mdl-button&#45;&#45;icon mdl-js-button mdl-js-ripple-effect mdl-button-raised">-->
-                                <!--<i class="material-icons">edit</i>-->
-
-                            <!--</button>-->
                         </div>
                     </div>
                 </div>
@@ -94,7 +85,7 @@
                         <i class="material-icons mdl-color-text--red">delete_forever</i>
                 </button>
                 <div class="mdl-tooltip" for="dream-dialog-remove">
-                    Delete
+                    {{ _('Delete') }}
                 </div>
                 <div class="mdl-card__menu">
 
@@ -104,7 +95,7 @@
                         <i class="material-icons mdl-color-text--amber">save</i>
                     </button>
                     <div class="mdl-tooltip" for="dream-dialog-accept">
-                        Save
+                        {{ _('Save') }}
                     </div>
                     <button
                             class="mdl-button mdl-js-button mdl-button--icon"
@@ -112,19 +103,19 @@
                         <i class="material-icons">cancel</i>
                     </button>
                     <div class="mdl-tooltip" for="dream-dialog-cancel">
-                        Cancel & Close window
+                        {{ _('Cancel & Close window') }}
                     </div>
 
                 </div>
                 <h4 class="mdl-dialog__title">
-                    <i class="material-icons">gps_fixed</i>Goal
+                    <i class="material-icons">gps_fixed</i>{{ _('Goal') }}
                 </h4>
                 <div class="mdl-dialog__content">
                     <form action="#">
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                            <input class="mdl-textfield__input" type="text" id="name"
+                            <input class="mdl-textfield__input" id="name"
                                    v-model="dreamModel.name" required="True">
-                            <label class="mdl-textfield__label" for="name">Nombre</label>
+                            <label class="mdl-textfield__label" for="name">{{ _('What is my goal?') }}</label>
                         </div>
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                             <input class="mdl-textfield__input" type="date" id="due_date_at"

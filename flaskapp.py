@@ -99,6 +99,26 @@ def open_db():
                 g.user = _rs['user']
 
 
+LANGUAGES = {
+    'es': 'Español',
+    'en': 'English'
+}
+
+@babel.localeselector
+def get_locale():
+    user = getattr(g, 'user', None)
+    # if user is not None:
+    return 'es' #user.locale
+    # return request.accept_languages.best_match(LANGUAGES.keys())
+
+
+@babel.timezoneselector
+def get_timezone():
+    user = getattr(g, 'user', None)
+
+    if user is not None:
+        return user.timezone
+
 # RESTful
 api_v1 = '/api/v1/'
 
