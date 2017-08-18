@@ -121,8 +121,8 @@ window.addEventListener('load', function ()
                                 dream_dialog_close();
                                 break
                         }
-                        if (response.message)
-                            notify({message: response.message});
+                        // if (response.message)
+                        //     notify({message: response.message});
                         self._clean();
                         return true;
                     }else{
