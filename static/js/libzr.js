@@ -106,7 +106,9 @@ var Libzr = (function Libzr() {
             var timeDiff = start_date.getTime() - due_date.getTime();
             return Math.ceil(timeDiff / (1000 * 3600 * 24));
         };
-
+        _this.getDiffHour = function (start_date, due_date) {
+            return start_date.getTime() - due_date.getTime() / 3600000;
+        }
         // _this.snackBarNotify =  function (id) {
         //     var myElem = document.getElementById(id);
         //     if (myElem === null){
