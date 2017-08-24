@@ -17,7 +17,7 @@
 window.addEventListener('load', function ()
 {
     /// DREAM ////
-    var dreamDialog = null;
+    // var dreamDialog = null;
     var dreams_panelV = new Vue({
         delimiters: libzr.getDelimiterVue(),
         el: '#dreams-panel',
@@ -32,7 +32,8 @@ window.addEventListener('load', function ()
                 index:-1
             },
             url: libzr.getApi()+'dream',
-            flagNew:true
+            flagNew:true,
+            dreamDialog: null
         },
 
         methods:{
@@ -41,8 +42,10 @@ window.addEventListener('load', function ()
                 this._callback(null, this.url,'GET', 'init');
             },
             add : function () {
-                this.flagNew = true;
-                this._accept();
+                if (this.validationDreamModel.accept){
+                    this.flagNew = true;
+                    this._accept();
+                }
             },
             _accept :function() {
                 var  _action = this.flagNew?'new':'edit';
@@ -70,7 +73,20 @@ window.addEventListener('load', function ()
                 this.dreamModel.index = index;
                 this._callback(_values, this.url+'/'+data.id, 'PUT','done');
             },
-
+            /*_findDreamDialog: function (action) {
+               this.dreamDialog = this.$el.querySelector('#dream-dialog');
+               if (! this.dreamDialog.showModal) {
+                    dialogPolyfill.registerDialog(dreamDialog);
+                }
+                switch (action){
+                    case 'show':
+                            this.dreamDialog.showModal();
+                        break;
+                    case 'close':
+                            this.dreamDialog.close();
+                        break;
+                }
+            },*/
             _edit: function(data, index){
                 this.flagNew = false;
                 this.dreamModel.name = data.name;
@@ -79,7 +95,14 @@ window.addEventListener('load', function ()
                 this.dreamModel.created_at = data.created_at;
                 this.dreamModel.id = data.id;
                 this.dreamModel.index = index;
-                dream_dialog_open();
+                //this._findDreamDialog('show');
+                libzr.findModal('dream-dialog', 'show');
+            },
+
+            _cancel: function () {
+                this._clean();
+                //this._findDreamDialog('close');
+                libzr.findModal('dream-dialog', 'close');
             },
 
             _callback: function(_data, _url, _method, _action){
@@ -105,7 +128,8 @@ window.addEventListener('load', function ()
                                 break;
                             case 'remove':
                                 self.dreams.splice(self.dreamModel.index,1);
-                                dream_dialog_close();
+                                //self._findDreamDialog('close');
+                                libzr.findModal('dream-dialog', 'close');
                                 break;
                             case 'new':
                                 _data['id']=response.data.dreams[0].id;
@@ -118,8 +142,9 @@ window.addEventListener('load', function ()
                                 _data['created_at'] = self.dreamModel.created_at;
                                 _data['due_date_at'] = self.dreamModel.due_date_at;
                                 self.dreams.splice(self.dreamModel.index,1,_data);
-                                dream_dialog_close();
-                                break
+                                // self._findDreamDialog('close');
+                                libzr.findModal('dream-dialog', 'close');
+                                break;
                         }
                         // if (response.message)
                         //     notify({message: response.message});
@@ -197,33 +222,4 @@ window.addEventListener('load', function ()
 
     dreams_panelV.init();
 
-    dreamDialog = document.querySelector('#dream-dialog');
-    // showDreamDialogButton = document.querySelector('#show-dream-dialog');
-
-    if (! dreamDialog.showModal) {
-        dialogPolyfill.registerDialog(dreamDialog);
-    }
-    // showDreamDialogButton.addEventListener('click', function() {
-    //     dream_dialog_open();
-    //     dreams_panelV.flagNew = true;
-    // });
-    dreamDialog.querySelector('#dream-dialog-cancel').addEventListener('click', function() {
-        dreams_panelV._clean();
-        dream_dialog_close();
-    });
-    dreamDialog.querySelector('#dream-dialog-remove').addEventListener('click', function() {
-        dreams_panelV._remove();
-    });
-    dreamDialog.querySelector('#dream-dialog-accept').addEventListener('click', function() {
-        dreams_panelV._accept()
-    });
-    function dream_dialog_open() {
-        if(dreamDialog){
-            dreamDialog.showModal();
-        }
-    }
-    function dream_dialog_close() {
-        if(dreamDialog)
-            dreamDialog.close();
-    }
 });

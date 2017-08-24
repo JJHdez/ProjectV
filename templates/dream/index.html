@@ -28,15 +28,17 @@
                     <i class="material-icons mdl-color-text--black md-24">gps_fixed</i>
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input v-model="dreamModel.name"
+                               @keyup.enter="add(true)"
                                class="mdl-textfield__input"
                                id="quick-dream-name"/>
                         <label class="mdl-textfield__label" for="quick-dream-name">{{ _('What do I want to accomplish?') }}</label>
                     </div>
+                    <!---
                     <button v-show="validationDreamModel.accept" v-on:click="add()"
                             class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab
                                 mdl-button--accent mdl-button-raised mdl-js-ripple-effect">
                         <i class="material-icons">add</i>
-                    </button>
+                    </button> -->
                 </span>
             </div>
 
@@ -92,8 +94,9 @@
             </div>
 
             <!-- Dialog dreams-->
-            <dialog id="dream-dialog" class="mdl-dialog mdl-cell--4-col">
+            <dialog id="dream-dialog" class="mdl-dialog mdl-cell--6-col-tablet">
                 <button v-show="validationDreamModel.remove"
+                        v-on:click="_remove()"
                             class="mdl-button mdl-js-button mdl-button--icon"
                             id="dream-dialog-remove">
                         <i class="material-icons mdl-color-text--red">delete_forever</i>
@@ -105,7 +108,8 @@
 
                     <button v-show="validationDreamModel.accept"
                             class="mdl-button mdl-js-button mdl-button--icon"
-                            id="dream-dialog-accept">
+                            id="dream-dialog-accept"
+                            v-on:click="_accept()">
                         <i class="material-icons mdl-color-text--amber">save</i>
                     </button>
                     <div class="mdl-tooltip" for="dream-dialog-accept">
@@ -113,7 +117,8 @@
                     </div>
                     <button
                             class="mdl-button mdl-js-button mdl-button--icon"
-                            id="dream-dialog-cancel">
+                            id="dream-dialog-cancel"
+                            v-on:click="_cancel()">
                         <i class="material-icons">cancel</i>
                     </button>
                     <div class="mdl-tooltip" for="dream-dialog-cancel">
@@ -131,13 +136,39 @@
                                    v-model="dreamModel.name" required="True">
                             <label class="mdl-textfield__label" for="name">{{ _('What is my goal?') }}</label>
                         </div>
+
+                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                            <input class="mdl-textfield__input" id="reach_goal">
+                            <label class="mdl-textfield__label" for="reach_goal">
+                                {{ _('Why do I want to reach this goal?') }}
+                            </label>
+                        </div>
+                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                            <input class="mdl-textfield__input" id="reward">
+                            <label class="mdl-textfield__label" for="reward">
+                                {{ _('What is my reward?') }}
+                            </label>
+                        </div>
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                             <input class="mdl-textfield__input" type="date" id="due_date_at"
                                    v-model="dreamModel.due_date_at">
-                            <label class="mdl-textfield__label" for="due_date_at">Fecha a finalizar</label>
+                            <label class="mdl-textfield__label" for="due_date_at">{{ _('When I will finish?') }}</label>
                         </div>
                     </form>
                 </div>
+
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                  <textarea rows="2" class="mdl-textfield__input" id="comment"></textarea>
+                  <label for="comment" class="mdl-textfield__label">{{ _('Add comment')}}</label>
+                </div>
+                <div class="mdl-card__supporting-text meta mdl-color-text--grey-600">
+                  <div class="minilogo"></div>
+                  <div>
+                    <strong>The Newist</strong>
+                    <span>2 days ago</span>
+                  </div>
+                </div>
+
             </dialog>
         </div>
 </div>

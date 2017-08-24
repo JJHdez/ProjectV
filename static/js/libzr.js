@@ -108,7 +108,7 @@ var Libzr = (function Libzr() {
         };
         _this.getDiffHour = function (start_date, due_date) {
             return start_date.getTime() - due_date.getTime() / 3600000;
-        }
+        },
         // _this.snackBarNotify =  function (id) {
         //     var myElem = document.getElementById(id);
         //     if (myElem === null){
@@ -140,6 +140,20 @@ var Libzr = (function Libzr() {
         //         notify.notify(data)
         //     }
         // }
+        _this.findModal = function (id, action) {
+           var dreamDialog = document.querySelector('#'+id);
+           if (! dreamDialog.showModal) {
+                dialogPolyfill.registerDialog(dreamDialog);
+            }
+            switch (action){
+                case 'show':
+                        dreamDialog.showModal();
+                    break;
+                case 'close':
+                        dreamDialog.close();
+                    break;
+            }
+        }
     };
 }());
 const libzr = new Libzr(); // invoke
