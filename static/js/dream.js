@@ -176,7 +176,7 @@ window.addEventListener('load', function ()
                 return _date;
             },
 
-            setProgressBar : function (dream, index) {
+            setProgressBar : function (dream) {
                 var percentage_days = 0;
                 var percentage_minutes = 0;
 
