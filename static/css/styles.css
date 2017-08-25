@@ -106,6 +106,10 @@ html, body {
 .demo-content {
   max-width: 1080px;
 }
+.zr-content {
+  max-width: 1080px;
+}
+
 
 .demo-charts {
   -webkit-align-items: center;
@@ -456,4 +460,28 @@ _:-ms-input-placeholder, :root .demo-graph {
 }
 .zr-color-grey{
     background-color: #f5f5f5;
+}
+
+.zr-dream-article-image {
+  width: 100%;
+  height: auto;
+}
+.zr-dream-padding-top {
+  padding: 10px 0 0;
+}
+
+.zr-dream-card-full-bg {
+  background: url(http://www.magic4walls.com/wp-content/uploads/2013/12/freedom-beauty-love-girl-nature-1200x1920.jpg) center / cover;
+}
+.zr-dream-card-event > .mdl-card__actions {
+    align-items: center;
+    box-sizing: border-box;
+    display: flex;
+}
+.zr-dream-card-event-bg {
+  background: url(https://i.pinimg.com/564x/8e/b3/3a/8eb33aff0c49ee4c94b237421ddb621a.jpg) center / cover;
+}
+
+.zr-dream-card-strip-bg {
+  background: url(http://www.massdial.com/static/img/3.jpg) center / cover;
 }

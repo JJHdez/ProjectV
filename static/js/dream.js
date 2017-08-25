@@ -33,7 +33,8 @@ window.addEventListener('load', function ()
             },
             url: libzr.getApi()+'dream',
             flagNew:true,
-            dreamDialog: null
+            dreamDialog: null,
+            dreamLayout:1
         },
 
         methods:{
@@ -175,7 +176,7 @@ window.addEventListener('load', function ()
                 return _date;
             },
 
-            setProgressBar : function (dream) {
+            setProgressBar : function (dream, index) {
                 var percentage_days = 0;
                 var percentage_minutes = 0;
 
@@ -203,7 +204,15 @@ window.addEventListener('load', function ()
                     percentage_minutes = (diffMinutesToday *100) / diffMinutes;
                 }
                 // var _uid = "show--"+dream.id+"-dream-progress";
+
                 return percentage_days;
+
+            },
+            getDreamLayout: function () {
+                if (this.dreamLayout ===8)
+                    this.dreamLayout = 1;
+                this.dreamLayout = this.dreamLayout +1;
+                return true;
 
             }
         }, // end methods
@@ -216,7 +225,8 @@ window.addEventListener('load', function ()
                 }
             }
 
-        }
+        },
+
 
     });
 
