@@ -34,7 +34,13 @@ window.addEventListener('load', function ()
             url: libzr.getApi()+'dream',
             flagNew:true,
             dreamDialog: null,
-            dreamLayout:1
+            dreamLayout:1,
+            urlComment:libzr.getApi() + 'project/comment',
+            comments: [],
+            commentModel: {
+                'comment': '',
+                'id': -1
+            },
         },
 
         methods:{
@@ -98,6 +104,7 @@ window.addEventListener('load', function ()
                 this.dreamModel.index = index;
                 //this._findDreamDialog('show');
                 libzr.findModal('dream-dialog', 'show');
+                this.initComment(data, index)
             },
 
             _cancel: function () {
@@ -208,13 +215,117 @@ window.addEventListener('load', function ()
                 return percentage_days;
 
             },
-            getDreamLayout: function () {
-                if (this.dreamLayout ===8)
-                    this.dreamLayout = 1;
-                this.dreamLayout = this.dreamLayout +1;
-                return true;
+            getDreamLayout: function (dream, index) {
+                // if (this.dreamLayout ===8)
+                //     this.dreamLayout = 1;
+                // this.dreamLayout = this.dreamLayout +1;
+                // return true;
+                var classCss = '';
+                switch (index){
+                    case 1:
+                        classCss='mdl-cell mdl-cell--6-col mdl-cell--4-col-tablet mdl-card mdl-shadow--4dp'
+                        break;
+                    case 2:
+                        classCss='mdl-cell mdl-cell--3-col mdl-cell--4-col-tablet mdl-card mdl-card mdl-shadow--4dp zr-dream-card-full-bg'
+                        break;
+                    case 3:
+                        classCss='mdl-cell mdl-cell--3-col mdl-cell--4-col-tablet mdl-card mdl-shadow--4dp'
+                        break;
+                    case 4:
+                        classCss='mdl-cell mdl-cell--3-col mdl-cell--4-col-tablet zr-dream-card-event mdl-card mdl-card mdl-shadow--4dp zr-dream-card-event-bg mdl-color-text--white'
+                        break;
+                    case 5:
+                        classCss='mdl-cell mdl-cell--5-col mdl-cell--4-col-tablet zr-dream-card-event mdl-card  mdl-card mdl-shadow--4dp';
+                        break;
+                    case 6:
+                        classCss='mdl-cell mdl-cell--4-col mdl-cell--4-col-tablet zr-dream-card-event mdl-card  mdl-card mdl-shadow--4dp';
+                        break;
+                    default: // same class 0
+                            classCss = 'mdl-grid mdl-cell mdl-cell--12-col mdl-cell--4-col-tablet mdl-card mdl-shadow--4dp';
+                        break
+                }
+                return classCss;
 
-            }
+            },
+            initComment: function (dream, index) {
+                this.comments = [];
+                var _url = this.urlComment+"?by=resource&resource=dream&resource_id="+dream.id;
+                this._requestComment(null, _url, 'GET', 'init');
+            },
+            acceptComment: function (isNew) {
+                 if (this.validation.commentQuickAdd){
+                        var _action = isNew ? 'new' : 'edit';
+                        var _method = isNew ? 'POST' : 'PUT';
+                        var _url = isNew ? this.urlComment : this.urlComment + '/' + this.commentModel.id;
+
+                        var _new_comment = {
+                            'comment': this.commentModel.comment,
+                            'resource': 'dream',
+                            'resource_id': this.dreamModel.id,
+                            // 'user_name': '',
+                            // 'user_cover': ''
+                        };
+                        this._requestComment(_new_comment, _url, _method, _action);
+                    }else{
+
+                    }
+            },
+            _requestComment: function (_data, _url, _method, _action) {
+                var self = this;
+                var _json = null;
+                if (_data)
+                    _json = JSON.stringify(_data);
+                $.ajax({
+                    url: _url,
+                    type: _method,
+                    data: _json,
+                    contentType: 'application/json'
+                }).done(function (response) {
+                    if (response.status_code == 200 || response.status_code == 201) {
+                        switch (_action) {
+                            case 'init':
+                                for (var c = 0; c < response.data.project_comments.length; c++) {
+                                    self.comments.push(response.data.project_comments[c])
+                                }
+                                break;
+                            // case 'done':
+                            //     self.issues.splice(self.issueModel.index, 1);
+                            //     break;
+                            // case 'remove':
+                            //     self.issues.splice(self.issueModel.index, 1);
+                            //     break;
+                            case 'new':
+                                _data['id'] = response.data.project_comments[0].id;
+                                self.comments.unshift(_data);
+                                self.cleanBy({'model':'comment'});
+                                break;
+                            // case 'edit':
+                            //     _data['id'] = self.issueModel.id;
+                            //     // _data['created_at'] = self.issueModel.created_at;
+                            //     // _data['due_date_at'] = self.issueModel.due_date_at;
+                            //     self.issues.splice(self.issueModel.index, 1, _data);
+                            //     issue_dialog_close();
+                            //     break;
+                        }
+                        return true;
+                    } else {
+                        if (response.status_code != 404 ){
+                            if (response.message)
+                                notify({message: response.message});
+                        }
+                        return false;
+                    }
+                }).fail(function () {
+                    notify({message: 'Error al generar la peticion, favor interntar mas tarde! :('});
+                    return false;
+                });
+            },
+             cleanBy: function (object) {
+                if (object.model == 'comment'){
+                    this.commentModel.comment = '';
+                    this.commentModel.id = -1;
+                }
+            },
         }, // end methods
 
         computed: {
@@ -222,6 +333,11 @@ window.addEventListener('load', function ()
             return {
                     accept: this.dreamModel.name.trim().length>3,
                     remove: !this.flagNew
+                }
+            },
+            validation: function () {
+                return{
+                    commentQuickAdd: this.commentModel.comment.trim().length > 3
                 }
             }
 

@@ -33,12 +33,6 @@
                                id="quick-dream-name"/>
                         <label class="mdl-textfield__label" for="quick-dream-name">{{ _('What do I want to accomplish?') }}</label>
                     </div>
-                    <!---
-                    <button v-show="validationDreamModel.accept" v-on:click="add()"
-                            class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab
-                                mdl-button--accent mdl-button-raised mdl-js-ripple-effect">
-                        <i class="material-icons">add</i>
-                    </button> -->
                 </span>
             </div>
             <div class="mdl-cell mdl-cell--12-col mdl-grid">
@@ -46,9 +40,10 @@
                     {{ _('What do I want to accomplish?') }}
                     <a class="material-icons mdl-color-text--black md-36">sentiment_very_satisfied</a>
                 </h3>
-                <div v-for="(dream, index) in dreams" class="mdl-grid">
-                    <!--  Op 1-->
-                    <div v-if="dreamLayout == 1" class="mdl-grid mdl-cell mdl-cell--12-col mdl-cell--4-col-tablet mdl-card mdl-shadow--4dp">
+
+                <div v-for="(dream, index) in dreams" v-bind:class="getDreamLayout(dream,index)">
+                    <!-- Op 1-->
+                    <template v-if="index === 0 || index > 6">
                         <div class="mdl-card__media mdl-cell mdl-cell--12-col-tablet">
                             <img class="zr-dream-article-image" src=" https://www.hmmrmedia.com/wp-content/uploads/2016/04/starting_line.jpg" border="0" >
                         </div>
@@ -76,9 +71,9 @@
                                     <i class="material-icons">assignment_turned_in</i>{{ _('Accomplished')}}
                                 </button>
                         </div>
-                    </div>
-                    <!--Op 2 -->
-                    <div v-else-if="dreamLayout == 2" class="mdl-cell mdl-cell--6-col mdl-cell--4-col-tablet mdl-card mdl-shadow--4dp">
+                    </template>
+                    <!-- Op 2 -->
+                    <template v-else-if="index === 1">
                         <div class="mdl-card__title">
                             <h2 class="mdl-card__title-text">
                                 <button v-on:click="_edit(dream,index)"
@@ -107,9 +102,9 @@
                                             mdl-button--raised mdl-button--colored">
                                     <i class="material-icons">assignment_turned_in</i>{{ _('Accomplished')}}
                               </button>
-                    </div>
-                    <!--Op 3 -->
-                    <div v-else-if="dreamLayout == 3" class="mdl-cell mdl-cell--3-col mdl-cell--4-col-tablet mdl-card mdl-card mdl-shadow--4dp zr-dream-card-full-bg">
+                    </template>
+                    <!-- Op 3 -->
+                    <template v-else-if="index === 2">
                         <div class="mdl-card__title mdl-card--expand">
 
                         </div>
@@ -130,9 +125,9 @@
                                         mdl-button--raised mdl-button--colored">
                                 <i class="material-icons">assignment_turned_in</i>{{ _('Accomplished')}}
                             </button>
-                    </div>
+                    </template>
                     <!-- Op 4-->
-                    <div v-else-if="dreamLayout == 4" class="mdl-cell mdl-cell--3-col mdl-cell--4-col-tablet mdl-card mdl-shadow--4dp ">
+                    <template v-else-if="index === 3" >
                         <div class="mdl-card__media">
                             <a href="#"> <img class="zr-dream-article-image" src="https://i.pinimg.com/564x/e0/c8/2e/e0c82ee2f4e625f595883f2b4fa6bd08.jpg" border="0" alt=""></a>
                         </div>
@@ -154,9 +149,9 @@
                                         mdl-button--raised mdl-button--colored">
                             <i class="material-icons">assignment_turned_in</i>{{ _('Accomplished')}}
                         </button>
-                    </div>
-                    <!--Op 5 -->
-                    <div v-else-if="dreamLayout == 5"  class="mdl-cell mdl-cell--3-col mdl-cell--4-col-tablet zr-dream-card-event mdl-card mdl-card mdl-shadow--4dp zr-dream-card-event-bg mdl-color-text--white">
+                    </template>
+                    <!-- Op 5 -->
+                    <template v-else-if="index === 4">
                         <div class="mdl-card__title mdl-card--expand">
                             <h4 class="mdl-color-text--white">
                                <button v-on:click="_edit(dream,index)"
@@ -175,9 +170,9 @@
                             <div class="mdl-layout-spacer"></div>
                             <i class="material-icons">assignment_turned_in</i>
                         </div>
-                    </div>
-                    <!--Op 6 -->
-                    <div v-else-if="dreamLayout == 6" class="mdl-cell mdl-cell--5-col mdl-cell--4-col-tablet zr-dream-card-event mdl-card  mdl-card mdl-shadow--4dp">
+                    </template>
+                    <!-- Op 6 -->
+                    <template v-else-if="index === 5" >
                         <div class="mdl-card__title mdl-card--expand zr-dream-card-strip-bg mdl-color-text--white">
                             <h2 class="mdl-card__title-text"> <button v-on:click="_edit(dream,index)"
                                     class="mdl-button mdl-js-button mdl-button--icon">
@@ -196,9 +191,9 @@
                             <div class="mdl-layout-spacer"></div>
                             <i class="material-icons mdl-color-text--amber-500">assignment_turned_in</i>
                         </div>
-                    </div>
+                    </template>
                     <!-- Op 7-->
-                    <div v-else-if="dreamLayout == 7" class="mdl-cell mdl-cell--4-col mdl-cell--4-col-tablet zr-dream-card-event mdl-card  mdl-card mdl-shadow--4dp">
+                    <template v-else-if="index === 6">
                         <div class="mdl-card__media">
                             <img class="zr-dream-article-image" src="http://cafh.cl/wp-content/uploads/wallpapers-hd-al-azar-vol-I-162-449x299.jpg" border="0" alt="">
                         </div>
@@ -220,49 +215,8 @@
                             <div class="mdl-layout-spacer"></div>
                             <i class="material-icons mdl-color-text--amber-500">assignment_turned_in</i>
                         </div>
-                    </div>
-                    <!-- <div v-bind:class="dreamBackground(dream,index)">
-                        <div class="mdl-card__title">
-                            <h2 class="mdl-card__title-text">
-                                ${dream.name}
-                            </h2>
-                        </div>
-                        <div class="mdl-card__supporting-text">
-
-                            <span class="mdl-chip mdl-chip--contact" v-if="dream.created_at" id="show--${dream.id}-create-date">
-                                <i class="mdl-chip__contact material-icons">event_available</i>
-                                <span class="mdl-chip__text">${getDate(dream.created_at)}</span>
-                                <div class="mdl-tooltip mdl-tooltip--bottom" for="show--${dream.id}-create-date">
-                                    _("Date start")
-                                </div>
-                            </span>
-
-                            <span class="mdl-chip mdl-chip--contact" v-if="dream.due_date_at" id="show--${dream.id}-due-date">
-                                <i class="mdl-chip__contact material-icons">event_busy</i>
-                                <span class="mdl-chip__text">${getDate(dream.due_date_at)}</span>
-                                <div class="mdl-tooltip mdl-tooltip--bottom" for="show--${dream.id}-due-date">
-                                    _("Date due")
-                                </div>
-                            </span>
-                        </div>
-                        <progress v-bind:value="setProgressBar(dream)" max="100" class="mdl-progress"></progress>
-                        <div class="mdl-card__actions mdl-card--border">
-                            <button v-on:click="_done(dream,index)"
-                                    class="mdl-button mdl-js-button mdl-js-ripple-effect
-                                        mdl-button--raised mdl-button--colored">
-                                <i class="material-icons">assignment_turned_in</i>{{ _('Accomplished')}}
-                            </button>
-                        </div>
-
-                        <div class="mdl-card__menu">
-                            <button v-on:click="_edit(dream,index)"
-                                    class="mdl-button mdl-js-button mdl-button--icon">
-                                <i class="material-icons">edit</i>
-                            </button>
-                        </div>
-                    </div> -->
+                    </template>
                 </div>
-
             </div>
 
             <!-- Dialog dreams-->
@@ -329,17 +283,34 @@
                     </form>
                 </div>
 
-{#                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">#}
-{#                  <textarea rows="2" class="mdl-textfield__input" id="comment"></textarea>#}
-{#                  <label for="comment" class="mdl-textfield__label">{{ _('Add comment')}}</label>#}
-{#                </div>#}
-{#                <div class="mdl-card__supporting-text meta mdl-color-text--grey-600">#}
-{#                  <div class="minilogo"></div>#}
-{#                  <div>#}
-{#                    <strong>The Newist</strong>#}
-{#                    <span>2 days ago</span>#}
-{#                  </div>#}
-{#                </div>#}
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                  <textarea v-model="commentModel.comment"
+                            rows="2" class="mdl-textfield__input" id="comment">
+
+                  </textarea>
+                  <label for="comment" class="mdl-textfield__label">{{ _('Add comment')}}</label>
+                    <div class="mdl-card__menu">
+                        <button v-show="validation.commentQuickAdd" v-on:click="acceptComment(true)"
+                                class="mdl-button mdl-js-button mdl-button--icon"
+                                id="task-comment-dialog-save">
+                            <i class="material-icons mdl-color-text--amber">
+                                save
+                            </i>
+                        </button>
+                        <div class="mdl-tooltip" for="task-comment-dialog-save">
+                            {{ _('Save') }}
+                        </div>
+                    </div>
+                </div>
+
+                <div v-for="(comment, index) in comments"
+                     class="mdl-card__supporting-text meta mdl-color-text--grey-600">
+                  <div class="minilogo"></div>
+                  <div>
+                    <strong>${comment.comment}</strong><br/>
+                    <span>${comment.created_at}</span>
+                  </div>
+                </div>
 
             </dialog>
         </div>
