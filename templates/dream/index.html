@@ -62,10 +62,13 @@
                                     {{ _('To:') }} <a href="#"> ${getDate(dream.due_date_at)}</a>
                                 </span>
                             </div>
-                            <div class="mdl-card__supporting-text no-left-padding">
-                                <p></p>
+                            <div class="mdl-card__supporting-text">
+                                 <strong>{{ _('Why do I want to reach this goal?') }}</strong>
+                                ${dream.reach_goal}<br/>
+                                <strong>{{ _('What is my reward?') }}</strong>
+                                ${dream.reward}
                             </div>
-                             <button v-on:click="_done(dream,index)"
+                            <button v-on:click="_done(dream,index)"
                                         class="mdl-button mdl-js-button mdl-js-ripple-effect
                                             mdl-button--raised mdl-button--colored">
                                     <i class="material-icons">assignment_turned_in</i>{{ _('Accomplished')}}
@@ -94,8 +97,9 @@
 
                         </div>
                         <div class="mdl-card__supporting-text">
-                            <!--<p>add text</p> -->
                             <progress v-bind:value="setProgressBar(dream)" max="100" class="mdl-progress"></progress>
+{#                                <strong>{{ _('Why do I want to reach this goal?') }}</strong><br/>#}
+{#                                ${dream.reach_goal}#}
                         </div>
                         <button v-on:click="_done(dream,index)"
                                         class="mdl-button mdl-js-button mdl-js-ripple-effect
@@ -220,7 +224,7 @@
             </div>
 
             <!-- Dialog dreams-->
-            <dialog id="dream-dialog" class="mdl-dialog mdl-cell--6-col-tablet">
+            <dialog id="dream-dialog" class="mdl-dialog mdl-cell--8-col-tablet">
                 <button v-show="validationDreamModel.remove"
                         v-on:click="_remove()"
                             class="mdl-button mdl-js-button mdl-button--icon"
@@ -263,18 +267,18 @@
                             <label class="mdl-textfield__label" for="name">{{ _('What is my goal?') }}</label>
                         </div>
 
-{#                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">#}
-{#                            <input class="mdl-textfield__input" id="reach_goal">#}
-{#                            <label class="mdl-textfield__label" for="reach_goal">#}
-{#                                {{ _('Why do I want to reach this goal?') }}#}
-{#                            </label>#}
-{#                        </div>#}
-{#                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">#}
-{#                            <input class="mdl-textfield__input" id="reward">#}
-{#                            <label class="mdl-textfield__label" for="reward">#}
-{#                                {{ _('What is my reward?') }}#}
-{#                            </label>#}
-{#                        </div>#}
+                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                            <input class="mdl-textfield__input" v-model="dreamModel.reach_goal" id="reach_goal">
+                            <label class="mdl-textfield__label" for="reach_goal">
+                                {{ _('Why do I want to reach this goal?') }}
+                            </label>
+                        </div>
+                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                            <input class="mdl-textfield__input" v-model="dreamModel.reward" id="reward">
+                            <label class="mdl-textfield__label" for="reward">
+                                {{ _('What is my reward?') }}
+                            </label>
+                        </div>
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                             <input class="mdl-textfield__input" type="date" id="due_date_at"
                                    v-model="dreamModel.due_date_at">
@@ -282,7 +286,7 @@
                         </div>
                     </form>
                 </div>
-
+                <span class=" mdl-color-text--grey-600"></span>
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                   <textarea v-model="commentModel.comment"
                             rows="2" class="mdl-textfield__input" id="comment">
@@ -304,11 +308,11 @@
                 </div>
 
                 <div v-for="(comment, index) in comments"
-                     class="mdl-card__supporting-text meta mdl-color-text--grey-600">
-                  <div class="minilogo"></div>
+                     class="mdl-card__supporting-text zr-meta mdl-color-text--grey-600">
+{#                  <div class="minilogo"></div>#}
                   <div>
                     <strong>${comment.comment}</strong><br/>
-                    <span>${comment.created_at}</span>
+                    <span>${beautyDateComment(comment.created_at)}</span>
                   </div>
                 </div>
 

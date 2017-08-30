@@ -29,7 +29,9 @@ window.addEventListener('load', function ()
                 due_date_at:'',
                 completed_at:'',
                 created_at:'',
-                index:-1
+                index:-1,
+                reach_goal:'',
+                reward:''
             },
             url: libzr.getApi()+'dream',
             flagNew:true,
@@ -59,7 +61,9 @@ window.addEventListener('load', function ()
                 var  _method = this.flagNew?'POST':'PUT';
                 var  _url = this.flagNew?this.url:this.url+'/'+this.dreamModel.id;
                 var new_dream = {
-                    name: this.dreamModel.name
+                    name: this.dreamModel.name,
+                    reach_goal: this.dreamModel.reach_goal,
+                    reward: this.dreamModel.reward
                 };
                 if (this.dreamModel.due_date_at.length>0){
                     // if (!ULV.dateRE.test(this.dreamModel.due_date_at))
@@ -73,6 +77,8 @@ window.addEventListener('load', function ()
                 this.dreamModel.due_date_at= '';
                 this.dreamModel.index = -1;
                 this.dreamModel.id = -1;
+                this.dreamModel.reach_goal = '';
+                this.dreamModel.reward = '';
             },
 
             _done: function(data, index){
@@ -100,6 +106,8 @@ window.addEventListener('load', function ()
                 this.dreamModel.due_date_at = data.due_date_at? data.due_date_at:'';
                 this.dreamModel.completed_at = data.completed_at;
                 this.dreamModel.created_at = data.created_at;
+                this.dreamModel.reach_goal = data.reach_goal;
+                this.dreamModel.reward = data.reward;
                 this.dreamModel.id = data.id;
                 this.dreamModel.index = index;
                 //this._findDreamDialog('show');
@@ -326,6 +334,26 @@ window.addEventListener('load', function ()
                     this.commentModel.id = -1;
                 }
             },
+
+            beautyDateComment: function (date) {
+                var toReturn = '';
+                if (date){
+                    var dateComment = new Date(date);
+                    var diff_days = Math.abs(libzr.getDiffDay(dateComment, new Date()));
+                    switch (true){
+                        case diff_days == 1:
+                            toReturn = 'Hace 1 día';
+                            break;
+                        case diff_days > 1  && diff_days < 30:
+                            toReturn = 'Hace '+ diff_days+' dias';
+                            break;
+                        default:
+                            toReturn = dateComment.toLocaleDateString()
+                    }
+                }
+                return toReturn
+            }
+
         }, // end methods
 
         computed: {

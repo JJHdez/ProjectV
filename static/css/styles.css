@@ -485,3 +485,30 @@ _:-ms-input-placeholder, :root .demo-graph {
 .zr-dream-card-strip-bg {
   background: url(http://www.massdial.com/static/img/3.jpg) center / cover;
 }
+.minilogo {
+    width: 44px;
+    height: 44px;
+    background-image: url(https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 50%;
+    border-radius: 22px;
+    background-color: #F5F5F5;
+}
+.zr-meta {
+    box-sizing: border-box;
+    padding: 16px;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-flex-direction: row;
+    -ms-flex-direction: row;
+    flex-direction: row;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-justify-content: flex-start;
+    -ms-flex-pack: start;
+    justify-content: flex-start;
+    height: auto;
+}

@@ -19,7 +19,9 @@ class DreamMdl:
     _fields = {
         'name': {'required': True, 'length': {'min': 3}, 'typeof': 'str'},
         'due_date_at': {'typeof': 'date'},
-        'completed_at': {'typeof': 'date'}
+        'completed_at': {'typeof': 'date'},
+        'reward': {'typeof': 'str'},
+        'reach_goal': {'typeof': 'str'}
     }
 
     def __init__(self):
