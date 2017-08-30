@@ -42,7 +42,7 @@ window.addEventListener('load', function ()
             commentModel: {
                 'comment': '',
                 'id': -1
-            },
+            }
         },
 
         methods:{
@@ -54,6 +54,8 @@ window.addEventListener('load', function ()
                 if (this.validationDreamModel.accept){
                     this.flagNew = true;
                     this._accept();
+                }else {
+                    notify({message:'La actividad debe tener mínimo 4 letras.'});
                 }
             },
             _accept :function() {
@@ -86,20 +88,7 @@ window.addEventListener('load', function ()
                 this.dreamModel.index = index;
                 this._callback(_values, this.url+'/'+data.id, 'PUT','done');
             },
-            /*_findDreamDialog: function (action) {
-               this.dreamDialog = this.$el.querySelector('#dream-dialog');
-               if (! this.dreamDialog.showModal) {
-                    dialogPolyfill.registerDialog(dreamDialog);
-                }
-                switch (action){
-                    case 'show':
-                            this.dreamDialog.showModal();
-                        break;
-                    case 'close':
-                            this.dreamDialog.close();
-                        break;
-                }
-            },*/
+
             _edit: function(data, index){
                 this.flagNew = false;
                 this.dreamModel.name = data.name;
@@ -224,10 +213,6 @@ window.addEventListener('load', function ()
 
             },
             getDreamLayout: function (dream, index) {
-                // if (this.dreamLayout ===8)
-                //     this.dreamLayout = 1;
-                // this.dreamLayout = this.dreamLayout +1;
-                // return true;
                 var classCss = '';
                 switch (index){
                     case 1:
@@ -275,7 +260,7 @@ window.addEventListener('load', function ()
                         };
                         this._requestComment(_new_comment, _url, _method, _action);
                     }else{
-
+                        notify({message:'El comentario debe tener mínimo 4 letras.'});
                     }
             },
             _requestComment: function (_data, _url, _method, _action) {
@@ -369,9 +354,7 @@ window.addEventListener('load', function ()
                 }
             }
 
-        },
-
-
+        }
     });
 
     dreams_panelV.init();
