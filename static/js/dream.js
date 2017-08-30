@@ -55,7 +55,7 @@ window.addEventListener('load', function ()
                     this.flagNew = true;
                     this._accept();
                 }else {
-                    notify({message:'La actividad debe tener mínimo 4 letras.'});
+                    notify({message:'El objetivo debe tener mínimo 4 letras.'});
                 }
             },
             _accept :function() {
