@@ -16,117 +16,219 @@
 {% extends "layout.html" %}
 
 {% block layout_title %}
-    Habit
+    {{ _("Habit") }}
 {% endblock %}
 
 {% block body %}
-<div class="mdl-grid demo-content">
-    <div id="habits-panel">
-
-        <div class="mdl-cell mdl-cell--12-col mdl-grid">
-            <span class="mdl-list__item-primary-content">
-                <i class="material-icons mdl-color-text--black md-24">gavel</i>
+    <div id="habits-panel"
+         class="mdl-layout mdl-js-layout mdl-layout--fixed-drawer mdl-layout--fixed-header mdl-cell--12-col">
+        <header class="mdl-layout__header mdl-color--white">
+            <div class="mdl-layout__header-row">
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input v-model="habitModel.name"
-                           class="mdl-textfield__input" type="text"
-                           id="quick-habit-name"/>
-                    <label class="mdl-textfield__label" for="quick-habit-name">Habit</label>
+                    <input v-model="habitName"
+                           @keyup.enter="quickAdd()"
+                           class="mdl-textfield__input"
+                           id="quick-add-habit"/>
+                    <label class="mdl-textfield__label" for="quick-add-habit">
+                        {{ _('What do you want improvement?') }}
+                    </label>
                 </div>
-                <button v-show="validationHabitModel.accept"
-                        v-on:click="add()"
-                        class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab
-                            mdl-button--accent mdl-button-raised mdl-js-ripple-effect">
-                    <i class="material-icons">add</i>
-                </button>
+{#                <div class="mdl-layout-spacer"></div>#}
+            </div>
+        </header>
+        <div class="mdl-layout__drawer mdl-color--white">
+            <span class="mdl-layout-title">
+                <i class="material-icons mdl-color-text--black md-24">gavel</i>
+                {{ _("Habits") }}
             </span>
+            <nav class="mdl-navigation">
+                <a v-for="(habit, index) in habits"
+                   v-on:click="show(habit,index)"
+                   class="mdl-navigation__link">
+                    ${habit.name}
+                </a>
+            </nav>
         </div>
+        <main class="mdl-layout__content demo-blog">
 
-
-        <div class="mdl-grid mdl-cell mdl-cell--12-col">
-            <h3 class="zr-help-add" v-if="!habits.length">
-                Add a habit to complete
+            <h3 v-show="!habits.length" class="zr-help-add center-all-elements">
+                {{ _('What do I want to accomplish?') }}
                 <a class="material-icons mdl-color-text--black md-36">sentiment_very_satisfied</a>
             </h3>
-            <div v-for="(habit, index) in habits">
-                <div v-bind:class="habitBackground(habit,index)">
-                    <div class=" mdl-card__title">
-                        <h2 class="mdl-card__title-text">
-                            ${habit.name}
-                        </h2>
-                   </div>
-                   <div class="mdl-card__supporting-text">
-                       <div class="material-icons mdl-badge mdl-badge--overlap"
-                            v-bind:data-badge="habit.success">done</div>
-                       <div class="material-icons mdl-badge mdl-badge--overlap"
-                            v-bind:data-badge="habit.fail">clear</div>
-                   </div>
-                   <div class="mdl-card__actions mdl-card--border">
 
-                       <button v-on:click="_done(habit,index)"
-                               class="mdl-button mdl-js-button mdl-js-ripple-effect
-                                    mdl-button--raised mdl-button--colored">
-                           <i class="material-icons">${_icon_done(habit.success, habit.fail)}</i>
-                           Realizado
-                       </button>
-                   </div>
-                   <div class="mdl-card__menu">
-                        <button v-on:click="_edit(habit,index)"
-                               class="mdl-button mdl-js-button mdl-button--icon">
-                           <i class="material-icons">edit</i>
-                       </button>
-                   </div>
-               </div>
-                <div class="mdl-layout-spacer"></div>
-            </div>
-        </div>
-        <!--Dialog box habit-->
-        <dialog id="habit-dialog" class="mdl-dialog mdl-cell--4-col">
-            <button v-show="validationHabitModel.remove"
-                        class="mdl-button mdl-js-button mdl-button--icon"
-                        id="habit-dialog-remove">
-                <i class="material-icons mdl-color-text--red">delete_forever</i>
-            </button>
-            <div class="mdl-tooltip" for="habit-dialog-remove">
-                    Delete
-            </div>
-            <div class="mdl-card__menu">
-                <button v-show="validationHabitModel.accept"
-                        class="mdl-button mdl-js-button mdl-button--icon"
-                        id="habit-dialog-accept">
-                    <i class="material-icons mdl-color-text--amber">save</i>
-                </button>
-                <div class="mdl-tooltip" for="habit-dialog-accept">
-                    Save
-                </div>
-                <button class="mdl-button mdl-js-button mdl-button--icon"
-                        id="habit-dialog-cancel">
-                    <i class="material-icons">cancel</i>
-                </button>
-                <div class="mdl-tooltip" for="habit-dialog-cancel">
-                    Cancel & Close window
-                </div>
-            </div>
+            <div v-if="habitCurrent.index >= 0" class="page-content demo-blog--blogpost">
+                <div class=" demo-blog__posts mdl-grid">
+                    <div class="mdl-card mdl-shadow--4dp mdl-cell mdl-cell--12-col">
+                        <div class="mdl-card__media mdl-color-text--grey-50">
+                            <h3 class="quote">
+                                ${habitCurrent.name}
+                            </h3>
+                        </div>
+                        <div class="mdl-color-text--grey-700 mdl-card__supporting-text meta">
+                            <i class="material-icons md-48">
+                                ${_icon_done(habitCurrent.success, habitCurrent.fail)}
+                            </i>
+                            <div>
+                            <button v-on:click="done()"
+                                   class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised mdl-button--colored">
+                               <i class="material-icons">done</i>
+                               {{ _("Done") }}
+                            </button>
 
-            <h4 class="mdl-dialog__title">
-                <i class="material-icons">gavel</i>Hábito
-            </h4>
-            <div class="mdl-dialog__content">
-                <form action="#">
-                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input class="mdl-textfield__input" type="text"
-                               id="habit-name" v-model="habitModel.name" required>
-                        <label class="mdl-textfield__label" for="habit-name">Nombre</label>
+{#                                <strong>#}
+{#                                    Demo#}
+{#                                </strong>#}
+{#                                <span>2 days ago</span>#}
+                            </div>
+                            <div class="section-spacer"></div>
+                            <div class="meta__favorites">
+                                <i class="material-icons" v-on:click="openAndEditDialog()">edit</i>
+                            </div>
+                            <div>
+                                <i class="material-icons">today</i>
+                            </div>
+                        </div>
+{#                        <div class="mdl-color-text--grey-700 mdl-card__supporting-text">#}
+{#                            <p>#}
+{#                                Excepteur reprehenderit sint exercitation ipsum consequat qui sit id velit elit. Velit#}
+{#                                anim eiusmod labore sit amet. Voluptate voluptate irure occaecat deserunt incididunt#}
+{#                                esse in. Sunt velit aliquip sunt elit ex nulla reprehenderit qui ut eiusmod ipsum do.#}
+{#                                Duis veniam reprehenderit laborum occaecat id proident nulla veniam. Duis enim deserunt#}
+{#                                voluptate aute veniam sint pariatur exercitation. Irure mollit est sit labore est#}
+{#                                deserunt pariatur duis aute laboris cupidatat. Consectetur consequat esse est sit veniam#}
+{#                                adipisicing ipsum enim irure.#}
+{#                            </p>#}
+{#                        </div>#}
+{#                        <div class="mdl-color-text--primary-contrast mdl-card__supporting-text comments">#}
+{#                            <form>#}
+{#                                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">#}
+{#                                    <textarea rows="1" class="mdl-textfield__input" id="comment"></textarea>#}
+{#                                    <label for="comment" class="mdl-textfield__label">Join the discussion</label>#}
+{#                                </div>#}
+{#                                <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon"#}
+{#                                        data-upgraded=",MaterialButton,MaterialRipple">#}
+{#                                    <i class="material-icons" role="presentation">check</i><span class="visuallyhidden">add comment</span>#}
+{#                                    <span class="mdl-button__ripple-container"><span class="mdl-ripple"></span></span>#}
+{#                                </button>#}
+{#                            </form>#}
+{#                            <div class="comment mdl-color-text--grey-700">#}
+{#                                <header class="comment__header">#}
+{#                                    <img src="images/co1.jpg" class="comment__avatar">#}
+{#                                    <div class="comment__author">#}
+{#                                        <strong>James Splayd</strong>#}
+{#                                        <span>2 days ago</span>#}
+{#                                    </div>#}
+{#                                </header>#}
+{#                                <div class="comment__text">#}
+{#                                    In in culpa nulla elit esse. Ex cillum enim aliquip sit sit ullamco ex eiusmod#}
+{#                                    fugiat. Cupidatat ad minim officia mollit laborum magna dolor tempor cupidatat#}
+{#                                    mollit. Est velit sit ad aliqua ullamco laborum excepteur dolore proident incididunt#}
+{#                                    in labore elit.#}
+{#                                </div>#}
+{#                                <nav class="comment__actions">#}
+{#                                    <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon"#}
+{#                                            data-upgraded=",MaterialButton,MaterialRipple">#}
+{#                                        <i class="material-icons" role="presentation">thumb_up</i><span#}
+{#                                            class="visuallyhidden">like comment</span>#}
+{#                                        <span class="mdl-button__ripple-container"><span#}
+{#                                                class="mdl-ripple"></span></span></button>#}
+{#                                    <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon"#}
+{#                                            data-upgraded=",MaterialButton,MaterialRipple">#}
+{#                                        <i class="material-icons" role="presentation">thumb_down</i><span#}
+{#                                            class="visuallyhidden">dislike comment</span>#}
+{#                                        <span class="mdl-button__ripple-container"><span#}
+{#                                                class="mdl-ripple"></span></span></button>#}
+{#                                    <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon"#}
+{#                                            data-upgraded=",MaterialButton,MaterialRipple">#}
+{#                                        <i class="material-icons" role="presentation">share</i><span#}
+{#                                            class="visuallyhidden">share comment</span>#}
+{#                                        <span class="mdl-button__ripple-container"><span#}
+{#                                                class="mdl-ripple"></span></span></button>#}
+{#                                </nav>#}
+{#                                <div class="comment__answers">#}
+{#                                    <div class="comment">#}
+{#                                        <header class="comment__header">#}
+{#                                            <img src="images/co2.jpg" class="comment__avatar">#}
+{#                                            <div class="comment__author">#}
+{#                                                <strong>John Dufry</strong>#}
+{#                                                <span>2 days ago</span>#}
+{#                                            </div>#}
+{#                                        </header>#}
+{#                                        <div class="comment__text">#}
+{#                                            Yep, agree!#}
+{#                                        </div>#}
+{#                                        <nav class="comment__actions">#}
+{#                                            <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon"#}
+{#                                                    data-upgraded=",MaterialButton,MaterialRipple">#}
+{#                                                <i class="material-icons" role="presentation">thumb_up</i><span#}
+{#                                                    class="visuallyhidden">like comment</span>#}
+{#                                                <span class="mdl-button__ripple-container"><span#}
+{#                                                        class="mdl-ripple"></span></span></button>#}
+{#                                            <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon"#}
+{#                                                    data-upgraded=",MaterialButton,MaterialRipple">#}
+{#                                                <i class="material-icons" role="presentation">thumb_down</i><span#}
+{#                                                    class="visuallyhidden">dislike comment</span>#}
+{#                                                <span class="mdl-button__ripple-container"><span#}
+{#                                                        class="mdl-ripple"></span></span></button>#}
+{#                                            <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon"#}
+{#                                                    data-upgraded=",MaterialButton,MaterialRipple">#}
+{#                                                <i class="material-icons" role="presentation">share</i><span#}
+{#                                                    class="visuallyhidden">share comment</span>#}
+{#                                                <span class="mdl-button__ripple-container"><span#}
+{#                                                        class="mdl-ripple"></span></span></button>#}
+{#                                        </nav>#}
+{#                                    </div>#}
+{#                                </div>#}
+{#                            </div>#}
+{#                        </div>#}
                     </div>
-                </form>
-            </div>
-            <div class="mdl-dialog__actions"/>
-        </dialog>
 
+                </div>
+            </div>
+
+            <!--Dialog box habit-->
+            <dialog id="habit-dialog" class="mdl-dialog mdl-cell--4-col">
+                <button v-on:click="remove()" class="mdl-button mdl-js-button mdl-button--icon" id="habit-dialog-remove">
+                    <i class="material-icons mdl-color-text--red">delete_forever</i>
+                </button>
+                <div class="mdl-tooltip" for="habit-dialog-remove">
+                        {{ _("Delete") }}
+                </div>
+                <div class="mdl-card__menu">
+                    <button v-on:click="save()" class="mdl-button mdl-js-button mdl-button--icon" id="habit-dialog-accept">
+                        <i class="material-icons mdl-color-text--amber">save</i>
+                    </button>
+                    <div class="mdl-tooltip" for="habit-dialog-accept">
+                        {{ _("Save") }}
+                    </div>
+                    <button v-on:click="cancelAndCloseDialog()" class="mdl-button mdl-js-button mdl-button--icon" id="habit-dialog-cancel">
+                        <i class="material-icons">cancel</i>
+                    </button>
+                    <div class="mdl-tooltip" for="habit-dialog-cancel">
+                        {{ _("Cancel & Close window") }}
+                    </div>
+                </div>
+
+                <h4 class="mdl-dialog__title">
+                    <i class="material-icons">gavel</i>${habitCurrent.name}
+                </h4>
+                <div class="mdl-dialog__content">
+                    <form action="#">
+                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                            <input class="mdl-textfield__input"
+                                   id="habit-name" v-model="habitModel.name" required>
+                            <label class="mdl-textfield__label" for="habit-name">{{ _("Name") }}</label>
+                        </div>
+                    </form>
+                </div>
+                <div class="mdl-dialog__actions"/>
+            </dialog>
+
+        </main>
     </div>
-</div>
 
 {% endblock %}
 
-{% block js%}
-<script src="/js/habit.js" type="application/javascript"></script>
+{% block js %}
+    <script src="/js/habit.js" type="application/javascript"></script>
 {% endblock %}
