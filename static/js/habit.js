@@ -86,10 +86,13 @@ window.addEventListener('load', function () {
 
             },
 
-            _setFirstHabit: function () {
+            _setCurrentHabit: function (index = -1) {
                 if (this.habits.length>0){
                     for (var c = 0; c < this.habits.length; c++) {
-                        if (c === 0) {
+                        if (c === 0 && index === -1) {
+                            this.show(this.habits[c], c);
+                            break;
+                        }else if ( c === index) {
                             this.show(this.habits[c], c);
                             break;
                         }
@@ -115,7 +118,7 @@ window.addEventListener('load', function () {
                             for (var c = 0; c < data.length; c++) {
                                 self.habits.push(data[c]);
                             }
-                            self._setFirstHabit();
+                            self._setCurrentHabit();
                             break;
                         case 'done':
                             self.habits.splice(self.habitCurrent.index, 1);
@@ -123,7 +126,7 @@ window.addEventListener('load', function () {
                         case 'remove':
                             self.habits.splice(self.habitCurrent.index, 1);
                             libzr.findModal('habit-dialog', 'close');
-                            self._setFirstHabit();
+                            self._setCurrentHabit();
                             break;
                         case 'new':
                             _data['id'] = data[0].id;
@@ -134,9 +137,10 @@ window.addEventListener('load', function () {
                             self._clean({by:'habit-name'});
                             break;
                         case 'edit':
-                            self.habits.splice(self.habitCurrent.index, 1, self.habitModel);
+                            self.habits.splice(self.habitCurrent.index, 1,  JSON.parse(JSON.stringify(self.habitModel)));
                             libzr.findModal('habit-dialog', 'close');
                             self._clean({by:'habit-model'});
+                            self._setCurrentHabit(self.habitCurrent.index);
                             break
                     }
                     return true;

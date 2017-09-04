@@ -30,7 +30,7 @@
                            class="mdl-textfield__input"
                            id="quick-add-habit"/>
                     <label class="mdl-textfield__label" for="quick-add-habit">
-                        {{ _('What do you want improvement?') }}
+                        {{ _('What do I want improvement?') }}
                     </label>
                 </div>
 {#                <div class="mdl-layout-spacer"></div>#}
@@ -49,15 +49,15 @@
                 </a>
             </nav>
         </div>
-        <main class="mdl-layout__content demo-blog">
+        <main class="mdl-layout__content zr-habit">
 
             <h3 v-show="!habits.length" class="zr-help-add center-all-elements">
                 {{ _('What do I want to accomplish?') }}
                 <a class="material-icons mdl-color-text--black md-36">sentiment_very_satisfied</a>
             </h3>
 
-            <div v-if="habitCurrent.index >= 0" class="page-content demo-blog--blogpost">
-                <div class=" demo-blog__posts mdl-grid">
+            <div v-if="habitCurrent.index >= 0" class="page-content zr-habit--habit-post">
+                <div class=" zr-habit__posts mdl-grid">
                     <div class="mdl-card mdl-shadow--4dp mdl-cell mdl-cell--12-col">
                         <div class="mdl-card__media mdl-color-text--grey-50">
                             <h3 class="quote">
@@ -217,7 +217,7 @@
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                             <input class="mdl-textfield__input"
                                    id="habit-name" v-model="habitModel.name" required>
-                            <label class="mdl-textfield__label" for="habit-name">{{ _("Name") }}</label>
+                            <label class="mdl-textfield__label" for="habit-name">{{ _('What do I want improvement?') }}</label>
                         </div>
                     </form>
                 </div>
