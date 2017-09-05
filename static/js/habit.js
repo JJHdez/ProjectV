@@ -122,6 +122,7 @@ window.addEventListener('load', function () {
                             break;
                         case 'done':
                             self.habits.splice(self.habitCurrent.index, 1);
+                            self._setCurrentHabit();
                             break;
                         case 'remove':
                             self.habits.splice(self.habitCurrent.index, 1);
