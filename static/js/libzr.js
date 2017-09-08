@@ -142,7 +142,7 @@ var Libzr = (function Libzr() {
         // }
         _this.findModal = function (id, action) {
            var dreamDialog = document.querySelector('#'+id);
-           if (! dreamDialog.showModal) {
+           if (!dreamDialog.showModal) {
                 dialogPolyfill.registerDialog(dreamDialog);
             }
             switch (action){

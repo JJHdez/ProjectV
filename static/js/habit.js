@@ -64,11 +64,18 @@ window.addEventListener('load', function () {
                 this.habitModel = JSON.parse(JSON.stringify(this.habitCurrent));
                 libzr.findModal('habit-dialog', 'show');
             },
-
             cancelAndCloseDialog: function () {
                 libzr.findModal('habit-dialog', 'close');
             },
 
+            openAndEditDialogRemember: function () {
+                this.habitModel = JSON.parse(JSON.stringify(this.habitCurrent));
+                libzr.findModal('habit-remember', 'show');
+            },
+
+            cancelAndCloseDialogRemember: function () {
+                libzr.findModal('habit-remember', 'close');
+            },
             //  Private methods
             _clean: function (data = {by:'all'}) {
 
