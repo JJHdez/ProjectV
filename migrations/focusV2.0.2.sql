@@ -23,3 +23,6 @@ CREATE TABLE remember(
 
   */
 );
+
+
+SELECT * FROM remember;

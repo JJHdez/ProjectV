@@ -17,7 +17,14 @@ from flask_mail import Mail
 from flask_babel import Babel
 from flask_restful import Api
 from v.tools.db import PsqlAoL
+from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.triggers.interval import IntervalTrigger
+from apscheduler.triggers.cron import CronTrigger
 
+import functools
+import time
+import atexit
+from datetime import datetime
 
 # User
 from v.auth.rest.authRst import Auth, AuthListRst
@@ -53,6 +60,8 @@ from v.pomodoro.rest.pomodoroRst import PomodoroRst, PomodoroListRst
 # Dashboard
 from v.dashboard.controller.dashboardCtl import DashboardCtl
 
+#Remember
+from v.remember.job import jobRemember
 
 # Frontend index
 from v.frontend.controller.homeCtl import HomeCtl
@@ -69,8 +78,29 @@ google = Google(
     app.config.get('GOOGLE_CLIENT_SECRET')
 )
 
-@app.before_request
-def open_db():
+
+def habit_remember(dt_now=None):
+    with app.app_context():
+        db = PsqlAoL(
+            user=app.config.get('DB_USER'),
+            password=app.config.get('DB_PASSWORD'),
+            database=app.config.get('DB_NAME'),
+            port=app.config.get('DB_PORT'),
+            host=app.config.get('DB_HOST')
+        )
+        o = jobRemember(db=db)
+        o.habit(dt_now=dt_now)
+
+
+def habit_fail():
+    datetime_now = datetime.now()
+    datetime_now = datetime_now.replace(hour=23, minute=59)
+    habit_remember(dt_now=datetime_now)
+
+
+@app.before_first_request
+def initialize():
+    # Add global object Connection
     g.db_conn = PsqlAoL(
         user=app.config.get('DB_USER'),
         password=app.config.get('DB_PASSWORD'),
@@ -78,10 +108,33 @@ def open_db():
         port=app.config.get('DB_PORT'),
         host=app.config.get('DB_HOST')
     )
-    g.mail = mail
-
     if g.db_conn:
         g.db_conn.execute("set timezone to 'UTC';")
+
+    # Add global object Mail
+    g.mail = mail
+
+    # Add Schedule
+    import logging
+    logging.basicConfig()
+    scheduler = BackgroundScheduler()
+    # gconfig = {'apscheduler.logger': app.logger}
+    scheduler.start()
+    scheduler.add_job(
+        func=habit_remember,
+        trigger=IntervalTrigger(seconds=5),
+        id='habit_remember',
+        name='Send notification for remember habit',
+        replace_existing=True
+    )
+    scheduler.add_job(habit_fail, CronTrigger(hour='18', minute='51'))
+    # Shut down the scheduler when exiting the app
+    atexit.register(lambda: scheduler.shutdown())
+
+
+@app.before_request
+def open_db():
+
     _url_path = str(request.url_rule)
     _url_endpoint = str(request.endpoint)
     _url = _url_path.replace(_url_endpoint, '')
