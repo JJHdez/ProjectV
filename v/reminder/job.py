@@ -17,15 +17,18 @@ import time
 import datetime
 
 from v.tools.v import FORMAT_DATE, FORMAT_DATETIME, FORMAT_TIME
+from v.habit.controller.habitCtl import HabitCtl
 
 
-class jobRemember:
+class jobReminder:
     db = None
+    mail = None
 
-    def __init__(self, db):
+    def __init__(self, db, mail):
         self.db = db
+        self.mail = mail
 
-    def habit(self, dt_now= None):
+    def habit(self, dt_now=None):
 
         qry = """
         SELECT
@@ -45,7 +48,8 @@ class jobRemember:
           h.name habit_name,
           hh.state,
           u.id user_id,
-          u.name user_name          
+          u.name user_name,
+          u.email user_email          
         FROM
           remember r INNER JOIN habits h
             ON r.resource = 'habit' AND r.resource_id = h.id
@@ -58,7 +62,7 @@ class jobRemember:
         if self.db.count() > 0:
             habits = self.db.fetch()
             for id, created_at, every, by, start_date, due_date, push_notify, email_notify, date_notify, time_notify, \
-                last_datetime_notify, params, habit_id, habit_name, state, user_id, user_name in habits:
+                last_datetime_notify, params, habit_id, habit_name, state, user_id, user_name, user_email in habits:
 
                 print str(habit_name).upper(), str(user_name).upper()
                 print 'start'.upper(), self.dt2str(start_date), 'due'.upper(), self.dt2str(due_date), 'notifications'.upper()
@@ -72,7 +76,8 @@ class jobRemember:
                 if due_date >= datetime_now:
                     params_template = {
                         'user_name': user_name,
-                        'habit_name': habit_name
+                        'habit_name': habit_name,
+                        'user_email': user_email
                     }
                     is_send_notify = False
                     if by == 'daily':
@@ -120,7 +125,6 @@ class jobRemember:
         self.db.execute(qry)
 
     def send_notify(self, id, params, email_notify=False, push_notify=False):
-        print params
         if push_notify:
             self.template_push(params)
         if email_notify:
@@ -129,14 +133,8 @@ class jobRemember:
             .format(id)
         self.db.execute(qry)
 
-    def template_email(self, params={}):
-        templ = """
-                    Hi!, Dear {}. 
-                    Do yuo need to do make the habit {}, 
-                    for the better your life.            
-                    Take care. :)            
-                """.format(params.get('user_name', ''), params.get('habit_name', ''))
-        print templ
+    def template_email(self, params):
+        HabitCtl.reminder(self.mail, params=params)
 
     def template_push(self, params={}):
         templ = """I want improvement/or make {}.                                

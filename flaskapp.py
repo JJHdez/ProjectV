@@ -61,11 +61,12 @@ from v.pomodoro.rest.pomodoroRst import PomodoroRst, PomodoroListRst
 from v.dashboard.controller.dashboardCtl import DashboardCtl
 
 #Remember
-from v.remember.job import jobRemember
+from v.reminder.job import jobReminder
 
 # Frontend index
 from v.frontend.controller.homeCtl import HomeCtl
 from v.frontend.controller.resetPasswordCtl import ResetPasswordCtl
+from v.frontend.model.resetPasswordMdl import ResetPasswordMdl
 
 app = Flask(__name__)
 
@@ -88,7 +89,8 @@ def habit_remember(dt_now=None):
             port=app.config.get('DB_PORT'),
             host=app.config.get('DB_HOST')
         )
-        o = jobRemember(db=db)
+        mail = Mail(app)
+        o = jobReminder(db=db, mail=mail)
         o.habit(dt_now=dt_now)
 
 
@@ -101,20 +103,9 @@ def habit_fail():
 @app.before_first_request
 def initialize():
     # Add global object Connection
-    g.db_conn = PsqlAoL(
-        user=app.config.get('DB_USER'),
-        password=app.config.get('DB_PASSWORD'),
-        database=app.config.get('DB_NAME'),
-        port=app.config.get('DB_PORT'),
-        host=app.config.get('DB_HOST')
-    )
-    if g.db_conn:
-        g.db_conn.execute("set timezone to 'UTC';")
 
-    # Add global object Mail
-    g.mail = mail
-
-    # Add Schedule
+    # res
+    # # Add Schedule
     import logging
     logging.basicConfig()
     scheduler = BackgroundScheduler()
@@ -127,13 +118,25 @@ def initialize():
         name='Send notification for remember habit',
         replace_existing=True
     )
-    scheduler.add_job(habit_fail, CronTrigger(hour='18', minute='51'))
+    scheduler.add_job(habit_fail, CronTrigger(hour='02', minute='01'))
     # Shut down the scheduler when exiting the app
     atexit.register(lambda: scheduler.shutdown())
 
 
 @app.before_request
 def open_db():
+    g.db_conn = PsqlAoL(
+        user=app.config.get('DB_USER'),
+        password=app.config.get('DB_PASSWORD'),
+        database=app.config.get('DB_NAME'),
+        port=app.config.get('DB_PORT'),
+        host=app.config.get('DB_HOST')
+    )
+    if g.db_conn:
+        g.db_conn.execute("set timezone to 'UTC';")
+
+    # Add global object Mail
+    g.mail = mail
 
     _url_path = str(request.url_rule)
     _url_endpoint = str(request.endpoint)
@@ -151,11 +154,11 @@ def open_db():
             else:
                 g.user = _rs['user']
 
-
 LANGUAGES = {
     'es': 'Español',
     'en': 'English'
 }
+
 
 @babel.localeselector
 def get_locale():
@@ -271,9 +274,6 @@ def index():
 @app.route('/<path:resource>')
 def serveStaticResource(resource):
     return send_from_directory('static/', resource)
-
-
-
 
 
 @app.context_processor

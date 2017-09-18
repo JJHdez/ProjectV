@@ -13,8 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from flask import render_template
-
+from flask import render_template, g
+from flask_mail import Message
 
 class HabitCtl:
 
@@ -24,3 +24,20 @@ class HabitCtl:
     @staticmethod
     def index():
         return render_template('habit/index.html')
+
+    @staticmethod
+    def reminder(mail, params={}):
+        print params
+        _template = render_template('habit/reminder.html',
+                                    user_name=params.get('user_name', ''),
+                                    habit_name=params.get('habit_name', ''))
+        try:
+            msg = Message(
+                sender=("Focus", "jsphzb@gmail.com"),
+                recipients=[params.get('user_email', False)],
+                subject="{} :)".format(params.get('habit_name', '')).upper()
+            )
+            msg.html = _template
+            mail.send(msg)
+        except Exception as e:
+            print e.message, e.args
