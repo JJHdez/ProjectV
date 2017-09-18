@@ -29,13 +29,13 @@ class HabitCtl:
     def reminder(mail, params={}):
         print params
         _template = render_template('habit/reminder.html',
-                                    user_name=params.get('user_name', ''),
+                                    user_name=params.get('user_name', '').encode('utf-8'),
                                     habit_name=params.get('habit_name', ''))
         try:
             msg = Message(
                 sender=("Focus", "jsphzb@gmail.com"),
                 recipients=[params.get('user_email', False)],
-                subject="{} :)".format(params.get('habit_name', '')).upper()
+                subject="{} :)".format(params.get('habit_name', '').encode('utf-8')).upper()
             )
             msg.html = _template
             mail.send(msg)
