@@ -121,7 +121,7 @@ class jobReminder:
                 print ('.' * 50)
 
     def put_habit_fail(self, user_id, habit_id):
-        qry = "INSERT INTO history_habits (user_id, habit_id, state)VALUES({},{},'fail');".format(user_id, habit_id)
+        qry = "INSERT INTO history_habits (created_date, user_id, habit_id, state)VALUES(now()- INTERVAL  '7 hours', {},{},'fail');".format(user_id, habit_id)
         self.db.execute(qry)
 
     def send_notify(self, id, params, email_notify=False, push_notify=False):
