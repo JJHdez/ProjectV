@@ -23,61 +23,122 @@
     <title>Focus / {% block layout_title %} {% endblock %}</title>
     <!-- Page styles -->
     <link rel="shortcut icon" type="image/svg" href="/images/logo.png"/>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:regular,bold,italic,thin,light,bolditalic,black,medium&amp;lang=en">
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Roboto:regular,bold,italic,thin,light,bolditalic,black,medium&amp;lang=en">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.amber-orange.min.css" />
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.amber-orange.min.css"/>
     <link rel="stylesheet" href="/css/styles.css">
-    {% block css %}{% endblock %}
+    {% block css %}
+        <!-- here add css -->
+    {% endblock %}
 </head>
 <body>
 <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
-    <div id="layout-header" class="android-header mdl-layout__header mdl-layout__header--waterfall">
+
+    <div class="android-header mdl-layout__header mdl-layout__header--waterfall">
         <div class="mdl-layout__header-row">
-                  <div class="android-header-spacer mdl-layout-spacer"></div>
-                    <span class="android-title mdl-layout-title">
-                        <img height="50px" src="/images/logo.png">
-                    </span>
-            <!-- Add spacer, to align navigation to the right in desktop -->
-            <!-- <div class="android-header-spacer mdl-layout-spacer"></div> -->
-            <!-- <div class="android-search-box mdl-textfield mdl-js-textfield mdl-textfield&#45;&#45;expandable mdl-textfield&#45;&#45;floating-label mdl-textfield&#45;&#45;align-right mdl-textfield&#45;&#45;full-width">
-                <label class="mdl-button mdl-js-button mdl-button&#45;&#45;icon" for="search-field">
-                <i class="material-icons">account_circle</i>
-                </label>
-                <div class="mdl-textfield__expandable-holder">
-                <input class="mdl-textfield__input" type="text" id="search-field">
-                </div>
-            </div> -->
-            <!-- <div id="create_recovery_account" class="mdl-textfield mdl-js-textfield mdl-textfield--expandable mdl-textfield--floating-label">
-                <label class="mdl-button mdl-js-button mdl-button--icon" for="reset-password-email">
-                    <i class="material-icons">account_circle</i>
-                </label>
-                <div class="mdl-textfield__expandable-holder" >
-                    <label class="mdl-textfield__label" for="reset-password-email">
-                        Reiniciar contraseña
-                    </label>
-                    <input  @keyup.enter="send_email_reset_password" v-model="reset_password.email"
-                            class="mdl-textfield__input" type="text" id="reset-password-email" >
-                </div>
-                <i v-show="validation_reset_password.email" v-on:click="send_email_reset_password" class="material-icons">email</i>
-            </div>
-            <div class="mdl-tooltip mdl-tooltip--bottom" for="create_recovery_account">
-                Recordar contraseña
-            </div> -->
+            <a class="mdl-layout-title" href="{{ url_for('/') }}">
+                <img class="zr-logo-image" src="images/logo.png">
+            </a>
+
+            <nav class="zr-frontend-navigation mdl-navigation">
+                <a id="navigation-overview" class="mdl-navigation__link " href="{{ url_for('/') }}">
+                    <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-typography--text-uppercase">
+                        {{ _('Overview') }}
+                    </button>
+                </a>
+                <a id="navigation-pricing" class="mdl-navigation__link" href="{{ url_for('pricing') }}">
+                    <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-typography--text-uppercase">
+                        {{ _('Pricing') }}
+                    </button>
+                </a>
+            </nav>
+
+            <div class="mdl-layout-spacer"></div>
+            <a href="{{ url_for('google/login') }}">
+                <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-typography--text-uppercase">
+                    <img width="30px" src="/static/images/google_G_logo.png"> {{ _('to login') }}
+                </button>
+            </a>
         </div>
-    </div>
-    {% block body %}{% endblock %}
-    <div id="notification-index" class="mdl-js-snackbar mdl-snackbar">
-        <div class="mdl-snackbar__text"></div>
-        <button class="mdl-snackbar__action" type="button"></button>
     </div>
 
-    <footer class="android-footer mdl-mega-footer">
-        <div class="mdl-mega-footer--middle-section">
-            <p class="mdl-typography--font-light">
-                Copyright 2017-Present <a>ProjectV</a> Authors. All Rights Reserved.
-            </p>
+    <main class="mdl-layout__content">
+        {% block body %}
+            <!-- here add body -->
+        {% endblock %}
+
+        <div id="notification-index" class="mdl-js-snackbar mdl-snackbar">
+            <div class="mdl-snackbar__text"></div>
+            <button class="mdl-snackbar__action" type="button"></button>
         </div>
-    </footer>
+
+        <footer class="mdl-mega-footer">
+
+            <!--div class="mdl-mega-footer__middle-section">
+
+                <div class="mdl-mega-footer__drop-down-section">
+                    <input class="mdl-mega-footer__heading-checkbox" type="checkbox" checked>
+                    <h1 class="mdl-mega-footer__heading">Features</h1>
+                    <ul class="mdl-mega-footer__link-list">
+                        <li><a href="#">About</a></li>
+                        <li><a href="#">Terms</a></li>
+                        <li><a href="#">Partners</a></li>
+                        <li><a href="#">Updates</a></li>
+                    </ul>
+                </div>
+
+                <div class="mdl-mega-footer__drop-down-section">
+                    <input class="mdl-mega-footer__heading-checkbox" type="checkbox" checked>
+                    <h1 class="mdl-mega-footer__heading">Details</h1>
+                    <ul class="mdl-mega-footer__link-list">
+                        <li><a href="#">Specs</a></li>
+                        <li><a href="#">Tools</a></li>
+                        <li><a href="#">Resources</a></li>
+                    </ul>
+                </div>
+
+                <div class="mdl-mega-footer__drop-down-section">
+                    <input class="mdl-mega-footer__heading-checkbox" type="checkbox" checked>
+                    <h1 class="mdl-mega-footer__heading">Technology</h1>
+                    <ul class="mdl-mega-footer__link-list">
+                        <li><a href="#">How it works</a></li>
+                        <li><a href="#">Patterns</a></li>
+                        <li><a href="#">Usage</a></li>
+                        <li><a href="#">Products</a></li>
+                        <li><a href="#">Contracts</a></li>
+                    </ul>
+                </div>
+
+                <div class="mdl-mega-footer__drop-down-section">
+                    <input class="mdl-mega-footer__heading-checkbox" type="checkbox" checked>
+                    <h1 class="mdl-mega-footer__heading">FAQ</h1>
+                    <ul class="mdl-mega-footer__link-list">
+                        <li><a href="#">Questions</a></li>
+                        <li><a href="#">Answers</a></li>
+                        <li><a href="#">Contact us</a></li>
+                    </ul>
+                </div>
+
+            </div -->
+
+            <div class="mdl-mega-footer__bottom-section">
+                <div class="mdl-logo">Focus © 2016-Present | <a> Yonn Corp</a></div>
+                <ul class="mdl-mega-footer__link-list">
+                    <li><a href="#">| {{ _('Privacy') }}</a></li>
+                    <li><a href="#">| {{ _('Terms') }}</a></li>
+                    <li id="menu-language"><a href="#">| {{ _('Language') }}</a></li>
+                </ul>
+            </div>
+
+        </footer>
+        <!-- Right aligned menu on top of button  -->
+
+    </main>
+    <ul class="mdl-menu mdl-menu--top-right mdl-js-menu mdl-js-ripple-effect" data-mdl-for="menu-language">
+        <li class="mdl-menu__item"><a href="{{ url_for('language')+'?lang=en' }}">English</a></li>
+        <li class="mdl-menu__item"><a href="{{ url_for('language')+'?lang=es' }}">Español</a></li>
+    </ul>
 
 </div>
 <a class="mdl-js-ripple-effect mdl-button--fab zr-button-fab">
@@ -85,8 +146,9 @@
 </a>
 <script src="/static/jquery/jquery-3.2.1.min.js"></script>
 <script src="/static/vue/vue.min.js"></script>
-{#<script src="/js/index.js"></script>#}
-{% block js %}{% endblock %}
+{% block js %}
+    <!-- Here add js-->
+{% endblock %}
 <script src="/static/mdl/material.min.js"></script>
 </body>
 </html>

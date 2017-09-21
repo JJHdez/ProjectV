@@ -162,10 +162,14 @@ LANGUAGES = {
 
 @babel.localeselector
 def get_locale():
-    user = getattr(g, 'user', None)
+    # user = getattr(g, 'user', None)
     # if user is not None:
-    return 'es' #user.locale
+    # return 'en' #user.locale
     # return request.accept_languages.best_match(LANGUAGES.keys())
+    lang = 'en'
+    if 'lang' in session:
+        lang = session['lang']
+    return lang
 
 
 @babel.timezoneselector
@@ -240,9 +244,32 @@ api.add_resource(PomodoroListRst, api_v1 + 'pomodoro')
 api.add_resource(PomodoroRst, api_v1 + 'pomodoro/<int:id>')
 
 
-# Auth google
-@app.route('/google/login')
+# Auth by Api
+@app.route(api_v1 + 'login', methods=['POST'])
+def login():
+    _data = request.json
+    _auth = Auth()
+    return _auth.login(data=_data)
+
+
+##########################
+# Frontend Web application
+@app.route('/', endpoint='/')
+def frontend_overview():
+    return HomeCtl.overview()
+
+
+@app.route('/pricing', endpoint='pricing')
+def frontend_pricing():
+    return HomeCtl.pricing()
+
+
+@app.route('/google/login', endpoint='google/login')
 def login_google():
+    """
+    redirect google accept term access account
+    :return: Object Google authorization
+    """
     callback = url_for('authorized_google', _external=True)
     return google.g.authorize(callback=callback)
 
@@ -257,18 +284,15 @@ def authorized_google(resp):
                 return redirect('/ul/goal')
     return redirect('/', 404)
 
-# Auth by Api
-@app.route(api_v1 + 'login', methods=['POST'])
-def login():
-    _data = request.json
-    _auth = Auth()
-    return _auth.login(data=_data)
 
-
-# Web App
-@app.route('/', endpoint='/')
-def index():
-    return HomeCtl.index()
+@app.route('/language', endpoint='language', methods=['GET'])
+def language():
+    lang = request.args.get('lang', 'en')
+    if lang in LANGUAGES:
+        session['lang'] = lang
+    return redirect(url_for('/'))
+# End frontend
+##########################
 
 
 @app.route('/<path:resource>')
