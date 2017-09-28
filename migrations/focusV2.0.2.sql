@@ -25,4 +25,4 @@ CREATE TABLE remember(
 );
 
 
-SELECT * FROM remember;
+ALTER TABLE remember RENAME TO reminder;

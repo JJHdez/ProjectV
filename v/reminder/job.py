@@ -51,7 +51,7 @@ class jobReminder:
           u.name user_name,
           u.email user_email          
         FROM
-          remember r INNER JOIN habits h
+          reminder r INNER JOIN habits h
             ON r.resource = 'habit' AND r.resource_id = h.id
                AND h.finished_date IS NULL AND r.create_id = h.user_id
             LEFT JOIN history_habits hh ON h.id = hh.habit_id and CAST(hh.created_date AS DATE)= now()
@@ -129,7 +129,7 @@ class jobReminder:
             self.template_push(params)
         if email_notify:
             self.template_email(params)
-        qry = "update remember set last_datetime_notify= now() where id={}" \
+        qry = "update reminder set last_datetime_notify= now() where id={}" \
             .format(id)
         self.db.execute(qry)
 
