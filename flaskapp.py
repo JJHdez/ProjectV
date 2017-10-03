@@ -49,6 +49,8 @@ from v.habit.controller.habitCtl import HabitCtl
 from v.habit.rest.habitRst import HabitRst, HabitListRst
 from v.habit.rest.historyHabitRst import HistoryHabitRst, HistoryHabitListRst
 
+from v.reminder.controllers.reminderCtl import ReminderCtl, ReminderListCtl
+
 # To buy
 from v.buy.controller.buyCtl import BuyCtl
 from v.buy.rest.pendingRst import PendingRst, PendingListRst
@@ -100,27 +102,27 @@ def habit_fail():
     habit_remember(dt_now=datetime_now)
 
 
-@app.before_first_request
-def initialize():
-    # Add global object Connection
-
-    # res
-    # # Add Schedule
-    import logging
-    logging.basicConfig()
-    scheduler = BackgroundScheduler()
-    # gconfig = {'apscheduler.logger': app.logger}
-    scheduler.start()
-    scheduler.add_job(
-        func=habit_remember,
-        trigger=IntervalTrigger(seconds=5),
-        id='habit_remember',
-        name='Send notification for remember habit',
-        replace_existing=True
-    )
-    scheduler.add_job(habit_fail, CronTrigger(hour='02', minute='01'))
-    # Shut down the scheduler when exiting the app
-    atexit.register(lambda: scheduler.shutdown())
+# @app.before_first_request
+# def initialize():
+#     # Add global object Connection
+# 
+#     # res
+#     # # Add Schedule
+#     import logging
+#     logging.basicConfig()
+#     scheduler = BackgroundScheduler()
+#     # gconfig = {'apscheduler.logger': app.logger}
+#     scheduler.start()
+#     scheduler.add_job(
+#         func=habit_remember,
+#         trigger=IntervalTrigger(seconds=5),
+#         id='habit_remember',
+#         name='Send notification for remember habit',
+#         replace_existing=True
+#     )
+#     scheduler.add_job(habit_fail, CronTrigger(hour='02', minute='01'))
+#     # Shut down the scheduler when exiting the app
+#     atexit.register(lambda: scheduler.shutdown())
 
 
 @app.before_request
@@ -188,6 +190,10 @@ api.add_resource(HabitListRst, api_v1 + 'habit')
 api.add_resource(HabitRst, api_v1 + 'habit/<int:habit_id>')
 api.add_resource(HistoryHabitListRst, api_v1 + 'habit/history')
 api.add_resource(HistoryHabitRst, api_v1 + 'habit/history/<int:history_habit_id>')
+
+api.add_resource(ReminderCtl, api_v1 + 'reminder/<int:reminder_id>')
+api.add_resource(ReminderListCtl, api_v1 + 'reminder')
+
 # wish
 api.add_resource(WishListRst, api_v1 + 'wish')
 api.add_resource(WishRst, api_v1 + 'wish/<int:id>')

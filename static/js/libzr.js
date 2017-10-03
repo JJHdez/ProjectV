@@ -29,7 +29,7 @@ var Libzr = (function Libzr() {
             {
                 var o = {
                     "M+" : this.getMonth()+1, //month
-                    "d+" : this.getDate(),    //day
+                    "d+" :  this.getDate(),    //day
                     "h+" : this.getHours(),   //hour
                     "m+" : this.getMinutes(), //minute
                     "s+" : this.getSeconds(), //second
@@ -67,7 +67,7 @@ var Libzr = (function Libzr() {
                         // If the user is okay, let's create a notification
                         if (permission === "granted") {
                             if (params['icon'] === undefined)
-                                params['icon'] = '/images/logo.png';
+                                params['icon'] = '/images/logo-amber.svg';
                             var notification = new Notification(name, params);
                         }
                     });
@@ -153,6 +153,15 @@ var Libzr = (function Libzr() {
                         dreamDialog.close();
                     break;
             }
+        },
+        _this.time24to12= function(time24){
+          var ts = time24;
+          var H = +ts.substr(0, 2);
+          var h = (H % 12) || 12;
+          h = (h < 10)?("0"+h):h;  // leading 0 at the left for 1 digit hours
+          var ampm = H < 12 ? " AM" : " PM";
+          ts = h + ts.substr(2, 3) + ampm;
+          return ts;
         }
     };
 }());

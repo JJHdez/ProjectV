@@ -230,22 +230,22 @@
 
             <dialog id="habit-remember" class="mdl-dialog mdl-cell--8-col">
 
-                <button class="mdl-button mdl-js-button mdl-button--icon" id="habit-remember-remove">
+                <!--button class="mdl-button mdl-js-button mdl-button--icon" id="habit-remember-remove">
                     <i class="material-icons mdl-color-text--red">delete_forever</i>
                 </button>
                 <div class="mdl-tooltip" for="habit-remember-remove">
                     {{ _("Delete") }}
-                </div>
+                </div -->
 
                 <div class="mdl-card__menu">
-                    <button class="mdl-button mdl-js-button mdl-button--icon" id="habit-remember-accept">
+                    <button v-on:click="saveDialogRemember()" class="mdl-button mdl-js-button mdl-button--icon" id="habit-remember-accept">
                         <i class="material-icons mdl-color-text--amber">save</i>
                     </button>
                     <div class="mdl-tooltip" for="habit-remember-accept">
                         {{ _("Save") }}
                     </div>
 
-                    <button class="mdl-button mdl-js-button mdl-button--icon" id="habit-remember-cancel">
+                    <button v-on:click="cancelAndCloseDialogRemember()"  class="mdl-button mdl-js-button mdl-button--icon" id="habit-remember-cancel">
                         <i class="material-icons">cancel</i>
                     </button>
                     <div class="mdl-tooltip" for="habit-remember-cancel">
@@ -260,89 +260,111 @@
                 <div class="mdl-dialog__content">
                     <form>
                         <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="option-1">
-                          <input type="radio" id="option-1" class="mdl-radio__button" name="habit-remember-by" value="daily" checked>
-                          <span class="mdl-radio__label">{{ _('Daily') }}</span>
+                            <input v-model="reminder.by" v-on:change="onChangeReminder()"
+                                   type="radio" id="option-1" class="mdl-radio__button"
+                                   name="habit-remember-by"
+                                   value="daily" :checked="reminder.by=='daily'">
+                            <span class="mdl-radio__label">{{ _('Daily') }}</span>
                         </label>
                         <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="option-2">
-                          <input type="radio" id="option-2" class="mdl-radio__button" name="habit-remember-by" value="weekly">
-                          <span class="mdl-radio__label">{{ _('Weekly') }}</span>
+                            <input v-model="reminder.by" v-on:change="onChangeReminder()" type="radio"
+                                   id="option-2" class="mdl-radio__button" name="habit-remember-by"
+                                   value="weekly" :checked="reminder.by=='weekly'">
+                            <span class="mdl-radio__label">{{ _('Weekly') }}</span>
                         </label>
-                        <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="option-3">
-                          <input type="radio" id="option-3" class="mdl-radio__button" name="habit-remember-by" value="monthly">
-                          <span class="mdl-radio__label">{{ _('Monthly') }}</span>
+                        <!--label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="option-3">
+                            <input type="radio" id="option-3" class="mdl-radio__button" name="habit-remember-by"
+                                   value="monthly">
+                            <span class="mdl-radio__label">{{ _('Monthly') }}</span>
                         </label>
                         <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="option-4">
-                          <input type="radio" id="option-4" class="mdl-radio__button" name="habit-remember-by" value="yearly">
-                          <span class="mdl-radio__label">{{ _('Yearly') }}</span>
-                        </label>
+                            <input type="radio" id="option-4" class="mdl-radio__button" name="habit-remember-by"
+                                   value="yearly">
+                            <span class="mdl-radio__label">{{ _('Yearly') }}</span>
+                        </label-->
                         <div class="section-spacer"></div>
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                            <input class="mdl-textfield__input" id="habit-remember-every" type="number">
-                            <label class="mdl-textfield__label" for="habit-remember-every">{{ _('Every') }}</label>
+                            <input v-model="reminder.every" v-on:change="onChangeReminder()"
+                                   class="mdl-textfield__input" id="habit-remember-every" type="number">
+                            <label class="mdl-textfield__label" for="habit-remember-every">
+                                {{ _('Every') }} ${reminder.every} ${reminder.everyMsg}
+                            </label>
                         </div>
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                            <input class="mdl-textfield__input" id="habit-remember-due-date" type="number">
-                            <label class="mdl-textfield__label" for="habit-remember-due-date">{{ _('Due date') }}</label>
+                            <input class="mdl-textfield__input" v-model="reminder.due_date" id="habit-remember-due-date" type="date">
+                            <label class="mdl-textfield__label"
+                                   for="habit-remember-due-date">{{ _('Due date') }}</label>
                         </div>
+                        <!--
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                            <input class="mdl-textfield__input" id="habit-remember-specific-day-notify" type="date">
-                            <label class="mdl-textfield__label" for="habit-remember-specific-day-notify">{{ _('Specific day notify') }}</label>
+                            <input class="mdl-textfield__input" id="habit-remember-date-notify" type="date">
+                            <label class="mdl-textfield__label"
+                                   for="habit-remember-date-notify">{{ _('Specific date notify') }}</label>
+                        </div> -->
+
+                        <div v-show=" reminder.by=='weekly' || reminder.by=='daily'"  class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                            <input class="mdl-textfield__input" v-model='reminder.time_notify' id="habit-remember-time-notify" type="time">
+                            <label class="mdl-textfield__label"
+                                   for="habit-remember-time-notify">{{ _('Specific time notify') }}</label>
                         </div>
 
-                        <div class="section-spacer" id="options-week">
+                        <div v-show=" reminder.by=='weekly'" class="section-spacer" id="options-week">
                             <div class="mdl-card__title">
                                 <h2 class="mdl-card__title-text">Week options</h2>
                             </div>
                             <div style="display: inline-flex;">
-                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="weekday-month">
-                                <input type="checkbox" id="weekday-month" class="mdl-checkbox__input" >
-                                <span class="mdl-checkbox__label">{{ _('Monday') }}</span>
-                            </label>
-                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="weekday-tuesday">
-                                <input type="checkbox" id="weekday-tuesday" class="mdl-checkbox__input" >
-                                <span class="mdl-checkbox__label">{{ _('Tueday') }}</span>
-                            </label>
-                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="weekday-wednesday">
-                                <input type="checkbox" id="weekday-wednesday" class="mdl-checkbox__input" >
-                                <span class="mdl-checkbox__label">{{ _('Wednesday') }}</span>
-                            </label>
-                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="weekday-thursday">
-                                <input type="checkbox" id="weekday-thursday" class="mdl-checkbox__input" >
-                                <span class="mdl-checkbox__label">{{ _('Thursday') }}</span>
-                            </label>
-                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="weekday-friday">
-                                <input type="checkbox" id="weekday-friday" class="mdl-checkbox__input" >
-                                <span class="mdl-checkbox__label">{{ _('Friday') }}</span>
-                            </label>
-                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="weekday-saturday">
-                                <input type="checkbox" id="weekday-saturday" class="mdl-checkbox__input" >
-                                <span class="mdl-checkbox__label">{{ _('Saturday') }}</span>
-                            </label>
-                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="weekday-sunday">
-                                <input type="checkbox" id="weekday-sunday" class="mdl-checkbox__input" >
-                                <span class="mdl-checkbox__label">{{ _('Sunday') }}</span>
-                            </label>
+                                <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="weekday-month">
+                                    <input v-model="weekDays" value="Monday" type="checkbox" id="weekday-month" class="mdl-checkbox__input">
+                                    <span class="mdl-checkbox__label">{{ _('Monday') }}</span>
+                                </label>
+                                <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="weekday-tuesday">
+                                    <input v-model="weekDays" value="Tuesday" type="checkbox" id="weekday-tuesday" class="mdl-checkbox__input">
+                                    <span class="mdl-checkbox__label">{{ _('Tuesday') }}</span>
+                                </label>
+                                <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect"
+                                       for="weekday-wednesday">
+                                    <input v-model="weekDays" value="Wednesday" type="checkbox" id="weekday-wednesday" class="mdl-checkbox__input">
+                                    <span class="mdl-checkbox__label">{{ _('Wednesday') }}</span>
+                                </label>
+                                <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="weekday-thursday">
+                                    <input v-model="weekDays" value="Thursday" type="checkbox" id="weekday-thursday" class="mdl-checkbox__input">
+                                    <span class="mdl-checkbox__label">{{ _('Thursday') }}</span>
+                                </label>
+                                <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="weekday-friday">
+                                    <input v-model="weekDays" value="Friday" type="checkbox" id="weekday-friday" class="mdl-checkbox__input">
+                                    <span class="mdl-checkbox__label">{{ _('Friday') }}</span>
+                                </label>
+                                <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="weekday-saturday">
+                                    <input v-model="weekDays" value="Saturday" type="checkbox" id="weekday-saturday" class="mdl-checkbox__input">
+                                    <span class="mdl-checkbox__label">{{ _('Saturday') }}</span>
+                                </label>
+                                <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="weekday-sunday">
+                                    <input v-model="weekDays" value="Sunday" type="checkbox" id="weekday-sunday" class="mdl-checkbox__input">
+                                    <span class="mdl-checkbox__label">{{ _('Sunday') }}</span>
+                                </label>
+                            </div>
+                            ${weekDays}
                         </div>
-                        </div>
-
 
                         <div class="section-spacer">
                             <div class="mdl-card__title">
                                 <h2 class="mdl-card__title-text">Type notification</h2>
                             </div>
 
-                                <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="habit-remember-type-notify-push">
-                                    <input type="checkbox" id="habit-remember-type-notify-push" class="mdl-switch__input" checked>
-                                    <span class="mdl-switch__label">{{ _('Push') }}</span>
-                                </label>
+                            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
+                                   for="habit-remember-type-notify-email">
+                                <input v-bind:checked="reminder.email_notify" type="checkbox" id="habit-remember-type-notify-email" class="mdl-switch__input">
+                                <span class="mdl-switch__label">{{ _('Email') }}</span>
+                            </label>
 
-                                <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="habit-remember-type-notify-email">
-                                    <input type="checkbox" id="habit-remember-type-notify-email" class="mdl-switch__input">
-                                    <span class="mdl-switch__label">{{ _('Email') }}</span>
-                                </label>
+                            <!--label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
+                                   for="habit-remember-type-notify-push">
+                                <input v-bind:checked="reminder.push_notify" type="checkbox" id="habit-remember-type-notify-push" class="mdl-switch__input"
+                                       >
+                                <span class="mdl-switch__label">{{ _('Push') }}</span>
+                            </label -->
 
                         </div>
-
 
                     </form>
                 </div>
@@ -356,5 +378,6 @@
 {% endblock %}
 
 {% block js %}
+{#    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>#}
     <script src="/js/habit.js" type="application/javascript"></script>
 {% endblock %}

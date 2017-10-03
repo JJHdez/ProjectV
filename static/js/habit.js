@@ -24,7 +24,21 @@ window.addEventListener('load', function () {
                 status: ''
             },
             url: libzr.getApi() + 'habit',
-            flagNew: true
+            flagNew: true,
+        //    Habit update
+            reminder:{
+                id: -1,
+                by:'daily',
+                every: 0,
+                everyMsg:'',
+                push_notify:false,
+                email_notify:true,
+                due_date : '',
+                time_notify:'',
+                date_notify:''
+            },
+            url_reminder: libzr.getApi() + 'reminder',
+            weekDays:[]
         },
 
         methods: {
@@ -68,14 +82,6 @@ window.addEventListener('load', function () {
                 libzr.findModal('habit-dialog', 'close');
             },
 
-            openAndEditDialogRemember: function () {
-                this.habitModel = JSON.parse(JSON.stringify(this.habitCurrent));
-                libzr.findModal('habit-remember', 'show');
-            },
-
-            cancelAndCloseDialogRemember: function () {
-                libzr.findModal('habit-remember', 'close');
-            },
             //  Private methods
             _clean: function (data = {by:'all'}) {
 
@@ -174,9 +180,76 @@ window.addEventListener('load', function () {
             },
             habitBackground: function (habit, index) {
                 return "mdl-card mdl-shadow--2dp zr-habit-background-1";//+ libzr.getRandom(1,4);
-            }
-        }, // end methods
+            },
+        //    Habit update
+            openAndEditDialogRemember: function () {
+                this.habitModel = JSON.parse(JSON.stringify(this.habitCurrent));
+                libzr.findModal('habit-remember', 'show');
+                var _url = this.url_reminder + '?resource=habit&resource_id=' + this.habitModel.id;
+                this._call_api_reminder(null, _url,'GET','init');
+            },
 
+            cancelAndCloseDialogRemember: function () {
+                libzr.findModal('habit-remember', 'close');
+            },
+            saveDialogRemember: function () {
+
+            },
+            onChangeReminder: function () {
+                if (this.reminder.by == 'daily'){
+                    this.reminder.everyMsg =  'day'+ ( this.reminder.every == 1 ?'':'s')
+                }else if (this.reminder.by == 'weekly'){
+                    this.reminder.everyMsg =  'week'+ ( this.reminder.every == 1 ?'':'s')
+
+                }
+            },
+
+            _call_api_reminder: function (_json, _url, _method, _action) {
+                self = this;
+                $.ajax({
+                    url: _url,
+                    type: _method,
+                    data: _json,
+                    contentType: 'application/json'
+                }).done(function (data) {
+                    if ( data.status_code == 200 || data.status_code == 201){
+                        console.log(data);
+                        switch (_action) {
+                            case 'init':
+                                var rpsReminder =data.data.reminder;
+                                for (var c = 0; c < rpsReminder.length; c++) {
+                                    var _reminder = rpsReminder[c];
+                                    var _data = new Date(_reminder.due_date);
+                                    self.reminder.id = _reminder.id;
+                                     self.reminder.by = _reminder.by;
+                                     self.reminder.every = _reminder.every;
+                                     self.reminder.due_date= _data.toISOString().substr(0,10);
+                                     self.reminder.time_notify = _reminder.time_notify;
+                                     self.reminder.date_notify = _reminder.date_notify;
+
+                                }
+                                self.onChangeReminder();
+                                break;
+                            case 'edit':
+                                // self.habits.splice(self.habitCurrent.index, 1,  JSON.parse(JSON.stringify(self.habitModel)));
+                                // libzr.findModal('habit-dialog', 'close');
+                                // self._clean({by:'habit-model'});
+                                // self._setCurrentHabit(self.habitCurrent.index);
+                                break
+                        }
+                    }else{
+
+                    }
+                    return true;
+                }).fail(function () {
+                    notify({message: 'Error al generar la peticion, favor interntar mas tarde! :('});
+                    return false;
+                });
+            }
+
+        }, // end methods
+        //http://localhost:8080/api/v1/habit?view=current_task&date=2017-10-02
+        //http://localhost:8080/api/v1/reminder?id=1
         computed: {
             validationHabitModel: function () {
                 return {
