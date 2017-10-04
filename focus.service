@@ -1,0 +1,11 @@
+[Unit]
+# Copy this file in /etc/systemd/system
+Description= Focus By Yonn.Io
+Documentation= focus.yonn.io
+
+[Service]
+Type=simple
+User=focus
+ExecStart= /bin/bash -c 'cd /home/focus/focus; /usr/bin/python app.py'
+[Install]
+WantedBy=default.target
