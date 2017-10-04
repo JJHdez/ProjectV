@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT V\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2017-08-29 18:53-0500\n"
+"POT-Creation-Date: 2017-09-02 17:38-0500\n"
 "PO-Revision-Date: 2017-08-18 10:08-0500\n"
 "Last-Translator: Jse H <jj.hbez@gmail.com>\n"
 "Language: es\n"
@@ -18,82 +18,57 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.4.0\n"
 
-#: templates/dream/index.html:19 templates/dream/index.html:263
-msgid "Goal"
-msgstr "Objetivo"
+#~ msgid "Goal"
+#~ msgstr "Objetivo"
 
-#: templates/dream/index.html:34 templates/dream/index.html:40
-msgid "What do I want to accomplish?"
-msgstr "¿Qué es lo que quiero lograr?"
+#~ msgid "What do I want to accomplish?"
+#~ msgstr "¿Qué es lo que quiero lograr?"
 
-#: templates/dream/index.html:61 templates/dream/index.html:95
-msgid "From:"
-msgstr "De:"
+#~ msgid "From:"
+#~ msgstr "De:"
 
-#: templates/dream/index.html:62 templates/dream/index.html:96
-msgid "To:"
-msgstr "A:"
+#~ msgid "To:"
+#~ msgstr "A:"
 
-#: templates/dream/index.html:66 templates/dream/index.html:102
-#: templates/dream/index.html:276
-msgid "Why do I want to reach this goal?"
-msgstr "¿Por qué quiero alcanzar este objetivo?"
+#~ msgid "Why do I want to reach this goal?"
+#~ msgstr "¿Por qué quiero alcanzar este objetivo?"
 
-#: templates/dream/index.html:68 templates/dream/index.html:104
-#: templates/dream/index.html:282
-msgid "What is my reward?"
-msgstr "¿Cuál es mi recompensa?"
+#~ msgid "What is my reward?"
+#~ msgstr "¿Cuál es mi recompensa?"
 
-#: templates/dream/index.html:75 templates/dream/index.html:110
-#: templates/dream/index.html:133 templates/dream/index.html:157
-#: templates/dream/index.html:175 templates/dream/index.html:196
-#: templates/dream/index.html:220
-msgid "Accomplished"
-msgstr "Realizado"
+#~ msgid "Accomplished"
+#~ msgstr "Realizado"
 
-#: templates/dream/index.html:238
-msgid "Delete"
-msgstr "Eliminar"
+#~ msgid "Delete"
+#~ msgstr "Eliminar"
 
-#: templates/dream/index.html:249 templates/dream/index.html:308
-msgid "Save"
-msgstr "Guardar"
+#~ msgid "Save"
+#~ msgstr "Guardar"
 
-#: templates/dream/index.html:258
-msgid "Cancel & Close window"
-msgstr "Cancelar y cerrar ventana"
+#~ msgid "Cancel & Close window"
+#~ msgstr "Cancelar y cerrar ventana"
 
-#: templates/dream/index.html:270
-msgid "What is my goal?"
-msgstr "¿Cuál es mi objetivo?"
+#~ msgid "What is my goal?"
+#~ msgstr "¿Cuál es mi objetivo?"
 
-#: templates/dream/index.html:288
-msgid "When I will finish?"
-msgstr "¿Cuando finalizaras?"
+#~ msgid "When I will finish?"
+#~ msgstr "¿Cuando finalizaras?"
 
-#: templates/dream/index.html:298
-msgid "Add comment"
-msgstr "Agregar comentario"
+#~ msgid "Add comment"
+#~ msgstr "Agregar comentario"
 
-#: v/dream/rest/dreamRst.py:41 v/dream/rest/dreamRst.py:43
-#: v/dream/rest/dreamRst.py:86 v/dream/rest/dreamRst.py:88
-#: v/dream/rest/dreamRst.py:104 v/dream/rest/dreamRst.py:118
-msgid "Not found record"
-msgstr "Registro no encontrado"
+#~ msgid "Not found record"
+#~ msgstr "Registro no encontrado"
 
-#: v/dream/rest/dreamRst.py:61
-msgid "It was created correctly"
-msgstr "Fue creado correctamente"
+#~ msgid "It was created correctly"
+#~ msgstr "Fue creado correctamente"
 
-#: v/dream/rest/dreamRst.py:63
-msgid "Unable to register"
-msgstr "No se ha podido registrar"
+#~ msgid "Unable to register"
+#~ msgstr "No se ha podido registrar"
 
-#: v/dream/rest/dreamRst.py:102
-msgid "The record was successfully updated"
-msgstr "El registro fue actualizado correctamente"
+#~ msgid "The record was successfully updated"
+#~ msgstr "El registro fue actualizado correctamente"
 
-#: v/dream/rest/dreamRst.py:116
-msgid "The record was successfully removed"
-msgstr "El registro fue eliminado correctamente"
+#~ msgid "The record was successfully removed"
+#~ msgstr "El registro fue eliminado correctamente"
 

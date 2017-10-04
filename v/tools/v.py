@@ -110,7 +110,8 @@ def processing_rest_success(data=None, message=None, errors=None, info=None, war
 def _typeof(val, type_of):
     type_vars = {
         'str': {'str', 'date', 'datetime'},
-        'int': {'int', 'float'}
+        'int': {'int', 'float'},
+        'bool': {'bool'}
     }
     _return = '\'%s\'' % val
     for type_var in type_vars:
@@ -119,6 +120,8 @@ def _typeof(val, type_of):
                 _return = '\'%s\'' % val
             elif type_of == 'int':
                 _return = '%s' % val
+            elif type_of == 'bool':
+                _return = '1' if val else '0'
     return _return
 
 

@@ -48,6 +48,28 @@ class ReminderCtl(Resource, ReminderMdl):
             _put = processing_rest_exception(e)
         return _put
 
+    @staticmethod
+    def insert(db, params):
+        try:
+            qry ="""
+                INSERT INTO reminder
+                (
+                  create_id,
+                  resource, resource_id,
+                  every, by, due_date,
+                  email_notify, time_notify
+                )
+                VALUES
+                (
+                    {}, '{}',{},
+                    {},'{}', current_timestamp + INTERVAL ' +20 days',1,'09:30:00'
+                );
+            """.format(params.get('create_id', 0), params.get('resource', 'fail'), params.get('resource_id',0),
+                       params.get('every', 0), params.get('by', 'fail'))
+            db.execute(qry)
+        except Exception as e:
+            pass
+
 
 class ReminderListCtl(Resource, ReminderMdl):
 

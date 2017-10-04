@@ -102,27 +102,27 @@ def habit_fail():
     habit_remember(dt_now=datetime_now)
 
 
-# @app.before_first_request
-# def initialize():
-#     # Add global object Connection
-# 
-#     # res
-#     # # Add Schedule
-#     import logging
-#     logging.basicConfig()
-#     scheduler = BackgroundScheduler()
-#     # gconfig = {'apscheduler.logger': app.logger}
-#     scheduler.start()
-#     scheduler.add_job(
-#         func=habit_remember,
-#         trigger=IntervalTrigger(seconds=5),
-#         id='habit_remember',
-#         name='Send notification for remember habit',
-#         replace_existing=True
-#     )
-#     scheduler.add_job(habit_fail, CronTrigger(hour='02', minute='01'))
-#     # Shut down the scheduler when exiting the app
-#     atexit.register(lambda: scheduler.shutdown())
+@app.before_first_request
+def initialize():
+    # Add global object Connection
+
+    # res
+    # # Add Schedule
+    import logging
+    logging.basicConfig()
+    scheduler = BackgroundScheduler()
+    # gconfig = {'apscheduler.logger': app.logger}
+    scheduler.start()
+    scheduler.add_job(
+        func=habit_remember,
+        trigger=IntervalTrigger(seconds=5),
+        id='habit_remember',
+        name='Send notification for remember habit',
+        replace_existing=True
+    )
+    scheduler.add_job(habit_fail, CronTrigger(hour='02', minute='01'))
+    # Shut down the scheduler when exiting the app
+    atexit.register(lambda: scheduler.shutdown())
 
 
 @app.before_request
@@ -134,8 +134,8 @@ def open_db():
         port=app.config.get('DB_PORT'),
         host=app.config.get('DB_HOST')
     )
-    if g.db_conn:
-        g.db_conn.execute("set timezone to 'UTC';")
+#    if g.db_conn:
+#        g.db_conn.execute("set timezone to 'UTC';")
 
     # Add global object Mail
     g.mail = mail

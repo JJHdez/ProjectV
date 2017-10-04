@@ -24,9 +24,11 @@ class ReminderMdl:
         },
         u'resource_id': {
             'required': True,
+            'typeof': 'int'
         },
         u'every': {
             'required': True,
+            'typeof': 'int'
         },
         u'by': {
             'required': True,
@@ -35,7 +37,7 @@ class ReminderMdl:
             'required': True,
         },
         u'email_notify': {
-
+            'typeof': 'bool'
         },
         u'date_notify': {
 
