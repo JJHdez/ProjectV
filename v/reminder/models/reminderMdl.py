@@ -43,12 +43,12 @@ class ReminderMdl:
         u'time_notify': {
 
         },
-        u'last_datetime_notify': {
+       # u'last_datetime_notify': {
 
-        },
-        u'params': {
+        #},
+        #u'params': {
 
-        },
+        #},
     }
 
     def __init__(self):
