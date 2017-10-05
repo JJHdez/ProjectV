@@ -35,7 +35,7 @@
               <!-- <i class="material-icons  mdl-list__item-avatar">schedule</i>       -->
           <div class="mdl-textfield mdl-js-textfield
             mdl-textfield--floating-label mdl-cell--8-col">
-              <input @keyup.enter="add25()"
+              <input @keyup.enter="quickAdd('25')"
                      v-model="activity.name"
                 class="mdl-textfield__input"
                 type="text" id="pomodoro-name"/>
@@ -46,7 +46,7 @@
           </div>
           <div class="mdl-textfield mdl-js-textfield
             mdl-textfield--floating-label mdl-cell--2-col">
-              <input @keyup.enter="add05()"
+              <input @keyup.enter="quickAdd('05')"
                      v-model="activity.timer"
                 class="mdl-textfield__input" type="text" id="pomodoro-timer">
               <label class="mdl-textfield__label" for="pomodoro-timer">

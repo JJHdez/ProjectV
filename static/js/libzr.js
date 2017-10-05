@@ -67,7 +67,7 @@ var Libzr = (function Libzr() {
                         // If the user is okay, let's create a notification
                         if (permission === "granted") {
                             if (params['icon'] === undefined)
-                                params['icon'] = '/images/logo-amber.svg';
+                                params['icon'] = '/images/logo-amber.png';
                             var notification = new Notification(name, params);
                         }
                     });

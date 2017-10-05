@@ -47,22 +47,30 @@ window.addEventListener('load', function ()
         methods: {
             init : function () {
                 gCharts.charts.load("current", {packages:['corechart', 'line']});
-                this.getStatisticOfTheWeek()
-                this.getStatisticOfTheMonth()
-                this.getStatisticOfTheYear()
+                this.getStatisticOfTheWeek();
+                this.getStatisticOfTheMonth();
+                this.getStatisticOfTheYear();
                 this._callback(null,this.url+'?activities=registered','GET','init')
             },
-            add25: function () {
-                if ( this.validationActivityModel.quickAdd25or05) {
-                    this.activity.timer = '25'
+            quickAdd: function (timer){
+                var okTimer = false;
+                if (!this.activity.timer){
+                    this.activity.timer = timer;
+                    okTimer = true;
                 }
-                this.add();
-            },
-            add05: function () {
-                if ( this.validationActivityModel.quickAdd25or05) {
-                    this.activity.timer = '05'
+                else{
+                    if (this.validationActivityModel.timer){
+                        okTimer = true;
+                    }
                 }
-                this.add();
+
+                if (okTimer) {
+                    if (!this.validationActivityModel.name)
+                        this.activity.name = ( timer==='25'? 'Activity': 'Break');
+                    this.add();
+                }else {
+                    // error format  timer
+                }
             },
             add:function () {
                 if (this.validationActivityModel.add ){
@@ -243,16 +251,16 @@ window.addEventListener('load', function ()
             getIcon: function (activity, index, ttype) {
                 var icon = 'alarm_off';
                 var classIcon = 'material-icons mdl-list__item-avatar';
-                if (this.timer.activity && activity.id == this.timer.activity.id){
+                if (this.timer.activity && activity.id === this.timer.activity.id){
                     icon='alarm';
-                    classIcon += ' mdl-color--blue';
+                    classIcon += ' mdl-color--green';
                 }else if(activity.start_datetime_at && activity.due_datetime_at){
                     icon = 'alarm_on';
-                    classIcon += ' mdl-color--green';
+                    classIcon += ' mdl-color--amber';
                 }else {
                     classIcon += ' mdl-color--red';
                 }
-                if(ttype=='icon')
+                if(ttype ==='icon')
                     return icon;
                 else
                     return classIcon;
@@ -341,7 +349,6 @@ window.addEventListener('load', function ()
                     if (response.status_code == 200 || response.status_code == 201) {
                         switch (_action) {
                             case 'init':
-                                console.log(response.data);
                                 for (var c = 0; c < response.data.pomodoro_activities.length; c++) {
                                     self.activities.push(response.data.pomodoro_activities[c])
                                 }
@@ -367,10 +374,6 @@ window.addEventListener('load', function ()
                                 gCharts.charts.setOnLoadCallback(function(){self._drawChartStatisticYear(response.data) });
                                 break;
                         }
-                        if (response.message)
-                            notify({message: response.message});
-                        // self._clean();
-                        return true;
                     } else {
                         if (response.message)
                             notify({message: response.message});
@@ -391,7 +394,9 @@ window.addEventListener('load', function ()
                         parseInt(this.activity.timer) < 60,
                     quickAdd25or05: this.activity.name.trim().length > 3 &&
                         !timerRE.test(this.activity.timer) &&
-                        this.activity.timer.trim().length == 0
+                        this.activity.timer.trim().length === 0,
+                    name: this.activity.name.trim().length>0,
+                    timer: timerRE.test(this.activity.timer)
                 }
             }
         }
