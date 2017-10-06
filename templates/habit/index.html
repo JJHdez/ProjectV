@@ -16,7 +16,7 @@
 {% extends "layout.html" %}
 
 {% block layout_title %}
-    {{ _("Habit") }}
+    Habit
 {% endblock %}
 
 {% block body %}
@@ -41,10 +41,8 @@
                 <i class="material-icons mdl-color-text--black md-24">gavel</i>
                 {{ _("Habits") }}
             </span>
-            <nav class="mdl-navigation">
-                <a v-for="(habit, index) in habits"
-                   v-on:click="show(habit,index)"
-                   class="mdl-navigation__link">
+            <nav   class="mdl-navigation">
+                <a v-for="(habit, index) in habits" v-on:click="show(habit,index)" class="mdl-navigation__link zr-pointer">
                     ${habit.name}
                 </a>
             </nav>

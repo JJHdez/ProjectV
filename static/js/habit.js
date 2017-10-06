@@ -45,6 +45,7 @@ window.addEventListener('load', function () {
         methods: {
             // if clicked tab habits or load page your self
             init: function () {
+                document.querySelector("#menu-habits").style.borderBottom = "4px solid #000";
                 var _date = new Date().format('yyyy-MM-dd');
                 var _url = this.url + '?view=current_task&date=' + _date;
                 this._callback(null, _url, 'GET', 'init');

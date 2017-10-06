@@ -46,6 +46,7 @@ window.addEventListener('load', function ()
 
         methods: {
             init : function () {
+                document.querySelector("#menu-pomodoro").style.borderBottom = "4px solid #000";
                 gCharts.charts.load("current", {packages:['corechart', 'line']});
                 this.getStatisticOfTheWeek();
                 this.getStatisticOfTheMonth();

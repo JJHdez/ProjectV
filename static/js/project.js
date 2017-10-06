@@ -114,7 +114,7 @@ window.addEventListener('load', function ()
                     data: _json,
                     contentType: 'application/json'
                 }).done(function (response) {
-                    if (response.status_code == 200 || response.status_code == 201) {
+                    if (response.status_code === 200 || response.status_code === 201) {
 
                         switch (_action) {
                             case 'init':
@@ -125,9 +125,6 @@ window.addEventListener('load', function ()
                                 }
                                 break;
                         }
-                        if (response.message)
-                            notify({message: response.message});
-                        return true;
                     } else {
                         notify({message: response.message});
                         return false;
@@ -225,7 +222,7 @@ window.addEventListener('load', function ()
                     contentType: 'application/json'
                 }).done(function (response) {
                    // console.log(response)
-                    if (response.status_code == 200 || response.status_code == 201) {
+                    if (response.status_code === 200 || response.status_code === 201) {
                         switch (_action) {
                             case 'init':
                                 for (var c = 0; c < response.data.project_task_participed.length; c++) {
@@ -295,9 +292,6 @@ window.addEventListener('load', function ()
                                 }
                                 break;
                         }
-                        if (response.message)
-                            notify({message: response.message});
-                        return true;
                     } else {
                         if (response.status_code != 404){
                             if (response.message)
@@ -460,8 +454,6 @@ window.addEventListener('load', function ()
                                 issue_dialog_close();
                                 break;
                         }
-                        if (response.message)
-                            notify({message: response.message});
                         self.cleanIssue();
                         return true;
                     } else {
@@ -555,9 +547,6 @@ window.addEventListener('load', function ()
                             //     issue_dialog_close();
                             //     break;
                         }
-                        if (response.message)
-                            notify({message: response.message});
-                        // self.cleanIssue();
                         return true;
                     } else {
                         if (response.status_code != 404 ){
@@ -670,6 +659,7 @@ window.addEventListener('load', function ()
         methods: {
 
             init: function () {
+                document.querySelector("#menu-quick-planning").style.borderBottom = "4px solid #000";
                 this._callback(null, this.url, 'GET', 'init');
             },
 
@@ -739,8 +729,8 @@ window.addEventListener('load', function ()
 
             activeWorkspace: function(workspace, index){
                 var _addColourWorkspace = 'mdl-chip mdl-chip--contact mdl-chip--deletable';
-                if (this.current_project.name == workspace.name){
-                    _addColourWorkspace = _addColourWorkspace +' mdl-color--light-blue';
+                if (this.current_project.name === workspace.name){
+                    _addColourWorkspace = _addColourWorkspace +' mdl-color--amber';
                 }
                 return _addColourWorkspace;
             },
@@ -791,8 +781,6 @@ window.addEventListener('load', function ()
                                 self.closeDialog();
                                 break;
                         }
-                        /*if (response.message)
-                            notify({message: response.message});*/
                         self._clean();
                         return true;
                     } else {

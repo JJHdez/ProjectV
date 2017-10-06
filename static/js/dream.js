@@ -48,6 +48,7 @@ window.addEventListener('load', function ()
         methods:{
             // if clicked tab dreams or load page your self
             init: function () {
+                document.querySelector("#menu-dreams").style.borderBottom = "4px solid #000";
                 this._callback(null, this.url,'GET', 'init');
             },
             add : function () {

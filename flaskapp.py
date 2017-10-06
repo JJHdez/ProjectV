@@ -195,14 +195,14 @@ api.add_resource(ReminderCtl, api_v1 + 'reminder/<int:reminder_id>')
 api.add_resource(ReminderListCtl, api_v1 + 'reminder')
 
 # wish
-api.add_resource(WishListRst, api_v1 + 'wish')
-api.add_resource(WishRst, api_v1 + 'wish/<int:id>')
+#api.add_resource(WishListRst, api_v1 + 'wish')
+#api.add_resource(WishRst, api_v1 + 'wish/<int:id>')
 # dream
 api.add_resource(DreamListRst, api_v1 + 'dream')
 api.add_resource(DreamRst, api_v1 + 'dream/<int:id>')
 # Pending
-api.add_resource(PendingListRst, api_v1 + 'pending')
-api.add_resource(PendingRst, api_v1 + 'pending/<int:id>')
+#api.add_resource(PendingListRst, api_v1 + 'pending')
+#api.add_resource(PendingRst, api_v1 + 'pending/<int:id>')
 
 # Project
 api.add_resource(ProjectListRst, api_v1 + 'project')
