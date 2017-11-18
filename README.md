@@ -16,7 +16,7 @@ Now only include this modules:
 * [Quick planning]()
 
 ## To check out living
-visit [focus.yonn.io](http://violet-y0n.rhcloud.com/)
+visit [focus.yonn.xyz](https://focus.yonn.xyz)
 
 
 ## Contributing
