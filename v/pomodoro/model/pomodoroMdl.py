@@ -147,7 +147,7 @@ class PomodoroMdl:
             _day=[]
             _minutes = 0
             for month_year, minutes in _colletion_of_the_year:
-                _month = '0' + str(i+1) if i <=9 else i
+                _month = '0' + str(i+1) if i <=9 else str(i)
                 _month = str(_today.year)+'-' + _month
                 if _month == month_year:
                     _minutes = float(minutes)

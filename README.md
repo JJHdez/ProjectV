@@ -6,24 +6,17 @@
 Project V(violet) is a project that join all applications of use common
 for everybody (end user, entrepreneur). One site, one app.
 
-![Vue.js](screenshot/Home.png)
+![Focus](screenshot/Focus.png)
 
 Now only include this modules:
 
-* [Goal manage](screenshot/Objective.png)
-* [Habits control](screenshot/Habit.png)
-* [Pending list](screenshot/Pending.png)
-* [Project manage](screenshot/Project.png)
-    * [Sub task](screenshot/Project-sub-task.png)
-    * [Issue](screenshot/Project-issue.png)
-* [Pomodoro](screenshot/Pomodoro.png)
+* [Goal]()
+* [Habits]()
+* [Pomodoro]()
+* [Quick planning]()
 
-## Demo
-To check out living example, visit [Violet](http://violet-y0n.rhcloud.com/)
-
-user: demo@demo.demo
-
-password: demo@demo.demo
+## To check out living
+visit [focus.yonn.xyz](https://focus.yonn.xyz)
 
 
 ## Contributing
@@ -38,16 +31,20 @@ password: demo@demo.demo
 * Make your changes in a new git branch:
   ``git checkout -b my-fix-branch master``
 * Commit your changes using a descriptive commit message and prefix:
-    * ``[IMP]`` for improvements
-    * ``[FIX]`` for bug fixes
-    * ``[REF]`` for refactoring
-    * ``[ADD]`` for adding new resources
-    * ``[REM]`` for removing of resources
+    * ``imp `` for improvements
+    * ``fix`` for bug fixes
+    * ``ref`` for refactoring
+    * ``add`` for adding new resources
+    * ``rem`` for removing of resources
 
 ## Configuration
-* Install libraries [requirements.txt](requirements.txt)
+* Install libs python [requirements.txt](requirements.txt)
 * Replace values in file ``flaskapp.cfg``
-* Restore ``tools/Db/last release.sql`` on [PostgreSQL](www.postgresql.org)
+* Restore scripts SQL on [PostgreSQL](www.postgresql.org)
+    * ``migrations/focusv2.0.sql``
+    * ``migrations/focusv2.0.1.sql``
+    * ``migrations/focusv2.0.2.sql``
+* Create daemon Systemd replace values in the ``focus.service``
 
 
 

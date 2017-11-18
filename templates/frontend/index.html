@@ -15,68 +15,70 @@
 -->
 {% extends "frontend/layout.html" %}
 {% block body %}
-<div class="android-content mdl-layout__content zr-background-index">
+<div class="">
+
     <div id="form-login" class="zr-background-transparent mdl-card mdl-cell mdl-cell--4-col">
         <div class="mdl-card__title">
         <!--     <h2 class="mdl-card__title-text">HOLA</h2>-->
         </div>
         <div class="mdl-card__supporting-text">
-            <form>
-                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input v-model="login.user_email"
-                           class="mdl-textfield__input" type="email" id="login-user-email" >
-                    <label class="mdl-textfield__label" for="login-user-email">
-                        <i class="material-icons md-18">person</i>Correo electronico
-                    </label>
-                </div>
-
-                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input  @keyup.enter="auth" v-model="login.user_password"
-                            class="mdl-textfield__input" type="password"
-                            id="login-user-password" >
-                    <label class="mdl-textfield__label" for="login-user-password">
-                        <i class="material-icons md-18">lock</i>Contraseña
-                    </label>
-                </div>
-            </form>
+{#            <form>#}
+{#                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">#}
+{#                    <input v-model="login.user_email"#}
+{#                           class="mdl-textfield__input" type="email" id="login-user-email" >#}
+{#                    <label class="mdl-textfield__label" for="login-user-email">#}
+{#                        <i class="material-icons md-18">person</i>Correo electronico#}
+{#                    </label>#}
+{#                </div>#}
+{##}
+{#                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">#}
+{#                    <input  @keyup.enter="auth" v-model="login.user_password"#}
+{#                            class="mdl-textfield__input" type="password"#}
+{#                            id="login-user-password" >#}
+{#                    <label class="mdl-textfield__label" for="login-user-password">#}
+{#                        <i class="material-icons md-18">lock</i>Contraseña#}
+{#                    </label>#}
+{#                </div>#}
+{#            </form>#}
         </div>
         <div class="mdl-card__actions mdl-card--border">
-            <button id="sign-in-by-google" class="mdl-button mdl-js-button">
-                <img class="mdl-js-ripple-effect" width="36px" height="36px"
-                     src="/static/images/google_G_logo.png">
-            </button>
-            <div class="mdl-tooltip" data-mdl-for="sign-in-by-google">
-                Iniciar session con Google
+            <div id="sign-in-by-google" v-on:click="google_login" class="zr-google-sign-in">
+                <img width="45px" src="/static/images/google_G_logo.png">
+                Iniciar sesión con google
             </div>
-            <button v-show="validation.sign_in"
-               v-on:click="auth"
-               id="sign-in"
-               class="mdl-button mdl-button--colored mdl-js-button
-                      mdl-js-ripple-effect mdl-button--raised">
-                <i class="material-icons">lock_open</i>
-            </button>
-            <div class="mdl-tooltip" data-mdl-for="sign-in">
-                Iniciar session
-            </div>
-            <button v-show="validation.sign_in"
-               v-on:click="cancel"
-               id="login-cancel"
-               class="mdl-button mdl-button--colored mdl-js-button
-                      mdl-js-ripple-effect mdl-button--raised mdl-button--accent">
-                <i class="material-icons">cancel</i>
-            </button>
-            <div class="mdl-tooltip" data-mdl-for="login-cancel">
-                Cancelar
-            </div>
-            <button id="remember-password" class="mdl-button mdl-js-ripple-effect">
-                <i class="material-icons">send</i>
-            </button>
-            <div class="mdl-tooltip" data-mdl-for="remember-password">
-                Recordar contraseña
-            </div>
-
+{#            <div class="mdl-tooltip" data-mdl-for="sign-in-by-google">#}
+{#                Iniciar session con Google#}
+{#            </div>#}
+{#            <button v-show="validation.sign_in"#}
+{#               v-on:click="auth"#}
+{#               id="sign-in"#}
+{#               class="mdl-button mdl-button--colored mdl-js-button#}
+{#                      mdl-js-ripple-effect mdl-button--raised">#}
+{#                <i class="material-icons">lock_open</i>#}
+{#            </button>#}
+{#            <div class="mdl-tooltip" data-mdl-for="sign-in">#}
+{#                Iniciar session#}
+{#            </div>#}
+{#            <button v-show="validation.sign_in"#}
+{#               v-on:click="cancel"#}
+{#               id="login-cancel"#}
+{#               class="mdl-button mdl-button--colored mdl-js-button#}
+{#                      mdl-js-ripple-effect mdl-button--raised mdl-button--accent">#}
+{#                <i class="material-icons">cancel</i>#}
+{#            </button>#}
+{#            <div class="mdl-tooltip" data-mdl-for="login-cancel">#}
+{#                Cancelar#}
+{#            </div>#}
+{#            <button id="remember-password" class="mdl-button mdl-js-ripple-effect">#}
+{#                <i class="material-icons">send</i>#}
+{#            </button>#}
+{#            <div class="mdl-tooltip" data-mdl-for="remember-password">#}
+{#                Recordar contraseña#}
+{#            </div>#}
         </div>
     </div>
 </div>
 {% endblock %}
-
+{% block js %}
+    <script src="/js/index.js"></script>
+{% endblock %}

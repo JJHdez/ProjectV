@@ -20,6 +20,7 @@ from v.tools.v import processing_rest_exception, processing_rest_success, \
     type_of_insert_rest, type_of_update_rest
 from v.tools.validate import validate_rest
 from v.dream.model.dreamMdl import DreamMdl
+from flask_babel import gettext, ngettext, _
 
 
 class DreamListRst(Resource, DreamMdl):
@@ -27,7 +28,7 @@ class DreamListRst(Resource, DreamMdl):
         try:
             _qrg = """
                 SELECT array_to_json(array_agg(row_to_json(t) )) as collection
-                FROM ( SELECT id, created_at, name, due_date_at, completed_at
+                FROM ( SELECT id, created_at, name,reach_goal, reward, due_date_at, completed_at
                  FROM %s WHERE deleted_at is null and completed_at is null and create_id=%s )t;
                 """ % (self._table, g.user.id,)
             g.db_conn.execute(_qrg)
@@ -37,9 +38,9 @@ class DreamListRst(Resource, DreamMdl):
                     _data = {self._table: _collection}
                     _get = processing_rest_success(data=_data)
                 else:
-                    raise ExceptionRest(status_code=404, message="No se han encontrado resultados")
+                    raise ExceptionRest(status_code=404, message=_("Not found record"))
             else:
-                raise ExceptionRest(status_code=404, message="No se han encontrado resultados")
+                raise ExceptionRest(status_code=404, message=_("Not found record"))
         except (Exception, ExceptionRest), e:
             _get = processing_rest_exception(e)
         return _get
@@ -57,10 +58,9 @@ class DreamListRst(Resource, DreamMdl):
                 g.db_conn.execute(_qrp)
                 if g.db_conn.count() > 0:
                     _data = {self._table: g.db_conn.one()}
-                    _post = processing_rest_success(data=_data, message='Fue creado correctamente',
-                                                    status_code=201)
+                    _post = processing_rest_success(data=_data, message=_('It was created correctly'), status_code=201)
                 else:
-                    raise ExceptionRest(status_code=500, message='No se ha podido registrar')
+                    raise ExceptionRest(status_code=500, message=_('Unable to register'))
             else:
                 raise ExceptionRest(status_code=400, errors=_errors)
         except (Exception, ExceptionRest), e:
@@ -73,7 +73,7 @@ class DreamRst(Resource, DreamMdl):
         try:
             _qrg = """
                     SELECT array_to_json(array_agg(row_to_json(t) )) as collection
-                    FROM ( SELECT id, created_at, name, due_date_at, completed_at FROM %s
+                    FROM ( SELECT id, created_at, name, reach_goal,reward ,due_date_at, completed_at FROM %s
                     WHERE deleted_at is null and completed_at is null and  create_id=%s and id = %s)t;
                 """ % (self._table, g.user.id, id,)
             g.db_conn.execute(_qrg)
@@ -83,9 +83,9 @@ class DreamRst(Resource, DreamMdl):
                     _data = {self._table: _collection}
                     _get = processing_rest_success(data=_data)
                 else:
-                    raise ExceptionRest(status_code=404, message="No se han encontrado resultados")
+                    raise ExceptionRest(status_code=404, message=_("Not found record"))
             else:
-                raise ExceptionRest(status_code=404, message="No se han encontrado resultados")
+                raise ExceptionRest(status_code=404, message=_("Not found record"))
         except (Exception, ExceptionRest), e:
             _get = processing_rest_exception(e)
         return _get
@@ -99,10 +99,9 @@ class DreamRst(Resource, DreamMdl):
                 _qrp = "UPDATE %s SET %s WHERE id=%s;" % (self._table, _val, id,)
                 g.db_conn.execute(_qrp)
                 if g.db_conn.count() > 0:
-                    _put = processing_rest_success(status_code=201, message="El registro fue actualizado correctamente")
+                    _put = processing_rest_success(status_code=201, message=_("The record was successfully updated"))
                 else:
-                    raise ExceptionRest(status_code=404,
-                                        message="No se ha podido encontrar el registro, para actualizar.")
+                    raise ExceptionRest(status_code=404, message=_("Not found record"))
             else:
                 raise ExceptionRest(status_code=400, errors=_errors)
         except (Exception, ExceptionRest), e:
@@ -114,10 +113,9 @@ class DreamRst(Resource, DreamMdl):
             _qrd = "UPDATE %s SET deleted_at=current_timestamp WHERE id=%s;" % (self._table, id,)
             g.db_conn.execute(_qrd)
             if g.db_conn.count() > 0:
-                _delete = processing_rest_success(status_code=201, message="El registro fue eliminado correctamente")
+                _delete = processing_rest_success(status_code=201, message=_("The record was successfully removed"))
             else:
-                raise ExceptionRest(status_code=404,
-                                    message="No se ha podido encontrar el registro, para eliminar.")
+                raise ExceptionRest(status_code=404,message=_("Not found record"))
         except (Exception, ExceptionRest), e:
             _delete = processing_rest_exception(e)
         return _delete

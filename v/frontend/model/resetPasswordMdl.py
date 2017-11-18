@@ -21,7 +21,7 @@ import uuid
 
 class ResetPasswordMdl:
 
-    def __int__(self):
+    def __init__(self):
         pass
 
     def account_exists(self, email):
@@ -53,13 +53,17 @@ class ResetPasswordMdl:
         return id
 
     def template_email_reset_password(self, email, url):
+        print email, url
         _template = render_template('email/resetPassword.html', email=email, url=url)
-        msg = Message(
-                      sender=("JMED MEXICO", "jmed.mexico@gmail.com"),
-                      recipients=[email],
-                      subject='Solicitud de cambio de contraseña de ULife')
-        msg.html = _template
-        g.mail.send(msg)
+        try:
+            msg = Message(
+                          sender=("JMED MEXICO", "jsphzb@gmail.com"),
+                          recipients=[email],
+                          subject='Solicitud de cambio de contraseña de ULife')
+            msg.html = _template
+            g.mail.send(msg)
+        except Exception as e:
+            print e.message, e.args
 
     def token_available(self, token):
         _qry_token = \

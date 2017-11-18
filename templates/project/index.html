@@ -15,7 +15,7 @@
 -->
 {% extends "layout.html" %}
 {% block layout_title %}
-    Proyectos
+    Quick planning
 {% endblock %}
 {% block body %}
     <div class="mdl-grid" xmlns="http://www.w3.org/1999/html">
@@ -48,18 +48,18 @@
             </div>
 
             <dialog id="project-dialog" class="mdl-dialog mdl-cell--4-col">
-                <div class="mdl-card__menu">
-                    <button v-show="validation.workspaceRemove"
+                <button v-show="validation.workspaceRemove"
                         v-on:click="remove()"
                         class="mdl-button mdl-js-button mdl-button--icon"
                         id="workspace-dialog-delete">
                         <i class="material-icons mdl-color-text--red">
                             delete_forever
                         </i>
-                    </button>
-                    <div class="mdl-tooltip" for="workspace-dialog-delete">
-                        Delete forever
-                    </div>
+                </button>
+                <div class="mdl-tooltip" for="workspace-dialog-delete">
+                    Delete forever
+                </div>
+                <div class="mdl-card__menu">
                     <button v-on:click="done()"
                             class="mdl-button mdl-js-button mdl-button--icon"
                             id="workspace-dialog-done">
@@ -229,14 +229,15 @@
             </ul>
 
             <dialog id="task-dialog" class="mdl-dialog mdl-cell--8-col">
-                <div class="mdl-card__menu">
-                    <button v-on:click="removeSubTask()"
+                <button v-on:click="removeSubTask()"
                             class="mdl-button mdl-js-button mdl-button--icon"
                             id="sub-task-dialog-delete">
                         <i class="material-icons mdl-color-text--red">
                             delete_forever
                         </i>
                     </button>
+                <div class="mdl-card__menu">
+
                     <div class="mdl-tooltip" for="sub-task-dialog-delete">
                         Delete forever
                     </div>

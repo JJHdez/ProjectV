@@ -15,144 +15,141 @@
     limitations under the License.
 -->
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
-        <title>Violet</title>
-        <!-- Add to homescreen for Chrome on Android -->
-        <meta name="mobile-web-app-capable" content="yes">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+    <title>Focus / {% block layout_title %} {% endblock %}</title>
+    <!-- Add to homescreen for Chrome on Android -->
+    <meta name="mobile-web-app-capable" content="yes">
 
-        <!-- Add to homescreen for Safari on iOS -->
-        <meta name="apple-mobile-web-app-capable" content="yes">
-        <meta name="apple-mobile-web-app-status-bar-style" content="black">
-        <meta name="apple-mobile-web-app-title" content="">
+    <!-- Add to homescreen for Safari on iOS -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="">
 
-        <!-- Tile icon for Win8 (144x144 + tile color) -->
-        <!--<meta name="msapplication-Tile|Image" content="images/touch/ms-touch-icon-144x144-precomposed.png">-->
-        <!--<meta name="msapplication-TileColor" content="#3372DF">-->
+    <!-- Tile icon for Win8 (144x144 + tile color) -->
+    <!--<meta name="msapplication-Tile|Image" content="images/touch/ms-touch-icon-144x144-precomposed.png">-->
+    <!--<meta name="msapplication-TileColor" content="#3372DF">-->
 
-        <link rel="shortcut icon" type="image/png" href="/images/logo.png"/>
+    <link rel="shortcut icon" type="image/svg" href="/images/logo.png"/>
 
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:regular,bold,italic,thin,light,bolditalic,black,medium&amp;lang=en">
-        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-        <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.purple-pink.min.css" />
-        <link rel="stylesheet" href="/css/styles.css">
-        {% block css %}{% endblock %}
-    </head>
-    <body>
-        <div class="demo-layout mdl-layout mdl-js-layout mdl-layout--fixed-header">
-            <header class="mdl-layout__header mdl-color" id="menu-header">
-                <div class="mdl-layout__header-row">
-                    <div class="dock center-elements">
-                        <!--Pomodoro-->
-                        <button class="mdl-button mdl-js-button
-                            mdl-js-ripple-effect mdl-button--icon"
-                            id="menu-dreams" v-on:click="redirect_index_dream">
-                            <i class="material-icons">gps_fixed</i>
-                            <!--<a/>-->
-                            <div class="mdl-tooltip mdl-tooltip--bottom" for="menu-dreams">
-                                dreams
-                            </div>
-                        </button>
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Roboto:regular,bold,italic,thin,light,bolditalic,black,medium&amp;lang=en">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.amber-orange.min.css"/>
+    <link rel="stylesheet" href="/css/styles.css">
+    {% block css %}{% endblock %}
+</head>
+<body>
+<div class="demo-layout mdl-layout mdl-js-layout mdl-layout--fixed-header">
+    <header class="mdl-layout__header mdl-color" id="menu-header">
+        <div class="mdl-layout__header-row">
+            <div class="dock center-elements">
+                <!--Pomodoro-->
+                <a href="{{ url_for('ul/goal') }}">
+                    <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon" id="menu-dreams">
+                        <i class="material-icons mdl-color-text--black">gps_fixed</i>
+                        <div class="mdl-tooltip mdl-tooltip--bottom" for="menu-dreams">
+                            Goal
+                        </div>
+                    </button>
+                </a>
 
-                         <button class="mdl-button mdl-js-button
-                            mdl-js-ripple-effect mdl-button--icon"
-                            id="menu-habit" v-on:click="redirect_index_habit">
-                            <i class="material-icons">gavel</i>
-                            <!--<a/>-->
-                            <div class="mdl-tooltip mdl-tooltip--bottom" for="menu-habit">
-                                Habit
-                            </div>
-                        </button>
-
-                        <button class="mdl-button mdl-js-button
-                            mdl-js-ripple-effect mdl-button--icon"
-                            id="menu-to-buy" v-on:click="redirect_index_to_buy">
-                            <i class="material-icons">add_shopping_cart</i>
-                            <!--<a/>-->
-                            <div class="mdl-tooltip mdl-tooltip--bottom" for="menu-to-buy">
-                                A comprar
-                            </div>
-                        </button>
-                        <!--Yourself-->
-                        <!--Dashboard-->
-                        <!-- <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button&#45;&#45;icon" id="menu-dashboard" v-on:click="redirect_index_dashboard">
-                            <i class="material-icons">dashboard</i>
-                            <div class="mdl-tooltip mdl-tooltip&#45;&#45;bottom" for="menu-dashboard">
-                                Dashboard
-                            </div>
-                        </button> -->
-                        <span class="mdl-chip mdl-chip--contact mdl-chip--deletable
-                            mdl-color--white" id="menu-user">
-                            <a class="mdl-chip__action" >
-                                <i class="material-icons">account_circle</i>
-                            </a>
-                            <span class="mdl-chip__text">
-                                {{session.user.name}}
-                            </span>
-                            <a class="mdl-chip__action" href="{{url_for('/logout')}}" >
-                                <i class="material-icons">lock</i>
-                            </a>
-                        </span>
-                        <!-- -->
-                        <button class="mdl-button mdl-js-button
-                            mdl-js-ripple-effect mdl-button--icon"
-                            id="menu-pomodoro" v-on:click="redirect_index_pomodoro">
-                             <i class="material-icons">timer</i>
-                            <div class="mdl-tooltip mdl-tooltip--bottom"
-                                for="menu-pomodoro">
-                                Pomodoro
-                            </div>
-                        </button>
-                        <!-- -->
-                        <button class="mdl-button mdl-js-button mdl-js-ripple-effect
-                            mdl-button--icon" id="menu-quick-list"
-                            v-on:click="redirect_index_project">
-                            <i class="material-icons">playlist_play</i>
-                            <div class="mdl-tooltip mdl-tooltip--bottom"
-                                for="menu-quick-list">
-                                Quick List
-                            </div>
-                        </button>
-                        <!--Help-->
-                        <!-- <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button&#45;&#45;icon" id="menu-help">
-                            <i class="material-icons">help</i>
-                            <div class="mdl-tooltip mdl-tooltip&#45;&#45;bottom" for="menu-help">
-                                Soporte
-                            </div>
-                        </button> -->
+                <a href="{{ url_for('ul/habit') }}">
+                    <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon" id="menu-habits">
+                        <i class="material-icons mdl-color-text--black">gavel</i>
+                        <div class="mdl-tooltip mdl-tooltip--bottom" for="menu-habits">
+                            {{ _('Habit') }}
+                        </div>
+                    </button>
+                </a>
+                <!--
+                <button class="mdl-button mdl-js-button
+                    mdl-js-ripple-effect mdl-button--icon"
+                    id="menu-to-buy" v-on:click="redirect_index_to_buy">
+                    <i class="material-icons">add_shopping_cart</i>
+                    <div class="mdl-tooltip mdl-tooltip--bottom" for="menu-to-buy">
+                        A comprar
                     </div>
-                    <span class="mdl-layout-title">
-                        <img src="/images/logo.png">Violet
+                </button>-->
+                <!--Yourself-->
+                <!--Dashboard-->
+                <!-- <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button&#45;&#45;icon" id="menu-dashboard" v-on:click="redirect_index_dashboard">
+                    <i class="material-icons">dashboard</i>
+                    <div class="mdl-tooltip mdl-tooltip&#45;&#45;bottom" for="menu-dashboard">
+                        Dashboard
+                    </div>
+                </button> -->
+                <span class="zr-color-grey mdl-chip mdl-chip--contact mdl-chip--deletable " id="menu-user">
+                    <img class="mdl-chip__contact" src="{{ session.user.cover }}"/>
+                    <span class="mdl-chip__text">
+                        {{ session.user.name }}
                     </span>
-                </div>
-            </header>
-            <main class="mdl-layout__content mdl-color--grey-100">
-                {% block body %}{% endblock %}
-            </main>
+                    <a id="logout" class="mdl-chip__action" href="{{ url_for('/logout') }}">
+                        <i class="material-icons">lock</i>
+                    </a>
+                    <div class="mdl-tooltip mdl-tooltip--bottom"
+                         for="logout">
+                        Cerrar sesión
+                    </div>
+                </span>
+                <!-- -->
+                <a href="{{ url_for('ul/pomodoro') }}">
+                    <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon" id="menu-pomodoro">
+                        <i class="material-icons mdl-color-text--black">timer</i>
+                        <div class="mdl-tooltip mdl-tooltip--bottom" for="menu-pomodoro">
+                            {{ _('Pomodoro') }}
+                        </div>
+                    </button>
+                </a>
+                <!---->
+                <a href="{{ url_for('ul/quick-planning') }}">
+                    <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon" id="menu-quick-planning">
+                        <i class="material-icons mdl-color-text--black">playlist_play</i>
+                        <div class="mdl-tooltip mdl-tooltip--bottom" for="menu-quick-planning">
+                            {{ _('Quick planning') }}
+                        </div>
+                    </button>
+                </a>
+                <!--Help-->
+                <!-- <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button&#45;&#45;icon" id="menu-help">
+                    <i class="material-icons">help</i>
+                    <div class="mdl-tooltip mdl-tooltip&#45;&#45;bottom" for="menu-help">
+                        Soporte
+                    </div>
+                </button> -->
+            </div>
+            <span class="mdl-layout-title">
+                <img height="50px" src="/images/logo.svg">
+            </span>
         </div>
-        <div id="notify-snackbar" class="mdl-js-snackbar mdl-snackbar">
-            <div class="mdl-snackbar__text"></div>
-            <button class="mdl-snackbar__action" type="button"></button>
-        </div>
-        {% block button_fab %}{% endblock %}
-        <script type='text/javascript' src="/static/jquery/jquery-3.2.1.min.js"></script>
-        <script src="/static/vue/vue.min.js"></script>
-        <script type="text/javascript" src="/js/libzr.js" ></script>
-        <script type='text/javascript' src="/js/ul.js"></script>
-        <script type='text/javascript'>
-             function notify (data){
-                    var snackbarContainer = document.querySelector('#notify-snackbar');
-                    if (!data.hasOwnProperty('timeout')){
-                        data.timeout =2000;
-                    }
-                    snackbarContainer.MaterialSnackbar.showSnackbar(data);
-             }
-        </script>
-        {% block js %}{% endblock %}
-        <script src="/static/dialog-polyfill/dialog-polyfill.js">
-        </script>
-        <script src="/static/mdl/material.min.js"></script>
+    </header>
+    <main class="mdl-layout__content mdl-color--grey-100">
+        {% block body %}{% endblock %}
+    </main>
+</div>
+<div id="notify-snackbar" class="mdl-js-snackbar mdl-snackbar">
+    <div class="mdl-snackbar__text"></div>
+    <button class="mdl-snackbar__action" type="button"></button>
+</div>
+{% block button_fab %}{% endblock %}
+<script type='text/javascript' src="/static/jquery/jquery-3.2.1.min.js"></script>
+<script src="/static/vue/vue.min.js"></script>
+<script type="text/javascript" src="/js/libzr.js"></script>
+<!--script type='text/javascript' src="/js/ul.js"></script-->
+<script type='text/javascript'>
+    function notify(data) {
+        var snackbarContainer = document.querySelector('#notify-snackbar');
+        if (!data.hasOwnProperty('timeout')) {
+            data.timeout = 2000;
+        }
+        snackbarContainer.MaterialSnackbar.showSnackbar(data);
+    }
+</script>
+{% block js %}{% endblock %}
+<script src="/static/dialog-polyfill/dialog-polyfill.js">
+</script>
+<script src="/static/mdl/material.min.js"></script>
 </html>

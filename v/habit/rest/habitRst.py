@@ -18,7 +18,7 @@ from flask import request, g, jsonify
 from v.tools.v import tuple2list
 from v.tools.exception import ExceptionRest
 from v.habit.model.habitMdl import HabitMdl
-
+from v.reminder.controllers.reminderCtl import ReminderCtl
 
 class HabitListRst(Resource, HabitMdl):
 
@@ -94,7 +94,16 @@ class HabitListRst(Resource, HabitMdl):
               % (self._table, g.user.id, _data.get('name'))
         g.db_conn.execute(qri)
         if g.db_conn.count() > 0:
-            _insert.append({"id": g.db_conn.one()[0]})
+            _new_habit_id = g.db_conn.one()[0]
+            _insert.append({"id": _new_habit_id})
+            params = {
+                'create_id': g.user.id,
+                'resource': 'habit',
+                'resource_id': _new_habit_id,
+                'every': 1,
+                'by': 'daily'
+            }
+            ReminderCtl.insert(g.db_conn, params)
         _post = jsonify(_insert)
         return _post
 

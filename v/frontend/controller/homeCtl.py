@@ -22,5 +22,9 @@ class HomeCtl:
         pass
 
     @staticmethod
-    def index():
-        return render_template('frontend/index.html')
+    def overview():
+        return render_template('frontend/overview.html')
+
+    @staticmethod
+    def pricing():
+        return render_template('frontend/pricing.html')

@@ -16,341 +16,308 @@
 {% extends "layout.html" %}
 
 {% block layout_title %}
-    Se tu mismo
+   Goal
 {% endblock %}
 
 {% block body %}
-<div class="mdl-grid demo-content">
+<div class="mdl-grid zr-content">
 
-{#    <div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect">#}
-
-        <!--<div class="mdl-tabs__tab-bar">
-            <a id="tab-dreams-panel" href="#dreams-panel" class="mdl-tabs__tab is-active">
-                <i class="material-icons">gps_fixed</i>
-            </a>
-            <a id="tab-habits-panel" href="#habits-panel" class="mdl-tabs__tab">
-                <i class="material-icons">gavel</i>
-            </a>
-            <a id="tab-pending-panel" href="#pending-panel" class="mdl-tabs__tab">
-                <i class="material-icons">subject</i>
-            </a>
-        </div> -->
-
-        <!--Panel dream-->
-        <div class="mdl-tabs__panel is-active" id="dreams-panel">
-            <li
-                class="mdl-list__item mdl-list__item--two-line
-                    mdl-shadow--4dp mdl-cell mdl-cell--6-col center-elements">
+        <div id="dreams-panel">
+            <div class="mdl-cell mdl-cell--12-col mdl-grid">
                 <span class="mdl-list__item-primary-content">
-                    <i class="material-icons  mdl-list__item-avatar">gps_fixed</i>
+                    <i class="material-icons mdl-color-text--black md-24">gps_fixed</i>
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input v-model="dreamModel.name"
-                               class="mdl-textfield__input" type="text"
+                               @keyup.enter="add(true)"
+                               class="mdl-textfield__input"
                                id="quick-dream-name"/>
-                        <label class="mdl-textfield__label" for="quick-dream-name">Objetivo</label>
+                        <label class="mdl-textfield__label" for="quick-dream-name">{{ _('What do I want to accomplish?') }}</label>
                     </div>
                 </span>
-                <span class="mdl-list__item-secondary-action">
-                    <button v-show="validationDreamModel.accept" v-on:click="add()"
-                            class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab
-                                mdl-button--accent mdl-button-raised mdl-js-ripple-effect">
-                        <i class="material-icons">add</i>
-                    </button>
-                </span>
-            </li>
+            </div>
+            <div class="mdl-cell mdl-cell--12-col mdl-grid">
+                <h3 v-show="!dreams.length" class="zr-help-add">
+                    {{ _('What do I want to accomplish?') }}
+                    <a class="material-icons mdl-color-text--black md-36">sentiment_very_satisfied</a>
+                </h3>
 
-            <div class="mdl-cell mdl-cell--12-col mdl-grid" >
-
-
-
-                <p v-if="!dreams.length">No hay objetivos registrados</p>
-                <div v-for="(dream, index) in dreams">
-                    <div v-bind:class="dreamBackground(dream,index)">
+                <div v-for="(dream, index) in dreams" v-bind:class="getDreamLayout(dream,index)">
+                    <!-- Op 1-->
+                    <template v-if="index === 0 || index > 6">
+                        <div class="mdl-card__media mdl-cell mdl-cell--12-col-tablet">
+                            <img class="zr-dream-article-image" src=" https://www.hmmrmedia.com/wp-content/uploads/2016/04/starting_line.jpg" border="0" >
+                        </div>
+                        <div class="mdl-cell mdl-cell--8-col">
+                            <h2 class="mdl-card__title-text">
+                                <button v-on:click="_edit(dream,index)"
+                                    class="mdl-button mdl-js-button mdl-button--icon">
+                                <i class="material-icons">edit</i>
+                                </button>
+                                ${dream.name}
+                            </h2>
+                            <div class="mdl-card__supporting-text zr-dream-padding-top">
+                                <progress v-bind:value="setProgressBar(dream)" max="100" class="mdl-progress"></progress>
+                               <span>
+                                    {{ _('From:') }} <a href="#"> ${getDate(dream.created_at)}</a>
+                                    {{ _('To:') }} <a href="#"> ${getDate(dream.due_date_at)}</a>
+                                </span>
+                            </div>
+                            <div class="mdl-card__supporting-text">
+                                 <strong>{{ _('Why do I want to reach this goal?') }}</strong>
+                                ${dream.reach_goal}<br/>
+                                <strong>{{ _('What is my reward?') }}</strong>
+                                ${dream.reward}
+                            </div>
+                            <button v-on:click="_done(dream,index)"
+                                        class="mdl-button mdl-js-button mdl-js-ripple-effect
+                                            mdl-button--raised mdl-button--colored">
+                                    <i class="material-icons">assignment_turned_in</i>{{ _('Accomplished')}}
+                                </button>
+                        </div>
+                    </template>
+                    <!-- Op 2 -->
+                    <template v-else-if="index === 1">
                         <div class="mdl-card__title">
                             <h2 class="mdl-card__title-text">
+                                <button v-on:click="_edit(dream,index)"
+                                    class="mdl-button mdl-js-button mdl-button--icon">
+                                    <i class="material-icons">edit</i>
+                                </button>
+                                ${dream.name}
+                            </h2>
+                        </div>
+                        <div class="mdl-card__media">
+                            <a href="#"> <img class="zr-dream-article-image" src="https://s-media-cache-ak0.pinimg.com/originals/8f/5b/07/8f5b07761a1433b0cbe7d878667a1a20.jpg" border="0" alt=""></a>
+                        </div>
+                        <div class="mdl-card__supporting-text no-bottom-padding">
+                            <span>
+                                {{ _('From:') }} <a href="#"> ${getDate(dream.created_at)}</a>
+                                {{ _('To:') }}<a href="#"> ${getDate(dream.due_date_at)}</a>
+                            </span>
+
+                        </div>
+                        <div class="mdl-card__supporting-text">
+                            <progress v-bind:value="setProgressBar(dream)" max="100" class="mdl-progress"></progress>
+{#                                <strong>{{ _('Why do I want to reach this goal?') }}</strong><br/>#}
+{#                                ${dream.reach_goal}#}
+                        </div>
+                        <button v-on:click="_done(dream,index)"
+                                        class="mdl-button mdl-js-button mdl-js-ripple-effect
+                                            mdl-button--raised mdl-button--colored">
+                                    <i class="material-icons">assignment_turned_in</i>{{ _('Accomplished')}}
+                              </button>
+                    </template>
+                    <!-- Op 3 -->
+                    <template v-else-if="index === 2">
+                        <div class="mdl-card__title mdl-card--expand">
+
+                        </div>
+                        <div class="mdl-card__actions">
+
+                            <span class="demo-card-image__filename mdl-color-text--white">
+                                <h2>
+                                     <button v-on:click="_edit(dream,index)"
+                                    class="mdl-button mdl-js-button mdl-button--icon">
+                                    <i class="material-icons">edit</i>
+                                </button>
+                                    ${dream.name}
+                                </h2>
+                            </span>
+                        </div>
+                        <button v-on:click="_done(dream,index)"
+                                            class="mdl-button mdl-js-button mdl-js-ripple-effect
+                                        mdl-button--raised mdl-button--colored">
+                                <i class="material-icons">assignment_turned_in</i>{{ _('Accomplished')}}
+                            </button>
+                    </template>
+                    <!-- Op 4-->
+                    <template v-else-if="index === 3" >
+                        <div class="mdl-card__media">
+                            <a href="#"> <img class="zr-dream-article-image" src="https://i.pinimg.com/564x/e0/c8/2e/e0c82ee2f4e625f595883f2b4fa6bd08.jpg" border="0" alt=""></a>
+                        </div>
+                        <div class="mdl-card__supporting-text">
+                            <h2>
+                                 <button v-on:click="_edit(dream,index)"
+                                    class="mdl-button mdl-js-button mdl-button--icon">
+                                    <i class="material-icons">edit</i>
+                                </button>
                                 ${dream.name}
                             </h2>
                         </div>
                         <div class="mdl-card__supporting-text">
-                            <span class="mdl-chip mdl-chip--contact" v-if="dream.created_at">
-                                <i class="mdl-chip__contact material-icons">play_arrow</i>
-                                <span class="mdl-chip__text">${getDate(dream.created_at)}</span>
-                                <i class="mdl-chip__contact material-icons">stop</i>
-                                <span class="mdl-chip__text">${getDate(dream.due_date_at)}</span>
-                            </span>
+                            <p></p>
+                            <progress v-bind:value="setProgressBar(dream)" max="100" class="mdl-progress"></progress>
+                        </div>
+                        <button v-on:click="_done(dream,index)"
+                                            class="mdl-button mdl-js-button mdl-js-ripple-effect
+                                        mdl-button--raised mdl-button--colored">
+                            <i class="material-icons">assignment_turned_in</i>{{ _('Accomplished')}}
+                        </button>
+                    </template>
+                    <!-- Op 5 -->
+                    <template v-else-if="index === 4">
+                        <div class="mdl-card__title mdl-card--expand">
+                            <h4 class="mdl-color-text--white">
+                               <button v-on:click="_edit(dream,index)"
+                                    class="mdl-button mdl-js-button mdl-button--icon">
+                                    <i class="material-icons">edit</i>
+                                </button>${dream.name}<br>
+                              ${getDate(dream.created_at)}<br>
+                              ${getDate(dream.due_date_at)}
+                            </h4>
                         </div>
                         <div class="mdl-card__actions mdl-card--border">
-                            <button v-on:click="_edit(dream,index)"
-                                    class="mdl-button mdl-js-button mdl-button--raised
-                                    mdl-js-ripple-effect mdl-button--accent">
-                                <i class="material-icons">edit</i>Editar
-                            </button>
-                            <button v-on:click="_done(dream,index)"
-                                    class="mdl-button mdl-js-button mdl-js-ripple-effect
-                                        mdl-button--raised mdl-button--colored">
-                                <i class="material-icons">assignment_turned_in</i>Realizado
-                            </button>
+                            <a v-on:click="_done(dream,index)"
+                               class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect mdl-color-text--white">
+                              {{ _('Accomplished')}}
+                            </a>
+                            <div class="mdl-layout-spacer"></div>
+                            <i class="material-icons">assignment_turned_in</i>
                         </div>
-                        <!--<div class="mdl-card__menu">-->
-                            <!--<button v-on:click="_edit(dream,index)"-->
-                               <!--class="mdl-button mdl-button&#45;&#45;icon mdl-js-button mdl-js-ripple-effect mdl-button-raised">-->
-                                <!--<i class="material-icons">edit</i>-->
-
-                            <!--</button>-->
-                            <!--<button v-on:click="_edit(dream,index)"-->
-                                    <!--class="mdl-button mdl-button&#45;&#45;icon mdl-js-button mdl-js-ripple-effect mdl-button-raised">-->
-                                <!--<i class="material-icons">edit</i>-->
-
-                            <!--</button>-->
-                        <!--</div>-->
-                    </div>
+                    </template>
+                    <!-- Op 6 -->
+                    <template v-else-if="index === 5" >
+                        <div class="mdl-card__title mdl-card--expand zr-dream-card-strip-bg mdl-color-text--white">
+                            <h2 class="mdl-card__title-text"> <button v-on:click="_edit(dream,index)"
+                                    class="mdl-button mdl-js-button mdl-button--icon">
+                                    <i class="material-icons">edit</i>
+                                </button>${dream.name}</h2>
+                        </div>
+                        <div class="mdl-card__supporting-text">
+                            <!--Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenan convallis.-->
+                            <progress v-bind:value="setProgressBar(dream)" max="100" class="mdl-progress"></progress>
+                        </div>
+                        <div class="mdl-card__actions mdl-card--border">
+                            <a v-on:click="_done(dream,index)"
+                               class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect mdl-button--accent">
+                              {{ _('Accomplished')}}
+                            </a>
+                            <div class="mdl-layout-spacer"></div>
+                            <i class="material-icons mdl-color-text--amber-500">assignment_turned_in</i>
+                        </div>
+                    </template>
+                    <!-- Op 7-->
+                    <template v-else-if="index === 6">
+                        <div class="mdl-card__media">
+                            <img class="zr-dream-article-image" src="http://cafh.cl/wp-content/uploads/wallpapers-hd-al-azar-vol-I-162-449x299.jpg" border="0" alt="">
+                        </div>
+                        <div class="mdl-card__title ">
+                            <h2 class="mdl-card__title-text"> <button v-on:click="_edit(dream,index)"
+                                    class="mdl-button mdl-js-button mdl-button--icon">
+                                    <i class="material-icons">edit</i>
+                                </button>${dream.name}</h2>
+                        </div>
+                        <div class="mdl-card__supporting-text">
+                            <!--Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenan convallis.-->
+                            <progress v-bind:value="setProgressBar(dream)" max="100" class="mdl-progress"></progress>
+                        </div>
+                        <div class="mdl-card__actions mdl-card--border">
+                            <a v-on:click="_done(dream,index)"
+                               class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect mdl-button--accent">
+                              {{ _('Accomplished')}}
+                            </a>
+                            <div class="mdl-layout-spacer"></div>
+                            <i class="material-icons mdl-color-text--amber-500">assignment_turned_in</i>
+                        </div>
+                    </template>
                 </div>
             </div>
 
             <!-- Dialog dreams-->
-            <dialog id="dream-dialog" class="mdl-dialog mdl-cell--4-col">
+            <dialog id="dream-dialog" class="mdl-dialog mdl-cell--8-col-tablet">
+                <button v-show="validationDreamModel.remove"
+                        v-on:click="_remove()"
+                            class="mdl-button mdl-js-button mdl-button--icon"
+                            id="dream-dialog-remove">
+                        <i class="material-icons mdl-color-text--red">delete_forever</i>
+                </button>
+                <div class="mdl-tooltip" for="dream-dialog-remove">
+                    {{ _('Delete') }}
+                </div>
+                <div class="mdl-card__menu">
+
+                    <button v-show="validationDreamModel.accept"
+                            class="mdl-button mdl-js-button mdl-button--icon"
+                            id="dream-dialog-accept"
+                            v-on:click="_accept()">
+                        <i class="material-icons mdl-color-text--amber">save</i>
+                    </button>
+                    <div class="mdl-tooltip" for="dream-dialog-accept">
+                        {{ _('Save') }}
+                    </div>
+                    <button
+                            class="mdl-button mdl-js-button mdl-button--icon"
+                            id="dream-dialog-cancel"
+                            v-on:click="_cancel()">
+                        <i class="material-icons">cancel</i>
+                    </button>
+                    <div class="mdl-tooltip" for="dream-dialog-cancel">
+                        {{ _('Cancel & Close window') }}
+                    </div>
+
+                </div>
                 <h4 class="mdl-dialog__title">
-                    <i class="material-icons">gps_fixed</i>Objetivo
+                    <i class="material-icons">gps_fixed</i>{{ _('Goal') }}
                 </h4>
                 <div class="mdl-dialog__content">
                     <form action="#">
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                            <input class="mdl-textfield__input" type="text" id="name"
+                            <input class="mdl-textfield__input" id="name"
                                    v-model="dreamModel.name" required="True">
-                            <label class="mdl-textfield__label" for="name">Nombre</label>
+                            <label class="mdl-textfield__label" for="name">{{ _('What is my goal?') }}</label>
+                        </div>
+
+                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                            <input class="mdl-textfield__input" v-model="dreamModel.reach_goal" id="reach_goal">
+                            <label class="mdl-textfield__label" for="reach_goal">
+                                {{ _('Why do I want to reach this goal?') }}
+                            </label>
+                        </div>
+                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                            <input class="mdl-textfield__input" v-model="dreamModel.reward" id="reward">
+                            <label class="mdl-textfield__label" for="reward">
+                                {{ _('What is my reward?') }}
+                            </label>
                         </div>
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                             <input class="mdl-textfield__input" type="date" id="due_date_at"
                                    v-model="dreamModel.due_date_at">
-                            <label class="mdl-textfield__label" for="due_date_at">Fecha a finalizar</label>
+                            <label class="mdl-textfield__label" for="due_date_at">{{ _('When I will finish?') }}</label>
                         </div>
                     </form>
                 </div>
-                <div class="mdl-dialog__actions">
-                    <button v-show="validationDreamModel.accept"
-                            class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored"
-                            id="dream-dialog-accept">
-                        <i class="material-icons">check_circle</i>Aceptar
-                    </button>
-                    <button
-                            class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent"
-                            id="dream-dialog-cancel">
-                        <i class="material-icons">cancel</i>Cancelar
-                    </button>
-                    <button v-show="validationDreamModel.remove"
-                            class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect"
-                            id="dream-dialog-remove">
-                        <i class="material-icons">delete_forever</i>Eliminar
-                    </button>
+                <span class=" mdl-color-text--grey-600"></span>
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                  <textarea v-model="commentModel.comment"
+                            rows="2" class="mdl-textfield__input" id="comment">
 
+                  </textarea>
+                  <label for="comment" class="mdl-textfield__label">{{ _('Add comment')}}</label>
+                    <div class="mdl-card__menu">
+                        <button v-show="validation.commentQuickAdd" v-on:click="acceptComment(true)"
+                                class="mdl-button mdl-js-button mdl-button--icon"
+                                id="task-comment-dialog-save">
+                            <i class="material-icons mdl-color-text--amber">
+                                save
+                            </i>
+                        </button>
+                        <div class="mdl-tooltip" for="task-comment-dialog-save">
+                            {{ _('Save') }}
+                        </div>
+                    </div>
                 </div>
+
+                <div v-for="(comment, index) in comments"
+                     class="mdl-card__supporting-text zr-meta mdl-color-text--grey-600">
+{#                  <div class="minilogo"></div>#}
+                  <div>
+                    <strong>${comment.comment}</strong><br/>
+                    <span>${beautyDateComment(comment.created_at)}</span>
+                  </div>
+                </div>
+
             </dialog>
         </div>
-        <!--End panel dream-->
-
-        <!--Panel habit-->
-{#        <div class="mdl-tabs__panel" id="habits-panel">#}
-{##}
-{#            <li#}
-{#                class="mdl-list__item mdl-list__item--two-line#}
-{#                    mdl-shadow--4dp mdl-cell mdl-cell--6-col center-elements">#}
-{#                <span class="mdl-list__item-primary-content">#}
-{#                    <i class="material-icons  mdl-list__item-avatar">gavel</i>#}
-{#                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">#}
-{#                        <input v-model="habitModel.name"#}
-{#                               class="mdl-textfield__input" type="text"#}
-{#                               id="quick-habit-name"/>#}
-{#                        <label class="mdl-textfield__label" for="quick-habit-name">Hábito</label>#}
-{#                    </div>#}
-{#                </span>#}
-{#                <span class="mdl-list__item-secondary-action">#}
-{#                    <button v-show="validationHabitModel.accept"#}
-{#                            v-on:click="add()"#}
-{#                            class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab#}
-{#                                mdl-button--accent mdl-button-raised mdl-js-ripple-effect">#}
-{#                        <i class="material-icons">add</i>#}
-{#                    </button>#}
-{#                </span>#}
-{#            </li>#}
-{##}
-{##}
-{#            <div class="mdl-grid mdl-cell mdl-cell--12-col">#}
-{#                <p v-if="!habits.length">No hay hábitos registrados</p>#}
-{#                <div v-for="(habit, index) in habits">#}
-{#                    <div v-bind:class="habitBackground(habit,index)">#}
-{#                        <div class=" mdl-card__title">#}
-{#                            <h2 class="mdl-card__title-text">#}
-{#                                ${habit.name}#}
-{#                            </h2>#}
-{#                       </div>#}
-{#                       <div class="mdl-card__supporting-text">#}
-{#                           <div class="material-icons mdl-badge mdl-badge--overlap"#}
-{#                                v-bind:data-badge="habit.success">done</div>#}
-{#                           <div class="material-icons mdl-badge mdl-badge--overlap"#}
-{#                                v-bind:data-badge="habit.fail">clear</div>#}
-{#                       </div>#}
-{#                       <div class="mdl-card__actions mdl-card--border">#}
-{#                           <button v-on:click="_edit(habit,index)"#}
-{#                                   class="mdl-button mdl-js-button mdl-button--raised#}
-{#                                    mdl-js-ripple-effect mdl-button--accent">#}
-{#                               <i class="material-icons">edit</i>#}
-{#                               Editar#}
-{#                           </button>#}
-{#                           <button v-on:click="_done(habit,index)"#}
-{#                                   class="mdl-button mdl-js-button mdl-js-ripple-effect#}
-{#                                        mdl-button--raised mdl-button--colored">#}
-{#                               <i class="material-icons">${_icon_done(habit.success, habit.fail)}</i>#}
-{#                               Realizado#}
-{#                           </button>#}
-{#                       </div>#}
-{#                       <div class="mdl-card__menu">#}
-{##}
-{#                       </div>#}
-{#                   </div>#}
-{#                    <div class="mdl-layout-spacer"></div>#}
-{#                </div>#}
-{#            </div>#}
-{#            <!--Dialog box habit-->#}
-{#            <dialog id="habit-dialog" class="mdl-dialog mdl-cell--4-col">#}
-{#                <h4 class="mdl-dialog__title">#}
-{#                    <i class="material-icons">gavel</i>Hábito#}
-{#                </h4>#}
-{#                <div class="mdl-dialog__content">#}
-{#                    <form action="#">#}
-{#                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">#}
-{#                            <input class="mdl-textfield__input" type="text"#}
-{#                                   id="habit-name" v-model="habitModel.name" required>#}
-{#                            <label class="mdl-textfield__label" for="habit-name">Nombre</label>#}
-{#                        </div>#}
-{#                    </form>#}
-{#                </div>#}
-{#                <div class="mdl-dialog__actions">#}
-{#                    <button v-show="validationHabitModel.accept"#}
-{#                            class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored"#}
-{#                            id="habit-dialog-accept">#}
-{#                        <i class="material-icons">check_circle</i>Aceptar#}
-{#                    </button>#}
-{#                    <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent"#}
-{#                            id="habit-dialog-cancel">#}
-{#                        <i class="material-icons">cancel</i>Cancelar#}
-{#                    </button>#}
-{#                    <button v-show="validationHabitModel.remove"#}
-{#                            class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect"#}
-{#                            id="habit-dialog-remove">#}
-{#                        <i class="material-icons">delete_forever</i>Eliminar#}
-{#                    </button>#}
-{#                </div>#}
-{#            </dialog>#}
-{##}
-{#        </div>#}
-        <!--End habit panel-->
-
-        <!--Panel pending-->
-{#        <div class="mdl-tabs__panel" id="pending-panel">#}
-{#            <!--<p v-if="!pendings.length">No hay pendientes registrados</p>-->#}
-{#            <li#}
-{#                class="mdl-list__item mdl-list__item--two-line#}
-{#                    mdl-shadow--4dp mdl-cell mdl-cell--6-col center-elements">#}
-{#                <span class="mdl-list__item-primary-content">#}
-{#                    <i class="material-icons  mdl-list__item-avatar">subject</i>#}
-{#                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">#}
-{##}
-{#                        <input#}
-{#                                v-model="pendingModel.name"#}
-{#                                class="mdl-textfield__input" type="text"#}
-{#                                id="quick-pending-name"/>#}
-{#                        <label class="mdl-textfield__label" for="quick-pending-name">Pendiente</label>#}
-{#                    </div>#}
-{#                </span>#}
-{#                <span class="mdl-list__item-secondary-action">#}
-{##}
-{#                        <button#}
-{#                                v-show="validationPendingModel.accept"#}
-{#                                v-on:click="add()"#}
-{#                                class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab#}
-{#                                    mdl-button--accent mdl-button-raised mdl-js-ripple-effect">#}
-{#                            <i class="material-icons">add</i>#}
-{#                        </button>#}
-{#                    </span>#}
-{#            </li>#}
-{##}
-{#            <ul class="mdl-list">#}
-{#                <li v-for="(pending, index) in pendings"#}
-{#                    v-bind:class="pendingBackground(pending,index)">#}
-{#                    <span class="mdl-list__item-primary-content">#}
-{#                        <i class="material-icons mdl-list__item-avatar">subject</i>#}
-{#                        <span>#}
-{#                            ${pending.name}#}
-{#                        </span>#}
-{#                        <span class="mdl-list__item-text-body">#}
-{#                            ${pending.description}#}
-{#                        </span>#}
-{#                    </span>#}
-{#                    <span class="mdl-list__item-secondary-content">#}
-{#                        <a class="mdl-list__item-secondary-action">#}
-{#                            <button id="pending-button-done"#}
-{#                                    v-on:click="_done(pending,index)"#}
-{#                                    class=" mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab#}
-{#                                mdl-button--colored mdl-button-raised mdl-js-ripple-effect">#}
-{#                                <i class="material-icons">assignment_turned_in</i>#}
-{#                                <div class="mdl-tooltip" data-mdl-for="pending-button-done">#}
-{#                                    Hecho#}
-{#                                </div>#}
-{#                            </button>#}
-{#                            <button id="pending-button-edit"#}
-{#                                    v-on:click="_edit(pending,index)"#}
-{#                                    class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab#}
-{#                                    mdl-button--colored mdl-button-raised mdl-js-ripple-effect">#}
-{#                                <i class="material-icons">edit</i>#}
-{#                            </button>#}
-{#                            <div class="mdl-tooltip" data-mdl-for="pending-button-edit">#}
-{#                                Editar#}
-{#                            </div>#}
-{#                        </a>#}
-{#                    </span>#}
-{#                </li>#}
-{#            </ul>#}
-{##}
-{#            <dialog id="pending-dialog" class="mdl-dialog mdl-cell--4-col">#}
-{#                <h4 class="mdl-dialog__title">#}
-{#                    <i class="material-icons">subject</i>Pendiente#}
-{#                </h4>#}
-{#                <div class="mdl-dialog__content">#}
-{#                    <form action="#">#}
-{#                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">#}
-{#                            <input v-model="pendingModel.name" class="mdl-textfield__input"#}
-{#                                   type="text" id="pending-name" required>#}
-{#                            <label class="mdl-textfield__label" for="pending-name">Nombre</label>#}
-{#                        </div>#}
-{#                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">#}
-{#                            <textarea v-model="pendingModel.description"#}
-{#                                      class="mdl-textfield__input" type="text"#}
-{#                                      rows="2" id="pending-description">#}
-{#                            </textarea>#}
-{#                            <label class="mdl-textfield__label" for="pending-description">Descripción</label>#}
-{#                        </div>#}
-{#                    </form>#}
-{#                </div>#}
-{#                <div class="mdl-dialog__actions">#}
-{#                    <button v-show="validationPendingModel.accept"#}
-{#                       class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored"#}
-{#                       id="pending-dialog-accept">#}
-{#                        <i class="material-icons">check_circle</i>Aceptar#}
-{#                    </button>#}
-{#                    <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent"#}
-{#                            id="pending-dialog-cancel">#}
-{#                        <i class="material-icons">cancel</i>Cancelar#}
-{#                    </button>#}
-{#                    <button v-show="validationPendingModel.remove"#}
-{#                       class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect"#}
-{#                       id="pending-dialog-remove">#}
-{#                        <i class="material-icons">delete_forever</i>Eliminar#}
-{#                    </button>#}
-{#                </div>#}
-{#            </dialog>#}
-{#        </div>#}
-        <!--End panel pending-->
-{#    </div>#}
 </div>
 
 {% endblock %}

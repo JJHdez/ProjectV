@@ -29,7 +29,7 @@ var Libzr = (function Libzr() {
             {
                 var o = {
                     "M+" : this.getMonth()+1, //month
-                    "d+" : this.getDate(),    //day
+                    "d+" :  this.getDate(),    //day
                     "h+" : this.getHours(),   //hour
                     "m+" : this.getMinutes(), //minute
                     "s+" : this.getSeconds(), //second
@@ -67,7 +67,7 @@ var Libzr = (function Libzr() {
                         // If the user is okay, let's create a notification
                         if (permission === "granted") {
                             if (params['icon'] === undefined)
-                                params['icon'] = '/images/logo.png';
+                                params['icon'] = '/images/logo-amber.png';
                             var notification = new Notification(name, params);
                         }
                     });
@@ -106,7 +106,9 @@ var Libzr = (function Libzr() {
             var timeDiff = start_date.getTime() - due_date.getTime();
             return Math.ceil(timeDiff / (1000 * 3600 * 24));
         };
-
+        _this.getDiffHour = function (start_date, due_date) {
+            return start_date.getTime() - due_date.getTime() / 3600000;
+        },
         // _this.snackBarNotify =  function (id) {
         //     var myElem = document.getElementById(id);
         //     if (myElem === null){
@@ -138,6 +140,29 @@ var Libzr = (function Libzr() {
         //         notify.notify(data)
         //     }
         // }
+        _this.findModal = function (id, action) {
+           var dreamDialog = document.querySelector('#'+id);
+           if (!dreamDialog.showModal) {
+                dialogPolyfill.registerDialog(dreamDialog);
+            }
+            switch (action){
+                case 'show':
+                        dreamDialog.showModal();
+                    break;
+                case 'close':
+                        dreamDialog.close();
+                    break;
+            }
+        },
+        _this.time24to12= function(time24){
+          var ts = time24;
+          var H = +ts.substr(0, 2);
+          var h = (H % 12) || 12;
+          h = (h < 10)?("0"+h):h;  // leading 0 at the left for 1 digit hours
+          var ampm = H < 12 ? " AM" : " PM";
+          ts = h + ts.substr(2, 3) + ampm;
+          return ts;
+        }
     };
 }());
 const libzr = new Libzr(); // invoke
