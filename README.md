@@ -38,7 +38,7 @@ visit [focus.yonn.io](http://violet-y0n.rhcloud.com/)
     * ``rem`` for removing of resources
 
 ## Configuration
-* Install libraries [requirements.txt](requirements.txt)
+* Install libs python [requirements.txt](requirements.txt)
 * Replace values in file ``flaskapp.cfg``
 * Restore scripts SQL on [PostgreSQL](www.postgresql.org)
     * ``migrations/focusv2.0.sql``
