@@ -1,0 +1,65 @@
+{% extends "frontend/layout.html" %}
+{% block layout_title %}
+    Pricing
+{% endblock %}
+{% block body %}
+    <div class="mdl-grid ">
+        <div class="mdl-cell mdl-cell--12-col-desktop mdl-typography--text-center">
+            <h3 class="mdl-color-text--black">{{ _('Focus is free') }}</h3>
+        </div>
+        <div class="mdl-cell mdl-cell--12-col-desktop">
+            <div class="mdl-card  mdl-shadow--2dp center-elements">
+                <h2 class="mdl-typography--text-center">
+                    $ 0
+                </h2>
+                <div class="mdl-card__media mdl-shadow--2dp mdl-color--black mdl-typography--text-center mdl-color-text--white">
+                    {{ _('/ user / month') }}
+                </div>
+                <div class="mdl-card__supporting-text">
+                    <ul class="demo-list-icon mdl-list">
+                        <li class="mdl-list__item">
+                            <span class="mdl-list__item-primary-content">
+                                <i class="material-icons mdl-list__item-icon">gps_fixed</i>
+                                {{ _('Goals') }}
+                            </span>
+                        </li>
+                        <li class="mdl-list__item">
+                            <span class="mdl-list__item-primary-content">
+                                <i class="material-icons mdl-list__item-icon">gavel</i>
+                                {{ _('Habits') }}
+                            </span>
+                        </li>
+                        <li class="mdl-list__item">
+                            <span class="mdl-list__item-primary-content">
+                                <i class="material-icons mdl-list__item-icon">timer</i>
+                                {{ _('Pomodoro') }}
+                            </span>
+                        </li>
+                        <li class="mdl-list__item">
+                            <span class="mdl-list__item-primary-content">
+                            <i class="material-icons mdl-list__item-icon">playlist_play</i>
+                                {{ _('Quick planning') }}
+                            </span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="mdl-card__actions">
+                </div>
+            </div>
+        </div>
+
+
+        <div class="mdl-cell mdl-cell--12-col-desktop mdl-typography--text-center">
+            <a href="{{ url_for('google/login') }}">
+                <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--white">
+                    {{ _('get started now') }}
+                </button>
+            </a>
+        </div>
+    </div>
+{% endblock %}
+{% block js %}
+    <script>
+        document.querySelector("#navigation-pricing").style.borderBottom = "4px solid #000";
+    </script>
+{% endblock %}

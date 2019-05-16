@@ -1,0 +1,430 @@
+<!--
+    Copyright 2017 ProjectV Authors. All Rights Reserved.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+{% extends "layout.html" %}
+{% block layout_title %}
+    Quick planning
+{% endblock %}
+{% block body %}
+    <div class="mdl-grid" xmlns="http://www.w3.org/1999/html">
+        <div id="projects-panel"
+             class="mdl-cell mdl-cell--12-col mdl-grid mdl-grid--no-spacing">
+
+            <div class="mdl-cell
+                mdl-cell--4-col
+                mdl-cell--4-col-tablet mdl-cell--4-col-desktop
+                mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                <input v-model="workspaceModelQuickAdd.name"
+                       @keyup.enter="accept(true)"
+                       class="mdl-textfield__input" type="text" id="workspace-name-quick">
+                <label class="mdl-textfield__label" for="workspace-name-quick">Workspace</label>
+            </div>
+
+            <div class="mdl-cell mdl-cell--4-col mdl-cell--4-col-tablet mdl-cell--8-col-desktop">
+                <span v-for="(project, index) in projects"
+                        v-bind:class="activeWorkspace(project, index)">
+                    <!--<img v-on:click="viewTask(project,index)"
+                         class="mdl-chip__contact" src="https://getmdl.io/templates/dashboard/images/user.jpg"/>-->
+                    <i class="material-icons mdl-chip__contact">group_work</i>
+                    <span v-on:click="viewTask(project,index)" class="mdl-chip__text zr-pointer">
+                        ${project.name}
+                    </span>
+                    <a class="mdl-chip__action zr-pointer" v-on:click="edit(project,index)">
+                        <i class="material-icons">edit</i>
+                    </a>
+                </span>
+            </div>
+
+            <dialog id="project-dialog" class="mdl-dialog mdl-cell--4-col">
+                <button v-show="validation.workspaceRemove"
+                        v-on:click="remove()"
+                        class="mdl-button mdl-js-button mdl-button--icon"
+                        id="workspace-dialog-delete">
+                        <i class="material-icons mdl-color-text--red">
+                            delete_forever
+                        </i>
+                </button>
+                <div class="mdl-tooltip" for="workspace-dialog-delete">
+                    Delete forever
+                </div>
+                <div class="mdl-card__menu">
+                    <button v-on:click="done()"
+                            class="mdl-button mdl-js-button mdl-button--icon"
+                            id="workspace-dialog-done">
+                        <i class="material-icons mdl-color-text--light-green">
+                            done
+                        </i>
+                    </button>
+                    <div class="mdl-tooltip" for="workspace-dialog-done">
+                        Ending workspace
+                    </div>
+                    <button v-show="validation.workspaceEdit"
+                            v-on:click="accept(false)"
+                            class="mdl-button mdl-js-button mdl-button--icon"
+                            id="workspace-dialog-save">
+                        <i class="material-icons mdl-color-text--purple">save</i>
+                    </button>
+                    <div class="mdl-tooltip" for="workspace-dialog-save">
+                        Save
+                    </div>
+                    <button v-on:click="closeDialog()"
+                            class="mdl-button mdl-js-button mdl-button--icon"
+                            id="workspace-dialog-cancel">
+                        <i class="material-icons">cancel</i>
+                    </button>
+                    <div class="mdl-tooltip" for="workspace-dialog-cancel">
+                        Cancel & Close window
+                    </div>
+                </div>
+
+                <h4 class="mdl-dialog__title">
+                    <i class="material-icons">group_work</i>
+                    Proyecto
+                </h4>
+
+                <div class="mdl-dialog__content">
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        <input class="mdl-textfield__input" type="text" id="project-name"
+                               v-model="projectModel.name" required>
+                        <label class="mdl-textfield__label" for="project-name">Nombre</label>
+                    </div>
+                </div>
+
+                <!--<div class="mdl-dialog__actions">
+                    <button v-show="validation.workspaceEdit"
+                            v-on:click="accept(false)"
+                            class="mdl-button mdl-js-button mdl-button--raised
+                                mdl-js-ripple-effect mdl-button--colored">
+                        <i class="material-icons">save</i>Guardar
+                    </button>
+                    <button
+                            v-on:click="closeDialog()"
+                            class="mdl-button mdl-js-button mdl-button--raised
+                            mdl-js-ripple-effect mdl-button--accent"
+                            id="project-dialog-cancel">
+                        <i class="material-icons">cancel</i>Cancelar
+                    </button>
+                </div>-->
+            </dialog>
+
+        </div>
+
+        <div id="project-tasks-panel" class="mdl-cell mdl-cell--12-col mdl-grid mdl-grid--no-spacing">
+
+            <ul class="mdl-list mdl-cell mdl-cell--3-col">
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input @keyup.enter="acceptSubTask(getGroupTaskByName('Today'), -1, true)"
+                           v-model="taskTodayModel.name"
+                           class="mdl-textfield__input" type="text" id="sub-task-name-today-quick">
+                    <label class="mdl-textfield__label" for="sub-task-name-today-quick">Today</label>
+                </div>
+                <draggable v-model="tasksToday" :options="{group:'task'}" @add="onMoveToday">
+                    <li  v-for="(task, index) in tasksToday"
+                          v-on:click="openDialogSubTask(task,index,'Today')"
+                         class="mdl-list__item mdl-shadow--2dp zr-pointer">
+                        <span class="mdl-list__item-primary-content">
+                            <img class="mdl-chip__contact"
+                                 src="https://getmdl.io/templates/dashboard/images/user.jpg"/>
+                            ${task.name}
+                        </span>
+                        <span class="mdl-list__item-secondary-content">
+                            <div>
+                                <a class="mdl-list__item-secondary-action" href="#">
+                                    <i v-bind:class="getSubTaskIconColourByName('Today')">${getSubTaskIconByName('Today')}</i>
+                                </a>
+                            </div>
+                        </span>
+                    </li>
+                </draggable>
+            </ul>
+
+            <ul class="mdl-list mdl-cell mdl-cell--3-col">
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input @keyup.enter="acceptSubTask(getGroupTaskByName('Tomorrow'), -1,true)"
+                           v-model="taskTomorrowModel.name"
+                           class="mdl-textfield__input" type="text" id="sub-task-name-tomorrow-quick">
+                    <label class="mdl-textfield__label" for="sub-task-name-tomorrow-quick">Tomorrow</label>
+                </div>
+                <draggable v-model="tasksTomorrow" :options="{group:'task'}" @add="onMoveTomorrow">
+                    <li  v-for="(task, index) in tasksTomorrow"
+                         v-on:click="openDialogSubTask(task,index,'Tomorrow')"
+                         class="mdl-list__item mdl-shadow--2dp zr-pointer">
+                        <span class="mdl-list__item-primary-content">
+                             <img class="mdl-chip__contact" src="https://getmdl.io/templates/dashboard/images/user.jpg"/>
+                            ${task.name}
+                        </span>
+                        <span class="mdl-list__item-secondary-content">
+                            <div>
+                                <a class="mdl-list__item-secondary-action" href="#">
+                                    <i v-bind:class="getSubTaskIconColourByName('Tomorrow')">${getSubTaskIconByName('Tomorrow')}</i>
+                                </a>
+                            </div>
+                        </span>
+                    </li>
+                </draggable>
+            </ul>
+
+            <ul class="mdl-list mdl-cell mdl-cell--3-col">
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input @keyup.enter="acceptSubTask(getGroupTaskByName('Upcoming'), -1, true)"
+                           v-model="taskUpcomingModel.name"
+                           class="mdl-textfield__input" type="text" id="sub-task-name-upcoming-quick">
+                    <label class="mdl-textfield__label" for="sub-task-name-upcoming-quick">Upcoming</label>
+                </div>
+                <draggable v-model="tasksUpcoming" :options="{group:'task'}" @add="onMoveUpcoming">
+                    <li  v-for="(task, index) in tasksUpcoming"
+                         v-on:click="openDialogSubTask(task,index,'Upcoming')"
+                         class="mdl-list__item mdl-shadow--2dp zr-pointer">
+                        <span class="mdl-list__item-primary-content">
+                             <img class="mdl-chip__contact" src="https://getmdl.io/templates/dashboard/images/user.jpg"/>
+                            ${task.name}
+                        </span>
+                        <span class="mdl-list__item-secondary-content">
+                            <div>
+                                <a class="mdl-list__item-secondary-action" href="#">
+                                    <i v-bind:class="getSubTaskIconColourByName('Upcoming')">${getSubTaskIconByName('Upcoming')}</i>
+                                </a>
+                            </div>
+                        </span>
+                    </li>
+                </draggable>
+            </ul>
+
+            <ul class="mdl-list mdl-cell mdl-cell--3-col">
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input @keyup.enter="acceptSubTask(getGroupTaskByName('Someday'), -1, true)"
+                           v-model="taskSomedayModel.name"
+                           class="mdl-textfield__input" type="text" id="sub-task-name-someday-quick">
+                    <label class="mdl-textfield__label" for="sub-task-name-someday-quick">Someday</label>
+                </div>
+                <draggable v-model="tasksSomeday" :options="{group:'task'}" @add="onMoveSomeday">
+                    <li v-for="(task, index) in tasksSomeday"
+                        v-on:click="openDialogSubTask(task,index,'Someday')"
+                        class="mdl-list__item mdl-shadow--2dp zr-pointer">
+                        <span class="mdl-list__item-primary-content">
+                             <img class="mdl-chip__contact" src="https://getmdl.io/templates/dashboard/images/user.jpg"/>
+                            ${task.name}
+                        </span>
+                        <span class="mdl-list__item-secondary-content">
+                            <div>
+                                <a class="mdl-list__item-secondary-action" href="#">
+                                    <i v-bind:class="getSubTaskIconColourByName('Someday')">${getSubTaskIconByName('Someday')}</i>
+                                </a>
+                            </div>
+                        </span>
+                    </li>
+                </draggable>
+            </ul>
+
+            <dialog id="task-dialog" class="mdl-dialog mdl-cell--8-col">
+                <button v-on:click="removeSubTask()"
+                            class="mdl-button mdl-js-button mdl-button--icon"
+                            id="sub-task-dialog-delete">
+                        <i class="material-icons mdl-color-text--red">
+                            delete_forever
+                        </i>
+                    </button>
+                <div class="mdl-card__menu">
+
+                    <div class="mdl-tooltip" for="sub-task-dialog-delete">
+                        Delete forever
+                    </div>
+                    <button v-on:click="doneSubTask()"
+                            class="mdl-button mdl-js-button mdl-button--icon"
+                            id="sub-task-dialog-done">
+                        <i class="material-icons mdl-color-text--light-green">
+                            done
+                        </i>
+                    </button>
+                    <div class="mdl-tooltip" for="sub-task-dialog-done">
+                        Done sub-task
+                    </div>
+                    <button v-show="validation.subTaskEdit"
+                            v-on:click="acceptSubTask(null, null, false)"
+                            class="mdl-button mdl-js-button mdl-button--icon"
+                            id="sub-task-dialog-save">
+                        <i class="material-icons mdl-color-text--purple">
+                            save
+                        </i>
+                    </button>
+                    <div class="mdl-tooltip" for="sub-task-dialog-save">
+                        Save
+                    </div>
+                    <button v-on:click="closeDialogSubTask()"
+                            class="mdl-button mdl-js-button mdl-button--icon"
+                            id="sub-task-dialog-cancel">
+                        <i class="material-icons">cancel</i>
+                    </button>
+                    <div class="mdl-tooltip" for="sub-task-dialog-cancel">
+                        Cancel & Close window
+                    </div>
+                </div>
+                <div class="mdl-dialog__title">
+                    <!--<i class="material-icons">list</i> -->
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label
+                        mdl-cell mdl-cell--6-col">
+                        <input v-model="subTaskModel.name"
+                               class="mdl-textfield__input" type="text" id="task-name">
+                        <label class="mdl-textfield__label" for="task-name">Nombre</label>
+                    </div>
+
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label
+                        mdl-cell mdl-cell--3-col">
+                        <input v-model="subTaskModel.due_date_at"
+                               class="mdl-textfield__input" type="date" id="task-due-date-at">
+                        <label class="mdl-textfield__label" for="task-due-date-at">Fecha a finalizar</label>
+                    </div>
+                </div>
+                <div class="mdl-dialog__content">
+
+                    <div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
+                        <div class="mdl-tabs__tab-bar">
+                            <a href="#comments-panel" class="mdl-tabs__tab is-active">
+                                <i class="material-icons">
+                                    comment
+                                </i>
+                            </a>
+                            <a href="#issues-panel" class="mdl-tabs__tab">
+                                <i class="material-icons">
+                                    format_list_bulleted
+                                </i>
+                            </a>
+                        </div>
+
+                        <div class="mdl-tabs__panel is-active" id="comments-panel">
+                            <div class="mdl-textfield mdl-js-textfield  mdl-textfield--floating-label mdl-cell--12-col">
+                                <textarea v-model="commentModel.comment"
+                                        class="mdl-textfield__input"
+                                    type="text" rows= "2" id="quick-sub-task-comment">
+
+                                </textarea>
+                                <label class="mdl-textfield__label" for="quick-sub-task-comment">
+                                    Escriba una nota!!
+                                </label>
+                                <div class="mdl-card__menu">
+                                        <button v-show="validation.commentQuickAdd" v-on:click="acceptComment(true)"
+                                                class="mdl-button mdl-js-button mdl-button--icon"
+                                                id="task-comment-dialog-save">
+                                            <i class="material-icons mdl-color-text--purple">
+                                                save
+                                            </i>
+                                        </button>
+                                        <div class="mdl-tooltip" for="task-comment-dialog-save">
+                                            Save
+                                        </div>
+                                    </div>
+                            </div>
+
+
+
+                            <div class="comments">
+                                <div v-for="(comment, index) in comments" class="comment  mdl-shadow--2dp">
+                                    <header class="comment__header">
+                                        <img v-if="comment.user_cover"
+                                             v-bind:src="comment.user_cover"
+                                             class="comment__avatar">
+                                        <div class="comment__author">
+                                            <strong>${comment.user_name}</strong>
+                                            <span>${comment.created_at}</span>
+                                        </div>
+                                    </header>
+                                    <div class="comment__text">
+                                        <div v-html="compiledMarkdown(comment.comment)">
+
+                                        </div>
+                                    </div>
+                                    <!--<nav class="comment__actions">
+                                        <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon">
+                                            <i class="material-icons" role="presentation">thumb_up</i>
+                                            <span class="visuallyhidden">like comment</span>
+                                        </button>
+                                        <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon">
+                                            <i class="material-icons" role="presentation">thumb_down</i>
+                                            <span class="visuallyhidden">dislike comment</span>
+                                        </button>
+                                        <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon">
+                                            <i class="material-icons" role="presentation">share</i>
+                                            <span class="visuallyhidden">share comment</span>
+                                        </button>
+                                    </nav> -->
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="mdl-tabs__panel" id="issues-panel">
+                            <span class="mdl-list__item-primary-content">
+                                <div class="mdl-textfield mdl-js-textfield
+                                    mdl-textfield--floating-label mdl-cell mdl-cell--6-col">
+                                    <input  @keyup.enter="acceptIssue(true)"
+                                            v-model="issueModel.name"
+                                           class="mdl-textfield__input" type="text" id="quick-bug-name">
+                                    <label class="mdl-textfield__label" for="quick-bug-name">Actividad</label>
+                                    <!--<div class="mdl-card__menu">
+                                        <button v-show="validation.issueQuickAdd" v-on:click="acceptIssue(true)"
+                                                class="mdl-button mdl-js-button mdl-button--icon"
+                                                id="sub-task-bug-dialog-save">
+                                            <i class="material-icons mdl-color-text--purple">
+                                                save
+                                            </i>
+                                        </button>
+                                        <div class="mdl-tooltip" for="sub-task-bug-dialog-save">
+                                            Save
+                                        </div>
+                                    </div> -->
+                                </div>
+                            </span>
+                            <div v-for="(issue, index) in issues" class="mdl-list__item mdl-shadow--2dp">
+                            <span class="mdl-list__item-primary-content">
+                                <button v-on:click="removeIssue(issue,index)"
+                                class="mdl-button mdl-js-button mdl-button--icon">
+                                    <i class="material-icons mdl-color-text--red">
+                                        delete_forever
+                                    </i>
+                                </button>
+                              <span>${issue.name}</span>
+                            </span>
+                            <a class="mdl-list__item-secondary-action" href="#">
+                                <button v-on:click="doneIssue(issue,index)"
+                                class="mdl-button mdl-js-button mdl-button--icon">
+                                    <i class="material-icons mdl-color-text--light-green">
+                                        done
+                                    </i>
+                                </button>
+                            </a>
+                        </div>
+                        </div>
+{#                    </div>#}
+
+
+                </div>
+
+            <div class="mdl-dialog__actions">
+            </div>
+            </dialog>
+
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script src="/js/project.js" type="application/javascript">
+    </script>
+    <script src="https://unpkg.com/marked@0.3.6">
+    </script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/Sortable/1.6.0/Sortable.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/Vue.Draggable/2.14.1/vuedraggable.min.js"></script>
+
+{% endblock %}

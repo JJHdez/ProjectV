@@ -1,0 +1,381 @@
+<!--
+    Copyright 2017 ProjectV Authors. All Rights Reserved.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+{% extends "layout.html" %}
+
+{% block layout_title %}
+    Habit
+{% endblock %}
+
+{% block body %}
+    <div id="habits-panel"
+         class="mdl-layout mdl-js-layout mdl-layout--fixed-drawer mdl-layout--fixed-header mdl-cell--12-col">
+        <header class="mdl-layout__header mdl-color--white">
+            <div class="mdl-layout__header-row">
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input v-model="habitName"
+                           @keyup.enter="quickAdd()"
+                           class="mdl-textfield__input"
+                           id="quick-add-habit"/>
+                    <label class="mdl-textfield__label" for="quick-add-habit">
+                        {{ _('What do I want improvement?') }}
+                    </label>
+                </div>
+                {#                <div class="mdl-layout-spacer"></div>#}
+            </div>
+        </header>
+        <div class="mdl-layout__drawer mdl-color--white">
+            <span class="mdl-layout-title">
+                <i class="material-icons mdl-color-text--black md-24">gavel</i>
+                {{ _("Habits") }}
+            </span>
+            <nav   class="mdl-navigation">
+                <a v-for="(habit, index) in habits" v-on:click="show(habit,index)" class="mdl-navigation__link zr-pointer">
+                    ${habit.name}
+                </a>
+            </nav>
+        </div>
+        <main class="mdl-layout__content zr-habit">
+
+            <h3 v-show="!habits.length" class="zr-help-add center-all-elements">
+                {{ _('What do I want to accomplish?') }}
+                <a class="material-icons mdl-color-text--black md-36">sentiment_very_satisfied</a>
+            </h3>
+
+            <div v-if="habitCurrent.index >= 0" class="page-content zr-habit--habit-post">
+                <div class=" zr-habit__posts mdl-grid">
+                    <div class="mdl-card mdl-shadow--4dp mdl-cell mdl-cell--12-col">
+                        <div class="mdl-card__media mdl-color-text--grey-50">
+                            <h3 class="quote">
+                                ${habitCurrent.name}
+                            </h3>
+                        </div>
+                        <div class="mdl-color-text--grey-700 mdl-card__supporting-text meta">
+                            <i class="material-icons md-48">
+                                ${_icon_done(habitCurrent.success, habitCurrent.fail)}
+                            </i>
+                            <div>
+                                <button v-on:click="done()"
+                                        class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised mdl-button--colored">
+                                    <i class="material-icons">done</i>
+                                    {{ _("Done") }}
+                                </button>
+
+                                {#                                <strong>#}
+                                {#                                    Demo#}
+                                {#                                </strong>#}
+                                {#                                <span>2 days ago</span>#}
+                            </div>
+                            <div class="section-spacer"></div>
+                            <div class="meta__favorites">
+                                <i class="material-icons" v-on:click="openAndEditDialog()">edit</i>
+                            </div>
+                            <div class="meta__favorites">
+                                <i class="material-icons" v-on:click="openAndEditDialogRemember()">today</i>
+                            </div>
+                        </div>
+                        {#                        <div class="mdl-color-text--grey-700 mdl-card__supporting-text">#}
+                        {#                            <p>#}
+                        {#                                Excepteur reprehenderit sint exercitation ipsum consequat qui sit id velit elit. Velit#}
+                        {#                                anim eiusmod labore sit amet. Voluptate voluptate irure occaecat deserunt incididunt#}
+                        {#                                esse in. Sunt velit aliquip sunt elit ex nulla reprehenderit qui ut eiusmod ipsum do.#}
+                        {#                                Duis veniam reprehenderit laborum occaecat id proident nulla veniam. Duis enim deserunt#}
+                        {#                                voluptate aute veniam sint pariatur exercitation. Irure mollit est sit labore est#}
+                        {#                                deserunt pariatur duis aute laboris cupidatat. Consectetur consequat esse est sit veniam#}
+                        {#                                adipisicing ipsum enim irure.#}
+                        {#                            </p>#}
+                        {#                        </div>#}
+                        {#                        <div class="mdl-color-text--primary-contrast mdl-card__supporting-text comments">#}
+                        {#                            <form>#}
+                        {#                                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">#}
+                        {#                                    <textarea rows="1" class="mdl-textfield__input" id="comment"></textarea>#}
+                        {#                                    <label for="comment" class="mdl-textfield__label">Join the discussion</label>#}
+                        {#                                </div>#}
+                        {#                                <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon"#}
+                        {#                                        data-upgraded=",MaterialButton,MaterialRipple">#}
+                        {#                                    <i class="material-icons" role="presentation">check</i><span class="visuallyhidden">add comment</span>#}
+                        {#                                    <span class="mdl-button__ripple-container"><span class="mdl-ripple"></span></span>#}
+                        {#                                </button>#}
+                        {#                            </form>#}
+                        {#                            <div class="comment mdl-color-text--grey-700">#}
+                        {#                                <header class="comment__header">#}
+                        {#                                    <img src="images/co1.jpg" class="comment__avatar">#}
+                        {#                                    <div class="comment__author">#}
+                        {#                                        <strong>James Splayd</strong>#}
+                        {#                                        <span>2 days ago</span>#}
+                        {#                                    </div>#}
+                        {#                                </header>#}
+                        {#                                <div class="comment__text">#}
+                        {#                                    In in culpa nulla elit esse. Ex cillum enim aliquip sit sit ullamco ex eiusmod#}
+                        {#                                    fugiat. Cupidatat ad minim officia mollit laborum magna dolor tempor cupidatat#}
+                        {#                                    mollit. Est velit sit ad aliqua ullamco laborum excepteur dolore proident incididunt#}
+                        {#                                    in labore elit.#}
+                        {#                                </div>#}
+                        {#                                <nav class="comment__actions">#}
+                        {#                                    <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon"#}
+                        {#                                            data-upgraded=",MaterialButton,MaterialRipple">#}
+                        {#                                        <i class="material-icons" role="presentation">thumb_up</i><span#}
+                        {#                                            class="visuallyhidden">like comment</span>#}
+                        {#                                        <span class="mdl-button__ripple-container"><span#}
+                        {#                                                class="mdl-ripple"></span></span></button>#}
+                        {#                                    <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon"#}
+                        {#                                            data-upgraded=",MaterialButton,MaterialRipple">#}
+                        {#                                        <i class="material-icons" role="presentation">thumb_down</i><span#}
+                        {#                                            class="visuallyhidden">dislike comment</span>#}
+                        {#                                        <span class="mdl-button__ripple-container"><span#}
+                        {#                                                class="mdl-ripple"></span></span></button>#}
+                        {#                                    <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon"#}
+                        {#                                            data-upgraded=",MaterialButton,MaterialRipple">#}
+                        {#                                        <i class="material-icons" role="presentation">share</i><span#}
+                        {#                                            class="visuallyhidden">share comment</span>#}
+                        {#                                        <span class="mdl-button__ripple-container"><span#}
+                        {#                                                class="mdl-ripple"></span></span></button>#}
+                        {#                                </nav>#}
+                        {#                                <div class="comment__answers">#}
+                        {#                                    <div class="comment">#}
+                        {#                                        <header class="comment__header">#}
+                        {#                                            <img src="images/co2.jpg" class="comment__avatar">#}
+                        {#                                            <div class="comment__author">#}
+                        {#                                                <strong>John Dufry</strong>#}
+                        {#                                                <span>2 days ago</span>#}
+                        {#                                            </div>#}
+                        {#                                        </header>#}
+                        {#                                        <div class="comment__text">#}
+                        {#                                            Yep, agree!#}
+                        {#                                        </div>#}
+                        {#                                        <nav class="comment__actions">#}
+                        {#                                            <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon"#}
+                        {#                                                    data-upgraded=",MaterialButton,MaterialRipple">#}
+                        {#                                                <i class="material-icons" role="presentation">thumb_up</i><span#}
+                        {#                                                    class="visuallyhidden">like comment</span>#}
+                        {#                                                <span class="mdl-button__ripple-container"><span#}
+                        {#                                                        class="mdl-ripple"></span></span></button>#}
+                        {#                                            <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon"#}
+                        {#                                                    data-upgraded=",MaterialButton,MaterialRipple">#}
+                        {#                                                <i class="material-icons" role="presentation">thumb_down</i><span#}
+                        {#                                                    class="visuallyhidden">dislike comment</span>#}
+                        {#                                                <span class="mdl-button__ripple-container"><span#}
+                        {#                                                        class="mdl-ripple"></span></span></button>#}
+                        {#                                            <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon"#}
+                        {#                                                    data-upgraded=",MaterialButton,MaterialRipple">#}
+                        {#                                                <i class="material-icons" role="presentation">share</i><span#}
+                        {#                                                    class="visuallyhidden">share comment</span>#}
+                        {#                                                <span class="mdl-button__ripple-container"><span#}
+                        {#                                                        class="mdl-ripple"></span></span></button>#}
+                        {#                                        </nav>#}
+                        {#                                    </div>#}
+                        {#                                </div>#}
+                        {#                            </div>#}
+                        {#                        </div>#}
+                    </div>
+
+                </div>
+            </div>
+
+            <!--Dialog box habit-->
+            <dialog id="habit-dialog" class="mdl-dialog mdl-cell--4-col">
+                <button v-on:click="remove()" class="mdl-button mdl-js-button mdl-button--icon"
+                        id="habit-dialog-remove">
+                    <i class="material-icons mdl-color-text--red">delete_forever</i>
+                </button>
+                <div class="mdl-tooltip" for="habit-dialog-remove">
+                    {{ _("Delete") }}
+                </div>
+                <div class="mdl-card__menu">
+                    <button v-on:click="save()" class="mdl-button mdl-js-button mdl-button--icon"
+                            id="habit-dialog-accept">
+                        <i class="material-icons mdl-color-text--amber">save</i>
+                    </button>
+                    <div class="mdl-tooltip" for="habit-dialog-accept">
+                        {{ _("Save") }}
+                    </div>
+                    <button v-on:click="cancelAndCloseDialog()" class="mdl-button mdl-js-button mdl-button--icon"
+                            id="habit-dialog-cancel">
+                        <i class="material-icons">cancel</i>
+                    </button>
+                    <div class="mdl-tooltip" for="habit-dialog-cancel">
+                        {{ _("Cancel & Close window") }}
+                    </div>
+                </div>
+
+                <h4 class="mdl-dialog__title">
+                    <i class="material-icons">gavel</i>${habitCurrent.name}
+                </h4>
+                <div class="mdl-dialog__content">
+                    <form action="#">
+                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                            <input class="mdl-textfield__input"
+                                   id="habit-name" v-model="habitModel.name" required>
+                            <label class="mdl-textfield__label"
+                                   for="habit-name">{{ _('What do I want improvement?') }}</label>
+                        </div>
+                    </form>
+                </div>
+                <div class="mdl-dialog__actions"></div>
+            </dialog>
+
+            <dialog id="habit-remember" class="mdl-dialog mdl-cell--8-col">
+
+                <!--button class="mdl-button mdl-js-button mdl-button--icon" id="habit-remember-remove">
+                    <i class="material-icons mdl-color-text--red">delete_forever</i>
+                </button>
+                <div class="mdl-tooltip" for="habit-remember-remove">
+                    {{ _("Delete") }}
+                </div -->
+
+                <div class="mdl-card__menu">
+                    <button v-on:click="saveDialogRemember()" class="mdl-button mdl-js-button mdl-button--icon" id="habit-remember-accept">
+                        <i class="material-icons mdl-color-text--amber">save</i>
+                    </button>
+                    <div class="mdl-tooltip" for="habit-remember-accept">
+                        {{ _("Save") }}
+                    </div>
+
+                    <button v-on:click="cancelAndCloseDialogRemember()"  class="mdl-button mdl-js-button mdl-button--icon" id="habit-remember-cancel">
+                        <i class="material-icons">cancel</i>
+                    </button>
+                    <div class="mdl-tooltip" for="habit-remember-cancel">
+                        {{ _("Cancel & Close window") }}
+                    </div>
+                </div>
+
+                <h4 class="mdl-dialog__title">
+                    <i class="material-icons">today</i> {{ _('I want to remember') }}
+                </h4>
+
+                <div class="mdl-dialog__content">
+                    <form>
+                        <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="option-1">
+                            <input v-model="reminder.by" v-on:change="onChangeReminder()"
+                                   type="radio" id="option-1" class="mdl-radio__button"
+                                   name="habit-remember-by"
+                                   value="daily" :checked="reminder.by=='daily'">
+                            <span class="mdl-radio__label">{{ _('Daily') }}</span>
+                        </label>
+                        <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="option-2">
+                            <input v-model="reminder.by" v-on:change="onChangeReminder()" type="radio"
+                                   id="option-2" class="mdl-radio__button" name="habit-remember-by"
+                                   value="weekly" :checked="reminder.by=='weekly'">
+                            <span class="mdl-radio__label">{{ _('Weekly') }}</span>
+                        </label>
+                        <!--label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="option-3">
+                            <input type="radio" id="option-3" class="mdl-radio__button" name="habit-remember-by"
+                                   value="monthly">
+                            <span class="mdl-radio__label">{{ _('Monthly') }}</span>
+                        </label>
+                        <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="option-4">
+                            <input type="radio" id="option-4" class="mdl-radio__button" name="habit-remember-by"
+                                   value="yearly">
+                            <span class="mdl-radio__label">{{ _('Yearly') }}</span>
+                        </label-->
+                        <div class="section-spacer"></div>
+                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                            <input v-model="reminder.every" v-on:change="onChangeReminder()"
+                                   class="mdl-textfield__input" id="habit-remember-every" type="number">
+                            <label class="mdl-textfield__label" for="habit-remember-every">
+                                {{ _('Every') }} ${reminder.every} ${reminder.everyMsg}
+                            </label>
+                        </div>
+                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                            <input class="mdl-textfield__input" v-model="reminder.due_date" id="habit-remember-due-date" type="date">
+                            <label class="mdl-textfield__label"
+                                   for="habit-remember-due-date">{{ _('Due date') }}</label>
+                        </div>
+                        <!--
+                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                            <input class="mdl-textfield__input" id="habit-remember-date-notify" type="date">
+                            <label class="mdl-textfield__label"
+                                   for="habit-remember-date-notify">{{ _('Specific date notify') }}</label>
+                        </div> -->
+
+                        <div v-show=" reminder.by=='weekly' || reminder.by=='daily'"  class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                            <input class="mdl-textfield__input" v-model='reminder.time_notify' id="habit-remember-time-notify" type="time">
+                            <label class="mdl-textfield__label"
+                                   for="habit-remember-time-notify">{{ _('Specific time notify') }}</label>
+                        </div>
+
+                        <div v-show=" reminder.by=='weekly'" class="section-spacer" id="options-week">
+                            <div class="mdl-card__title">
+                                <h2 class="mdl-card__title-text">Week options</h2>
+                            </div>
+                            <div style="display: inline-flex;">
+                                <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="weekday-month">
+                                    <input v-model="reminder.weekDays" value="Monday" type="checkbox" id="weekday-month" class="mdl-checkbox__input">
+                                    <span class="mdl-checkbox__label">{{ _('Monday') }}</span>
+                                </label>
+                                <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="weekday-tuesday">
+                                    <input v-model="reminder.weekDays" value="Tuesday" type="checkbox" id="weekday-tuesday" class="mdl-checkbox__input">
+                                    <span class="mdl-checkbox__label">{{ _('Tuesday') }}</span>
+                                </label>
+                                <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect"
+                                       for="weekday-wednesday">
+                                    <input v-model="reminder.weekDays" value="Wednesday" type="checkbox" id="weekday-wednesday" class="mdl-checkbox__input">
+                                    <span class="mdl-checkbox__label">{{ _('Wednesday') }}</span>
+                                </label>
+                                <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="weekday-thursday">
+                                    <input v-model="reminder.weekDays" value="Thursday" type="checkbox" id="weekday-thursday" class="mdl-checkbox__input">
+                                    <span class="mdl-checkbox__label">{{ _('Thursday') }}</span>
+                                </label>
+                                <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="weekday-friday">
+                                    <input v-model="reminder.weekDays" value="Friday" type="checkbox" id="weekday-friday" class="mdl-checkbox__input">
+                                    <span class="mdl-checkbox__label">{{ _('Friday') }}</span>
+                                </label>
+                                <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="weekday-saturday">
+                                    <input v-model="reminder.weekDays" value="Saturday" type="checkbox" id="weekday-saturday" class="mdl-checkbox__input">
+                                    <span class="mdl-checkbox__label">{{ _('Saturday') }}</span>
+                                </label>
+                                <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="weekday-sunday">
+                                    <input v-model="reminder.weekDays" value="Sunday" type="checkbox" id="weekday-sunday" class="mdl-checkbox__input">
+                                    <span class="mdl-checkbox__label">{{ _('Sunday') }}</span>
+                                </label>
+                            </div>
+
+                        </div>
+
+                        <div class="section-spacer">
+                            <div class="mdl-card__title">
+                                <h2 class="mdl-card__title-text">Type notification</h2>
+                            </div>
+
+                            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
+                                   for="habit-remember-type-notify-email">
+                                <input v-bind:checked="reminder.email_notify" type="checkbox" id="habit-remember-type-notify-email" class="mdl-switch__input">
+                                <span class="mdl-switch__label">{{ _('Email') }}</span>
+                            </label>
+
+                            <!--label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
+                                   for="habit-remember-type-notify-push">
+                                <input v-bind:checked="reminder.push_notify" type="checkbox" id="habit-remember-type-notify-push" class="mdl-switch__input"
+                                       >
+                                <span class="mdl-switch__label">{{ _('Push') }}</span>
+                            </label -->
+
+                        </div>
+
+                    </form>
+                </div>
+                <div class="mdl-dialog__actions">
+
+                </div>
+            </dialog>
+        </main>
+    </div>
+
+{% endblock %}
+
+{% block js %}
+{#    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>#}
+    <script src="/js/habit.js" type="application/javascript"></script>
+{% endblock %}
