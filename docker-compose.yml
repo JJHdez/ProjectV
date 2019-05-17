@@ -1,0 +1,26 @@
+version: "3"
+
+services:
+  app:
+    build: .
+    #image: focus
+    environment:
+      vPG_DB_HOST: db
+      vPG_DB: focus 
+      vPG_DB_USERNAME: focus 
+      vPG_DB_PASSWORD: focus
+    depends_on:
+      - db
+    ports:
+      - "7000:8080"
+    volumes:
+      - ./app:/usr/src/focus/app
+  db:
+    image: postgres:9.5-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: focus
+      POSTGRES_PASSWORD: focus
+      POSTGRES_DB: focus
+    volumes:
+      - ./tools/db:/docker-entrypoint-initdb.d
